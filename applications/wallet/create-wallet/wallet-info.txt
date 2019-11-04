@@ -1,0 +1,16 @@
+BIP44 $BCH Wallet
+
+128 bit english BIP32 Mnemonic:
+toilet glad unhappy super short giant noise action comic lion knock universe
+
+BIP44 Account: "m/44'/145'/0'"
+m/44'/145'/0'/0/0: bitcoincash:qzz3tqnpeckcnnzj7c4yax08j2kkfu0pecen7ckrmv
+m/44'/145'/0'/0/1: bitcoincash:qr5hl407c7eazn46xjazgvsf3pzhdk800sf2ju3756
+m/44'/145'/0'/0/2: bitcoincash:qzn7650glxgv0prug2mwj29w7t73xjxn6uec293gww
+m/44'/145'/0'/0/3: bitcoincash:qry3d5nad3tkfqvsr25kcaa3rr4ne04f0cq3phjxz6
+m/44'/145'/0'/0/4: bitcoincash:qrpwkzrpgh32hnpnm0nlsalfxm9rgvfszgfrsssr8q
+m/44'/145'/0'/0/5: bitcoincash:qrpmzw7ktu8jxay5w2jp0d2e65jnk45rzuwdlxu9pa
+m/44'/145'/0'/0/6: bitcoincash:qrypgsmd55pgu2tqy20jgv59zfdp89ln7509a44pxp
+m/44'/145'/0'/0/7: bitcoincash:qryg6ukru4en00kqnjk8c0y3mh5ax8u2h550hzuha5
+m/44'/145'/0'/0/8: bitcoincash:qrchhe0n7wauz75mh9pn8x0zwzwkjv8vmuhu9ygjcs
+m/44'/145'/0'/0/9: bitcoincash:qrhwhsq8gtcljxx4x3acnl2gtzw2emfllg5q6yu2mc

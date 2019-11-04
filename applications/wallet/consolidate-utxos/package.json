@@ -1,0 +1,29 @@
+{
+  "name": "consolidate-utxos",
+  "version": "1.0.0",
+  "description": "Combine all UTXOs in an address into a single UTXO",
+  "main": "consolidate-utxos.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node consolidate-utxos.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/bitbox-javascript-sdk.git"
+  },
+  "keywords": [
+    "bitbox",
+    "example",
+    "bch",
+    "bitcoin",
+    "bitcoin cash",
+    "bitcoin.com",
+    "javascript"
+  ],
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/blob/master/README.md"
+}

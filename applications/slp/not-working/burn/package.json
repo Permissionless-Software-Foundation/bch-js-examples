@@ -1,0 +1,24 @@
+{
+  "name": "burn",
+  "version": "1.0.0",
+  "description": "Burn an amount of tokens for an address by tokenId and amount",
+  "main": "burn.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node burn.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/slp-sdk.git"
+  },
+  "keywords": [
+    "slp-sdk",
+    "example"
+  ],
+  "author": "Gabriel Cardona <gabriel@bitcoin.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/slp-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/slp-sdk#readme"
+}

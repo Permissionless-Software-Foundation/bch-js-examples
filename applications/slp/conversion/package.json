@@ -1,0 +1,24 @@
+{
+  "name": "conversion",
+  "version": "1.0.0",
+  "description": "Convert between address formats",
+  "main": "conversion.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node conversion.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/slp-sdk.git"
+  },
+  "keywords": [
+    "slp-sdk",
+    "example"
+  ],
+  "author": "Gabriel Cardona <gabriel@bitcoin.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/slp-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/slp-sdk#readme"
+}

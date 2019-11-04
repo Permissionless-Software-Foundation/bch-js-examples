@@ -1,0 +1,29 @@
+{
+  "name": "check-balance",
+  "version": "1.0.0",
+  "description": "Check the balance of an HDNode wallet",
+  "main": "create-wallet.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node check-balance.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/bitbox-javascript-sdk.git"
+  },
+  "keywords": [
+    "bitbox",
+    "example",
+    "bch",
+    "bitcoin",
+    "bitcoin cash",
+    "bitcoin.com",
+    "javascript"
+  ],
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/blob/master/README.md"
+}

@@ -1,0 +1,29 @@
+{
+  "name": "send-all",
+  "version": "1.0.0",
+  "description": "Send all the BCH in an address to another address",
+  "main": "send-all.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node send-all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/bitbox-javascript-sdk.git"
+  },
+  "keywords": [
+    "bitbox",
+    "example",
+    "bch",
+    "bitcoin",
+    "bitcoin cash",
+    "bitcoin.com",
+    "javascript"
+  ],
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/blob/master/README.md"
+}

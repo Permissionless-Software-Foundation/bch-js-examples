@@ -1,0 +1,30 @@
+{
+  "name": "op_return",
+  "version": "1.0.0",
+  "description": "Create a raw tx sending an op_return message",
+  "main": "op_return.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node op_return.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitcoin-com/bitbox-javascript-sdk.git"
+  },
+  "keywords": [
+    "bitbox",
+    "example",
+    "bch",
+    "bitcoin",
+    "bitcoin",
+    "cash",
+    "bitcoin.com",
+    "javascript"
+  ],
+  "author": "Joey King <joey@bitcoin.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/issues"
+  },
+  "homepage": "https://github.com/Bitcoin-com/bitbox-javascript-sdk/blob/master/README.md"  
+}
