@@ -1,0 +1,28 @@
+{
+  "name": "bch-js-examples",
+  "version": "1.0.0",
+  "description": "Examples for working with bch-js to work with the BCH blockchain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "cash",
+    "bch",
+    "javascript"
+  ],
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Permissionless-Software-Foundation/bch-js-examples/issues"
+  },
+  "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
+  "dependencies": {
+    "@chris.troutner/bch-js": "^1.6.2"
+  }
+}
