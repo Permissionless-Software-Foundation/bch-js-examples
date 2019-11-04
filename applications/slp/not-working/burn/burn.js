@@ -13,7 +13,7 @@ const TOKEN_ID =
 const TOKEN_AMOUNT = "6"
 
 //bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const SLPSDK = require('@chris.troutner/bch-js')
 
 // Instantiate SLP based on the network.
 let SLP

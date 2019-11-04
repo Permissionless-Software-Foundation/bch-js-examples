@@ -6,7 +6,7 @@
 const NETWORK = `mainnet`
 
 //bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const SLPSDK = require('@chris.troutner/bch-js')
 
 // Instantiate SLP based on the network.
 let SLP

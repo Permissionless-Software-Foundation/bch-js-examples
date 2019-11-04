@@ -11,7 +11,7 @@ const TOKENQTY = 100
 const NETWORK = `mainnet`
 
 //bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const SLPSDK = require('@chris.troutner/bch-js')
 
 // Used for debugging and investigating JS objects.
 const util = require("util")
