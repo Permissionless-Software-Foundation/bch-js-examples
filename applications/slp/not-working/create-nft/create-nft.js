@@ -5,7 +5,8 @@
 // Set NETWORK to either testnet or mainnet
 const NETWORK = `mainnet`
 
-const SLPSDK = require("../../lib/SLP")
+//bch-js-examples require code from the main bch-js repo
+const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate SLP based on the network.
 let SLP
