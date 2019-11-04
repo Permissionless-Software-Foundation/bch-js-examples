@@ -54,7 +54,7 @@ async function sendBch() {
     const balance2 = await getBCHBalance(RECV_ADDR, false)
     console.log(`Balance of recieving address ${RECV_ADDR} is ${balance2} BCH.`)
 
-    const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
+    const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
     //console.log(`u: ${JSON.stringify(u, null, 2)}`)
     const utxo = findBiggestUtxo(u.utxos)
     console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
@@ -144,7 +144,7 @@ async function changeAddrFromMnemonic(mnemonic) {
 // Get the balance in BCH of a BCH address.
 async function getBCHBalance(addr, verbose) {
   try {
-    const result = await bchjs.Insight.Address.details(addr)
+    const result = await bchjs.Blockbook.Address.details(addr)
 
     if (verbose) console.log(result)
 
