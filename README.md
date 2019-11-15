@@ -35,13 +35,3 @@ a BCH wallet for use with the other examples. Recommended path:
    with your own BCH to test the wallet on mainnet.
 3. [Check the balance](applications/wallet/check-balance/check-balance.js)
 4. [Send some BCH](applications/wallet/send-bch/send-bch.js)
-
-## Taking it further
-Because these examples are included in the bch-js repository, they instantiate
-bch-js a little strangely:
-
-`const BCHJS = require("../../../../src/bch-js")`
-
-In your own apps, the line above should look like this:
-
-`const BCHJS = require('@chris.troutner/bch-js')`
