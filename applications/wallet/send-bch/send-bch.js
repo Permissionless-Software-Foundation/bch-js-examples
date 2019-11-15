@@ -6,6 +6,7 @@
 const NETWORK = `mainnet`
 // Replace the address below with the address you want to send the BCH to.
 const RECV_ADDR = ``
+
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
@@ -144,7 +145,8 @@ async function changeAddrFromMnemonic(mnemonic) {
 // Get the balance in BCH of a BCH address.
 async function getBCHBalance(addr, verbose) {
   try {
-    const result = await bchjs.Blockbook.Address.details(addr)
+    const result = await bchjs.Insight.Address.details(addr)
+    //replaced: const result = await bchjs.Blockbook.Address.details(addr)
 
     if (verbose) console.log(result)
 
