@@ -42,7 +42,8 @@ async function consolidateDust() {
     let sendAmount = 0
     const inputs = []
 
-    const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
+    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
 
     // Loop through each UTXO assigned to this address.
     for (let i = 0; i < u.utxos.length; i++) {

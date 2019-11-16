@@ -1,5 +1,5 @@
 To run any application in the applications/wallet directory, simply enter:
-`npm start`
+"npm start"
 while in that folder directory (e.g. run "npm start" while in the
 applications/wallet/create-wallet directory)
 
@@ -7,9 +7,9 @@ All of the .js files in the applications/wallet directory are set to the
 "mainnet" network. For wallet testing purposes, by using the testnet network,
 change the following line of code in EACH AND EVERY .js file in the
 applications/wallet directories:
-`const NETWORK = 'mainnet'
+const NETWORK = 'mainnet'
 should be changed to:
-'const NETWORK = 'testnet'
+const NETWORK = 'testnet'
 
 If you wish to fund your newly created testnet wallet (following the steps above),
 you can go to:
@@ -82,13 +82,11 @@ applications/wallet/send-bchtest
 Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
 wallet/send-bch to send a specific amount of BCH from your "wallet.json" address
 to any address of your choosing.
-
 NOTE: the .js file has to be opened, and your receiving address has to be
 changed from:
 const RECV_ADDR = ``
 to
 const RECV_ADDR = 'YourBCHwalletHereInQuotes'
-
 NOTE: the .js file is defaulted to sending 1000 satoshis. Edit this line:
 const SATOSHIS_TO_SEND = 1000
 to any number you wish, to change the amount of satoshis that will be sent to
@@ -96,3 +94,17 @@ the receiving address you entered above
 
 
 applications/wallet/consolidate-utxos
+
+After having multiple transactions into and out of your "wallet.json" address,
+you may wish to combine all of the UTXOs into one single UTXO. This is done
+using consolidate-utxos, exactly similar as if you used "send all" to yourself
+in the above 'wallet/send-all' .js file
+
+applications/wallet/consolidate-dust
+
+Similar to 'wallet/consolidate-utxos', however this .js file concerns itself
+with satoshi amounts smaller than 546 satoshis, as defined in the code as
+const dust = 546
+The transaction will happen if all of the combined utxos have satoshi values
+less than 546, but if combined they do not exceed the network transmission
+fee then there will be an error message of insufficient funds.
