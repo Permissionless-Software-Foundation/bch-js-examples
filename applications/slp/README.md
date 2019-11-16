@@ -41,13 +41,3 @@ cents of BCH first.
 - [list-all-tokens](list-all-tokens) - List every token in existence.
 
 - [conversion](conversion) - Convert between address formats.
-
-## Taking it further
-Because these examples are included in the bch-js repository, they instantiate
-bch-js a little strangely:
-
-`const BCHJS = require("../../../../src/bch-js")`
-
-In your own apps, the line above should look like this:
-
-`const BCHJS = require('@chris.troutner/bch-js')`
