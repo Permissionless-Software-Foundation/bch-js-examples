@@ -29,7 +29,7 @@ purposes.
 The following are steps to follow when using these .js files
 
 
-applications/wallet/create-wallet
+##applications/wallet/create-wallet
 
 The first action you should perform in the application/wallet directory
 should be in the "/wallet/create-wallet" directory. Run using:
@@ -56,7 +56,7 @@ note that the first address in "wallet-info.txt" is the same address as the
 "wallet.json" file.
 
 
-applications/wallet/check-balance
+##applications/wallet/check-balance
 
 Once you send BCH (or tBCH) to your newly made "wallet.json" address, you can
 using 'wallet/check-balance', to update your wallet with the network to
@@ -67,7 +67,7 @@ in your "wallet.json" file's address. Fairly simple and straightforward
 application.
 
 
-applications/wallet/send-all
+##applications/wallet/send-all
 
 Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
 'wallet/send-all' to send ALL of the BCH in your wallet to a single address.
@@ -82,7 +82,7 @@ to
 const RECV_ADDR = "YourBCHwalletHereInQuotes"
 
 
-applications/wallet/send-bch
+##applications/wallet/send-bch
 
 Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
 wallet/send-bch to send a specific amount of BCH from your "wallet.json" address
@@ -98,7 +98,7 @@ to any number you wish, above 546, to change the amount of satoshis that will be
 sent to the receiving address you entered above.
 
 
-applications/wallet/send-WIF
+##applications/wallet/send-WIF
 
 Exactly the same as the above 'wallet/send-bch' function above, except it uses
 the WIF (Wallet Import Format) in place of the mnemonic in the "wallet.json"
@@ -115,7 +115,7 @@ to any number you wish, above 546 satoshis, to send that amount of satoshis
 to the receiving address you entered above.
 
 
-applications/wallet/consolidate-utxos
+##applications/wallet/consolidate-utxos
 
 After having multiple transactions into and out of your "wallet.json" address,
 you may wish to combine all of the UTXOs into one single UTXO. This is done
@@ -125,7 +125,7 @@ dozens of UTXOs into a single UTXO. Ran by running:
 "npm start"
 
 
-applications/wallet/consolidate-dust
+##applications/wallet/consolidate-dust
 
 Similar to 'wallet/consolidate-utxos', however this .js file concerns itself
 with satoshi amounts smaller than 546 satoshis (the cut-off limit for "dust").
