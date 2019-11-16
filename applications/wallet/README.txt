@@ -58,10 +58,11 @@ applications/wallet/check-balance
 
 Once you send BCH (or tBCH) to your newly made "wallet.json" address, you can
 use the wallet/check-balance .js file to update your wallet with the network to
-confirm that the coins sent have successfully reached your wallet.  Ran by running
+confirm that the coins sent have successfully reached your wallet. Ran by running
 "npm start"
 in the wallet/check-balance directory. This will show you your current balance
-in your "wallet.json" file's address. Fairly simple and straightforward application.
+in your "wallet.json" file's address. Fairly simple and straightforward
+application.
 
 
 applications/wallet/send-all
@@ -89,22 +90,24 @@ to
 const RECV_ADDR = 'YourBCHwalletHereInQuotes'
 NOTE: the .js file is defaulted to sending 1000 satoshis. Edit this line:
 const SATOSHIS_TO_SEND = 1000
-to any number you wish, to change the amount of satoshis that will be sent to
-the receiving address you entered above
+to any number you wish, above 546, to change the amount of satoshis that will be
+sent to the receiving address you entered above.
 
 
 applications/wallet/consolidate-utxos
 
 After having multiple transactions into and out of your "wallet.json" address,
 you may wish to combine all of the UTXOs into one single UTXO. This is done
-using consolidate-utxos, exactly similar as if you used "send all" to yourself
-in the above 'wallet/send-all' .js file
+using 'wallet/consolidate-utxo's, exactly similar as if you used "send all" to
+yourself in the above 'wallet/send-all' .js file.
+
 
 applications/wallet/consolidate-dust
 
 Similar to 'wallet/consolidate-utxos', however this .js file concerns itself
-with satoshi amounts smaller than 546 satoshis, as defined in the code as
+with satoshi amounts smaller than 546 satoshis, as defined in the code as:
 const dust = 546
 The transaction will happen if all of the combined utxos have satoshi values
-less than 546, but if combined they do not exceed the network transmission
-fee then there will be an error message of insufficient funds.
+individually less than 546, but if combined are greater than 546 satoshis.
+Should the total utxos not exceed 546 satoshis in total, then there will be an
+error message of "insufficient funds".
