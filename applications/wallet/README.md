@@ -3,7 +3,8 @@ To run any application in the applications/wallet directory, simply enter:
 while in that folder directory (e.g. run "npm start" while in the
 applications/wallet/create-wallet directory)
 
-NOTE: All of the .js files in the applications/wallet directory are set to the
+#NOTE:
+All of the .js files in the applications/wallet directory are set to the
 "mainnet" network. For wallet testing purposes, by using the testnet network,
 change the following line of code in EACH AND EVERY .js file in the
 applications/wallet directories:
@@ -36,7 +37,8 @@ should be in the "/wallet/create-wallet" directory. Run using:
 "npm start"
 A new "wallet-info.txt" and "wallet.json" file will be created for you.
 
-NOTE: RUNNING "npm start" IN THIS DIRECTORY WILL OVERWRITE ANY OLD PREVIOUS
+#NOTE:
+RUNNING "npm start" IN THIS DIRECTORY WILL OVERWRITE ANY OLD PREVIOUS
 "wallet-info.txt" AND "wallet.json" FILES, SO BE CAREFUL NOT TO OVERWRITE
 YOUR OLD ADDRESSES and/or CREATE A BACKUP COPY of the "wallet-info.txt"
 and "wallet.json" files
@@ -48,7 +50,8 @@ seed phrase, it also contains 10 different BCH addresses you can use with your
 single mnemonic. This is to allow some anonymity to your transactions
 (and all 10 addresses can be restored from the single mnemonic phrase).
 
-NOTE: all of the following examples use the "wallet.json" file (with the single
+#NOTE:
+all of the following examples use the "wallet.json" file (with the single
 BCH address within) and not the full "wallet-info.txt" file of addresses.
 The "wallet-info.txt" file is only an example of how to generate lots of
 addresses with a single mnemonic and write them to an external file. Also
@@ -73,7 +76,8 @@ Once you have BCH (or tBCH) in your "wallet.json" address, you can use the funct
 'wallet/send-all' to send ALL of the BCH in your wallet to a single address.
 Ran by running:
 "npm start"
-NOTE: the .js file is initally set up to return all BCH to the SAME WALLET IT IS
+#NOTE:
+the .js file is initally set up to return all BCH to the SAME WALLET IT IS
 BEING SENT FROM (which will perform a similar action to wallet/consolidate-utxos,
 discussed further in the README.txt)
 To change the send-all address, change the .js file line from:
@@ -92,7 +96,8 @@ changed from:
 const RECV_ADDR = ``
 to
 const RECV_ADDR = 'YourBCHwalletHereInQuotes'
-NOTE: the .js file is defaulted to sending 1000 satoshis. Edit this line:
+#NOTE:
+the .js file is defaulted to sending 1000 satoshis. Edit this line:
 const SATOSHIS_TO_SEND = 1000
 to any number you wish, above 546, to change the amount of satoshis that will be
 sent to the receiving address you entered above.
