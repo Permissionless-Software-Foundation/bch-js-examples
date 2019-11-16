@@ -77,12 +77,22 @@ to
 const RECV_ADDR = "YourBCHwalletHereInQuotes"
 
 
+applications/wallet/send-bchtest
+
+Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
+wallet/send-bch to send a specific amount of BCH from your "wallet.json" address
+to any address of your choosing.
+
+NOTE: the .js file has to be opened, and your receiving address has to be
+changed from:
+const RECV_ADDR = ``
+to
+const RECV_ADDR = 'YourBCHwalletHereInQuotes'
+
+NOTE: the .js file is defaulted to sending 1000 satoshis. Edit this line:
+const SATOSHIS_TO_SEND = 1000
+to any number you wish, to change the amount of satoshis that will be sent to
+the receiving address you entered above
 
 
-
-NOTE: send-all will send all BCH back to the same sending wallet (similar to
-combine-utxos) to change this go into the send-all.js file and
-change line 35 from:
-const RECV_ADDR = walletInfo.cashAddress
-TO
-const RECV_ADDR = [BCH_WALLET_OF_YOUR_CHOICE_HERE_WITHOUT_BRACKETS]
+applications/wallet/consolidate-utxos

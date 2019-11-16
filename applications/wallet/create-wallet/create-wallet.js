@@ -7,7 +7,7 @@
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
+const MAINNET_API = `http://api.bchjs.cash/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 
 //bch-js-examples require code from the main bch-js repo
