@@ -8,7 +8,7 @@
 const NETWORK = `mainnet`
 
 // Replace the address below with the address you want to send the BCH to.
-const RECV_ADDR = `bitcoincash:qzqlrn6zcfgtyyf8pkd2gmnl6acm7rnyjse7jqxnaa`
+const RECV_ADDR = ``
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
@@ -60,7 +60,10 @@ async function sendBch() {
     const balance2 = await getBCHBalance(RECV_ADDR, false)
     console.log(`Balance of recieving address ${RECV_ADDR} is ${balance2} BCH.`)
 
-    const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
+    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+
+
     //console.log(`u: ${JSON.stringify(u, null, 2)}`)
     const utxo = findBiggestUtxo(u.utxos)
     console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
