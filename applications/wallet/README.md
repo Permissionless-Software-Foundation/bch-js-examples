@@ -138,3 +138,15 @@ The transaction will happen if ALL of the COMBINED UTXOs have satoshi values
 individually less than 546, but if combined together, are greater than 546
 satoshis. Should the total combined utxos not exceed 546 satoshis in total,
 then there will be an error message of "insufficient funds".
+
+##applications/util.js
+
+Simple script to log to the console the transaction ID on the BCH or tBCH blockchain
+either
+[BCH](https://explorer.bitcoin.com/bch/tx/)
+or
+[tBCH](https://explorer.bitcoin.com/tbch/tx)
+depending on if in the .js files above has
+NETWORK = 'mainnet'
+or
+NETWORK = 'testnet'
