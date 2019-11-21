@@ -42,7 +42,7 @@ async function consolidateDust() {
 
     const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
     //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
-    
+
     // Loop through each UTXO assigned to this address.
     for (let i = 0; i < u.utxos.length; i++) {
       const thisUtxo = u.utxos[i]
@@ -104,9 +104,10 @@ async function consolidateDust() {
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${txid}`)
     console.log(`Check the status of your transaction on this block explorer:`)
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txid}`)
+    util.transactionStatus(txid, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

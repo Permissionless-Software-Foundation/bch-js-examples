@@ -32,7 +32,7 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 
 // Send the money back to the same address. Edit this if you want to send it
 // somewhere else.
-const RECV_ADDR = walletInfo.cashAddress
+const RECV_ADDR = 'qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9' //walletInfo.cashAddress
 
 async function sendAll() {
   try {
@@ -107,9 +107,10 @@ async function sendAll() {
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${txid}`)
     console.log(`Check the status of your transaction on this block explorer:`)
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txid}`)
+    util.transactionStatus(txid, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

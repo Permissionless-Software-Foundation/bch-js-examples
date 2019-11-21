@@ -114,7 +114,10 @@ async function consolidateDust() {
 
     // Broadcast transation to the network
     const broadcast = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${broadcast}`)
+    console.log(`Check the status of your transaction on this block explorer:`)
+    util.transactionStatus(broadcast, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

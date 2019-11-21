@@ -5,8 +5,8 @@
 // Set NETWORK to either testnet or mainnet
 const NETWORK = `mainnet`
 // Replace the address below with the address you want to send the BCH to.
-const RECV_ADDR = ``
-
+const RECV_ADDR = `qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9`
+//set satoshi amount to send
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
@@ -116,9 +116,10 @@ async function sendBch() {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${txidStr}`)
     console.log(`Check the status of your transaction on this block explorer:`)
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    util.transactionStatus(txidStr, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }
