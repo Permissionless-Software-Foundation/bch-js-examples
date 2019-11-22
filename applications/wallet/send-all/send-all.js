@@ -6,10 +6,11 @@
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
+const MAINNET_API = `http://api.bchjs.cash/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 
-const BCHJS = require("../../../../src/bch-js")
+//bch-js-examples require code from the main bch-js repo
+const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
@@ -31,7 +32,7 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 
 // Send the money back to the same address. Edit this if you want to send it
 // somewhere else.
-const RECV_ADDR = walletInfo.cashAddress
+const RECV_ADDR = 'qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9' //walletInfo.cashAddress
 
 async function sendAll() {
   try {
@@ -106,9 +107,10 @@ async function sendAll() {
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${txid}`)
     console.log(`Check the status of your transaction on this block explorer:`)
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txid}`)
+    util.transactionStatus(txid, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

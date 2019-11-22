@@ -7,10 +7,11 @@
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
+const MAINNET_API = `http://api.bchjs.cash/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 
-const BCHJS = require("../../../../src/bch-js")
+//bch-js-examples require code from the main bch-js repo
+const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
@@ -42,6 +43,7 @@ async function consolidateDust() {
     const inputs = []
 
     const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
+    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
 
     // Loop through each UTXO assigned to this address.
     for (let i = 0; i < u.utxos.length; i++) {
@@ -112,7 +114,10 @@ async function consolidateDust() {
 
     // Broadcast transation to the network
     const broadcast = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${broadcast}`)
+    console.log(`Check the status of your transaction on this block explorer:`)
+    util.transactionStatus(broadcast, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

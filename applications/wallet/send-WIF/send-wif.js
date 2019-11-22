@@ -8,14 +8,15 @@
 const NETWORK = `mainnet`
 
 // Replace the address below with the address you want to send the BCH to.
-const RECV_ADDR = `bitcoincash:qzqlrn6zcfgtyyf8pkd2gmnl6acm7rnyjse7jqxnaa`
+const RECV_ADDR = `qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9`
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
+const MAINNET_API = `http://api.bchjs.cash/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 
-const BCHJS = require("../../../../src/bch-js")
+//bch-js-examples require code from the main bch-js repo
+const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
@@ -60,6 +61,9 @@ async function sendBch() {
     console.log(`Balance of recieving address ${RECV_ADDR} is ${balance2} BCH.`)
 
     const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
+    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+
+
     //console.log(`u: ${JSON.stringify(u, null, 2)}`)
     const utxo = findBiggestUtxo(u.utxos)
     console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
@@ -113,9 +117,10 @@ async function sendBch() {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
+    const util = require("../util.js")
     console.log(`Transaction ID: ${txidStr}`)
     console.log(`Check the status of your transaction on this block explorer:`)
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    util.transactionStatus(txidStr, NETWORK)
   } catch (err) {
     console.log(`error: `, err)
   }

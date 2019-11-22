@@ -10,7 +10,8 @@ const TOKENQTY = 100
 // Set NETWORK to either testnet or mainnet
 const NETWORK = `mainnet`
 
-const SLPSDK = require("../../lib/SLP")
+//bch-js-examples require code from the main bch-js repo
+const SLPSDK = require('@chris.troutner/bch-js')
 
 // Used for debugging and investigating JS objects.
 const util = require("util")

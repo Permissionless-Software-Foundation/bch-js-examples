@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@chris.troutner/bch-js": "^1.6.2"
+    "@chris.troutner/bch-js": "^2.0.0"
   }
 }

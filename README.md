@@ -30,16 +30,8 @@ These basic examples in the `applications/wallet` directory are used to bootstra
 a BCH wallet for use with the other examples. Recommended path:
 
 1. [Create a wallet](applications/wallet/create-wallet/create-wallet.js)
-2. Fund it. If targeting testnet, [fund it with the testnet faucet](https://developer.bitcoin.com/faucets/bch)
+2. Fund it. If targeting testnet (example in the applications/wallet directory README.txt files),
+   fund it with the testnet faucet (https://developer.bitcoin.com/faucets/bch). Otherwise fund
+   with your own BCH to test the wallet on mainnet.
 3. [Check the balance](applications/wallet/check-balance/check-balance.js)
 4. [Send some BCH](applications/wallet/send-bch/send-bch.js)
-
-## Taking it further
-Because these examples are included in the bch-js repository, they instantiate
-bch-js a little strangely:
-
-`const BCHJS = require("../../../../src/bch-js")`
-
-In your own apps, the line above should look like this:
-
-`const BCHJS = require('@chris.troutner/bch-js')`

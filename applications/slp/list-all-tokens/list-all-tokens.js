@@ -9,7 +9,8 @@ const NETWORK = `mainnet`
 const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 
-const BCHJS = require("../../../../src/bch-js")
+//bch-js-examples require code from the main bch-js repo
+const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs

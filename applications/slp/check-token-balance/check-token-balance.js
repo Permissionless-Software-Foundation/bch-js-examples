@@ -14,7 +14,8 @@ const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 const TOKEN_ID =
   "497291b8a1dfe69c8daea50677a3d31a5ef0e9484d8bebb610dac64bbc202fb7"
 
-const BCHJS = require("../../../../src/bch-js")
+  //bch-js-examples require code from the main bch-js repo
+  const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
