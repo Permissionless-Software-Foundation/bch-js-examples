@@ -116,6 +116,7 @@ async function sendBch() {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
+    //import from util.js file
     const util = require("../util.js")
     console.log(`Transaction ID: ${txidStr}`)
     console.log(`Check the status of your transaction on this block explorer:`)
