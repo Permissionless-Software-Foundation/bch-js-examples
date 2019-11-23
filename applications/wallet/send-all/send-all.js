@@ -32,7 +32,7 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 
 // Send the money back to the same address. Edit this if you want to send it
 // somewhere else.
-const RECV_ADDR = 'qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9' //walletInfo.cashAddress
+const RECV_ADDR = walletInfo.cashAddress
 
 async function sendAll() {
   try {
