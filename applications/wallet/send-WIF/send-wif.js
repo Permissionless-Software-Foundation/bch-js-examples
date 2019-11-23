@@ -9,6 +9,7 @@ const NETWORK = `mainnet`
 
 // Replace the address below with the address you want to send the BCH to.
 const RECV_ADDR = ``
+//set satoshi amount to send
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.

@@ -1,5 +1,8 @@
-//utility file for certain .js operations used in applications/wallet
+/*
+utility file for certain .js operations used in applications/wallet
+*/
 
+//displays link to either the bch mainnet or tbch testnet for transactions
 function transactionStatus(transactionInput, network) {
   if (network === 'mainnet') {
     console.log(`https://explorer.bitcoin.com/bch/tx/${transactionInput}`)
@@ -9,4 +12,6 @@ function transactionStatus(transactionInput, network) {
   }
 }
 
+
+//export modules
 module.exports.transactionStatus= transactionStatus
