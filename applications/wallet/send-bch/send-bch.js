@@ -5,7 +5,7 @@
 // Set NETWORK to either testnet or mainnet
 const NETWORK = `mainnet`
 // Replace the address below with the address you want to send the BCH to.
-const RECV_ADDR = `qzlfaxdq9s09qd70fkaaksmdl7n4d6quxgs02d83s9`
+const RECV_ADDR = ``
 //set satoshi amount to send
 const SATOSHIS_TO_SEND = 1000
 
