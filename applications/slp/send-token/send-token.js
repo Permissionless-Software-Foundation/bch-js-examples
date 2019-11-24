@@ -12,7 +12,7 @@ const TO_SLPADDR = "simpleledger:qrhgjdlcxaxmcs85fy39lvlfrft5rwce05c4yjdknn"
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
+const MAINNET_API = `http://api.bchjs.cash/v3/`
 // const MAINNET_API = `http://decatur.hopto.org:12400/v3/`
 const TESTNET_API = `http://testnet.bchjs.cash/v3/`
 // const TESTNET_API = `http://decatur.hopto.org:13400/v3/`
