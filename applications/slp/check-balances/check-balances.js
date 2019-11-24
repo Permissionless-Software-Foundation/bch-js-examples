@@ -53,7 +53,7 @@ async function getBalance() {
     const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // first get BCH balance
-    const balance = await bchjs.Blockbook.Address.details(cashAddress)
+    const balance = await bchjs.Insight.Address.details(cashAddress)
 
     console.log(`BCH Balance information for ${slpAddress}:`)
     console.log(balance)
