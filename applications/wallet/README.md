@@ -85,7 +85,7 @@ To change the send-all address, change the .js file line from:
 
 to
 
-`const RECV_ADDR = "YourBCHwalletHereInQuotes"``
+`const RECV_ADDR = "YourBCHwalletHereInQuotes"`
 
 
 ## SEND BCH

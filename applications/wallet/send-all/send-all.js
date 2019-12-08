@@ -7,7 +7,7 @@ const NETWORK = `mainnet`
 
 // REST API servers.
 const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://testnet.bchjs.cash/v3/`
+const TESTNET_API = `http://tapi.bchjs.cash/v3/`
 
 //bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -58,7 +58,7 @@ async function sendAll() {
       transactionBuilder.addInput(thisUtxo.txid, thisUtxo.vout)
     }
 
-    // get byte count to calculate fee. paying 1.2 sat/byte
+    // get byte count to calculate fee. paying 1 sat/byte
     const byteCount = bchjs.BitcoinCash.getByteCount(
       { P2PKH: inputs.length },
       { P2PKH: 1 }
