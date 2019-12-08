@@ -34,13 +34,13 @@ The following are steps to follow when using these .js files
 ## Create Wallet
 
 The first action you should perform in the application/wallet directory
-should be in the "/wallet/create-wallet" directory. Run using:
-"npm start"
-A new "wallet-info.txt" and "wallet.json" file will be created for you.
+should be in the [create-wallet](create-wallet) example. Run using: `npm start`
+
+A new `wallet-info.txt` and `wallet.json` file will be created for you.
 
 *NOTE:*
-Running "npm start" in this directory will overwrite any previous
-"wallet-info.txt" and "wallet.json" files. BE CAREFUL TO BACKUP THESE FILES.
+Running `npm start` in this directory will overwrite any previous
+`wallet-info.txt` and `wallet.json` files. **BE CAREFUL TO BACKUP THESE FILES.**
 
 The `wallet.json` file will contain your 12-word mnemonic seed phrase for that wallet.
 The `wallet.json` file will also contain your primary BCH wallet address.
