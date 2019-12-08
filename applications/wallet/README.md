@@ -15,9 +15,8 @@ should be changed to:
 
 `const NETWORK = 'testnet'`
 
-If you wish to fund your newly created testnet wallet (following the steps above),
-you can go to:
-https://developer.bitcoin.com/faucets/bch
+If you wish to fund your newly created **testnet** wallet (following the steps above),
+you can go to the [testnet faucet](https://developer.bitcoin.com/faucets/bch)
 and enter your BCH testnet (tBCH) wallet address (please use the address located
 in your "wallet.json" file, explained further on. You will receive a small amount
 of tBCH to use for any testing purposes that you wish.
