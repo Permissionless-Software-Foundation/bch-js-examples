@@ -72,21 +72,23 @@ in the address in the `wallet.json` file.
 
 ## Send All
 
-Once you have BCH (or tBCH) in your wallet, you can use the function
-'wallet/send-all' to send ALL of the BCH in your wallet to a single address.
-Ran by running:
-"npm start"
-#NOTE:
-the .js file is initally set up to return all BCH to the SAME WALLET IT IS
-BEING SENT FROM (which will perform a similar action to wallet/consolidate-utxos,
-discussed further in the README.txt)
+Once you have BCH (or tBCH) in your wallet, you can use the
+[send-all](send-all) example to send ALL of the BCH in your wallet to a single address.
+
+*NOTE:*
+The .js file is initially set up to return all BCH to the SAME WALLET IT IS
+BEING SENT FROM (which will perform a similar action to the
+[consolidate-utxos](consolidate-utxos) example.
 To change the send-all address, change the .js file line from:
-const RECV_ADDR = walletInfo.cashAddress
+
+`const RECV_ADDR = walletInfo.cashAddress`
+
 to
-const RECV_ADDR = "YourBCHwalletHereInQuotes"
+
+`const RECV_ADDR = "YourBCHwalletHereInQuotes"``
 
 
-##applications/wallet/send-bch
+## SEND BCH
 
 Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
 wallet/send-bch to send a specific amount of BCH from your "wallet.json" address
