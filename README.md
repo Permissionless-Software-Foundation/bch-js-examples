@@ -14,6 +14,9 @@ For a full-blown wallet, check out the [slp-cli-wallet](https://www.npmjs.com/pa
 JavaScript library for providing high-level wallet functionality to your own
 applications.
 
+If you want to chat with other developers interested in Bitcoin Cash, be sure
+to [join our Telegram channel](https://t.me/bch_js_toolkit).
+
 ## Installation
 Prior to running these examples, you need to setup this code repository. In the
 root directory run this commands to install the required dependencies.
