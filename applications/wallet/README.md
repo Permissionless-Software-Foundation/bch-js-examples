@@ -61,7 +61,7 @@ the other examples.
 
 Once you send BCH (or tBCH) to the address in your newly made `wallet.json`
 wallet file, you can
-use the [check-balance](example), to update your wallet with the network to
+use the [check-balance](check-balance) example, to update your wallet with the network to
 confirm that the coins sent have successfully reached your wallet.
 
 Again, run the example by running: `npm start`
@@ -72,7 +72,7 @@ in the address in the `wallet.json` file.
 
 ## Send All
 
-Once you have BCH (or tBCH) in your "wallet.json" address, you can use the function
+Once you have BCH (or tBCH) in your wallet, you can use the function
 'wallet/send-all' to send ALL of the BCH in your wallet to a single address.
 Ran by running:
 "npm start"
