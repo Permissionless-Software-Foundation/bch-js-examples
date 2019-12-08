@@ -3,14 +3,14 @@ To run any application in the applications/wallet directory, simply enter:
 while in that folder directory (e.g. run "npm start" while in the
 applications/wallet/create-wallet directory)
 
-#NOTE:
+*NOTE:*
 All of the .js files in the applications/wallet directory are set to the
 "mainnet" network. For wallet testing purposes, by using the testnet network,
 change the following line of code in EACH AND EVERY .js file in the
 applications/wallet directories:
-const NETWORK = 'mainnet'
+`const NETWORK = 'mainnet'`
 should be changed to:
-const NETWORK = 'testnet'
+`const NETWORK = 'testnet'`
 
 If you wish to fund your newly created testnet wallet (following the steps above),
 you can go to:
