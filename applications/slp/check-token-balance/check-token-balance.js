@@ -7,8 +7,8 @@
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
-const TESTNET_API = `http://testnet.bchjs.cash/v3/`
+const MAINNET_API = `https://api.bchjs.cash/v3/`
+const TESTNET_API = `http://tapi.bchjs.cash/v3/`
 
 // Set the TOKEN ID you are interested in
 const TOKEN_ID =

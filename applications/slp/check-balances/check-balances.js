@@ -7,10 +7,8 @@
 const NETWORK = `mainnet`
 
 // REST API servers.
-const MAINNET_API = `https://mainnet.bchjs.cash/v3/`
-// const MAINNET_API = `http://decatur.hopto.org:12400/v3/`
-const TESTNET_API = `http://testnet.bchjs.cash/v3/`
-// const TESTNET_API = `http://decatur.hopto.org:13400/v3/`
+const MAINNET_API = `https://api.bchjs.cash/v3/`
+const TESTNET_API = `http://tapi.bchjs.cash/v3/`
 
 //bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -53,7 +51,7 @@ async function getBalance() {
     const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // first get BCH balance
-    const balance = await bchjs.Blockbook.Address.details(cashAddress)
+    const balance = await bchjs.Blockbook.balance(cashAddress)
 
     console.log(`BCH Balance information for ${slpAddress}:`)
     console.log(balance)
