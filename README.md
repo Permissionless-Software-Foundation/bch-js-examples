@@ -33,7 +33,7 @@ a BCH wallet for use with the other examples. Recommended path:
 
 1. [Create a wallet](applications/wallet/create-wallet/create-wallet.js)
 2. Fund it. Examples target mainnet by default ([additional instructions](applications/wallet)).
-If targeting testnet, fund it with the testnet faucet (https://developer.bitcoin.com/faucets/bch).
+If targeting testnet, fund it with the [testnet faucet](https://developer.bitcoin.com/faucets/bch).
 Otherwise fund with your own BCH to test the wallet on mainnet.
 3. [Check the balance](applications/wallet/check-balance/check-balance.js)
 4. [Send some BCH](applications/wallet/send-bch/send-bch.js)
