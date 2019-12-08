@@ -14,7 +14,7 @@ const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
 const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://testnet.bchjs.cash/v3/`
+const TESTNET_API = `http://tapi.bchjs.cash/v3/`
 
 //bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
