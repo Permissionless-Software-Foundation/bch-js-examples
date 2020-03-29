@@ -1,7 +1,7 @@
 {
   "name": "bch-js-examples",
   "version": "1.0.0",
-  "description": "Examples for working with bch-js to work with the BCH blockchain",
+  "description": "Examples for working with bch-js from FullStack.cash",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@chris.troutner/bch-js": "^2.1.0"
+    "@chris.troutner/bch-js": "^2.3.10"
   }
 }
