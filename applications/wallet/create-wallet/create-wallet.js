@@ -1,14 +1,14 @@
 /*
   Create an HDNode wallet using bch-js. The mnemonic from this wallet
-  will be used in future examples.
+  will be used by later examples.
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = `testnet`
 
 // REST API servers.
-const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = `https://api.fullstack.cash/v3/`
+const TESTNET_API = `https://tapi.fullstack.cash/v3/`
 
 //bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
