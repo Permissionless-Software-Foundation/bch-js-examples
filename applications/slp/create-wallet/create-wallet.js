@@ -4,25 +4,25 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = `https://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'https://api.bchjs.cash/v3/'
+const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
-const fs = require("fs")
+const fs = require('fs')
 
-async function createWallet() {
-  const lang = "english"
-  let outStr = ""
+async function createWallet () {
+  const lang = 'english'
+  let outStr = ''
   const outObj = {}
 
   // create 128 bit BIP39 mnemonic
@@ -30,8 +30,8 @@ async function createWallet() {
     128,
     bchjs.Mnemonic.wordLists()[lang]
   )
-  console.log("BIP44 $BCH Wallet")
-  outStr += "BIP44 $BCH Wallet\n"
+  console.log('BIP44 $BCH Wallet')
+  outStr += 'BIP44 $BCH Wallet\n'
   console.log(`128 bit ${lang} BIP39 Mnemonic: `, mnemonic)
   outStr += `\n128 bit ${lang} BIP32 Mnemonic:\n${mnemonic}\n\n`
   outObj.mnemonic = mnemonic
@@ -41,13 +41,13 @@ async function createWallet() {
 
   // master HDNode
   let masterHDNode
-  if (NETWORK === `mainnet`) masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")
-  console.log(`BIP44 Account: "m/44'/245'/0'"`)
-  outStr += `BIP44 Account: "m/44'/245'/0'"\n`
+  console.log('BIP44 Account: "m/44\'/245\'/0\'"')
+  outStr += 'BIP44 Account: "m/44\'/245\'/0\'"\n'
 
   for (let i = 0; i < 10; i++) {
     const childNode = masterHDNode.derivePath(`m/44'/245'/0'/0/${i}`)
@@ -64,24 +64,24 @@ async function createWallet() {
   }
 
   // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, "0/0")
+  const change = bchjs.HDNode.derivePath(account, '0/0')
 
   // get the cash address
   bchjs.HDNode.toCashAddress(change)
 
   // Get the legacy address.
 
-  outStr += `\n\n\n`
-  fs.writeFile("wallet-info.txt", outStr, function(err) {
+  outStr += '\n\n\n'
+  fs.writeFile('wallet-info.txt', outStr, function (err) {
     if (err) return console.error(err)
 
-    console.log(`wallet-info.txt written successfully.`)
+    console.log('wallet-info.txt written successfully.')
   })
 
   // Write out the basic information into a json file for other apps to use.
-  fs.writeFile("wallet.json", JSON.stringify(outObj, null, 2), function(err) {
+  fs.writeFile('wallet.json', JSON.stringify(outObj, null, 2), function (err) {
     if (err) return console.error(err)
-    console.log(`wallet.json written successfully.`)
+    console.log('wallet.json written successfully.')
   })
 }
 createWallet()

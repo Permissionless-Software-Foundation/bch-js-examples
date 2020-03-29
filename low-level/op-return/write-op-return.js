@@ -5,16 +5,16 @@
 
 // You can generate a WIF (private key) and public address using the
 // 'get-key' command of slp-cli-wallet.
-const WIF = `L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e`
-const ADDR = `bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa`
+const WIF = 'L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e'
+const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
 
 // Customize the message you want to send
-const MESSAGE = `BURN abcdef`
+const MESSAGE = 'BURN abcdef'
 
 const BCHJS = require('@chris.troutner/bch-js')
 const bchjs = new BCHJS()
 
-async function writeOpReturn(msg, wif) {
+async function writeOpReturn (msg, wif) {
   try {
     // Create an EC Key Pair from the user-supplied WIF.
     const ecPair = bchjs.ECPair.fromWIF(wif)
@@ -45,7 +45,7 @@ async function writeOpReturn(msg, wif) {
     // Add the OP_RETURN to the transaction.
     const script = [
       bchjs.Script.opcodes.OP_RETURN,
-      Buffer.from("6d02", "hex"), // Makes message comply with the memo.cash protocol.
+      Buffer.from('6d02', 'hex'), // Makes message comply with the memo.cash protocol.
       Buffer.from(`${msg}`)
     ]
 
@@ -75,24 +75,23 @@ async function writeOpReturn(msg, wif) {
 
     // output rawhex
     const hex = tx.toHex()
-    //console.log(`TX hex: ${hex}`);
-    //console.log(` `);
+    // console.log(`TX hex: ${hex}`);
+    // console.log(` `);
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction(hex)
     console.log(`Transaction ID: ${txidStr}`)
     console.log(`https://memo.cash/post/${txidStr}`)
     console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
-  } catch(err) {
-    console.log(`Error in writeOpReturn(): `, err)
+  } catch (err) {
+    console.log('Error in writeOpReturn(): ', err)
   }
 }
 writeOpReturn(MESSAGE, WIF)
 
-
 // Returns the utxo with the biggest balance from an array of utxos.
-async function findBiggestUtxo(utxos) {
-  if (!Array.isArray(utxos)) throw new Error(`utxos needs to be an array`)
+async function findBiggestUtxo (utxos) {
+  if (!Array.isArray(utxos)) throw new Error('utxos needs to be an array')
 
   let largestAmount = 0
   let largestIndex = 0

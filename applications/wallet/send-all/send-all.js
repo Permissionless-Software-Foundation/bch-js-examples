@@ -3,26 +3,26 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'http://api.bchjs.cash/v3/'
+const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 // Open the wallet generated with create-wallet.
 try {
-  var walletInfo = require(`../create-wallet/wallet.json`)
+  var walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
@@ -34,12 +34,10 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 // somewhere else.
 const RECV_ADDR = walletInfo.cashAddress
 
-async function sendAll() {
+async function sendAll () {
   try {
     // instance of transaction builder
-    if (NETWORK === `mainnet`)
-      var transactionBuilder = new bchjs.TransactionBuilder()
-    else var transactionBuilder = new bchjs.TransactionBuilder("testnet")
+    if (NETWORK === 'mainnet') { var transactionBuilder = new bchjs.TransactionBuilder() } else var transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     let sendAmount = 0
     const inputs = []
@@ -72,7 +70,7 @@ async function sendAll() {
     // Exit if the transaction costs too much to send.
     if (sendAmount - txFee < 0) {
       console.log(
-        `Transaction fee costs more combined UTXOs. Can't send transaction.`
+        'Transaction fee costs more combined UTXOs. Can\'t send transaction.'
       )
       return
     }
@@ -102,36 +100,36 @@ async function sendAll() {
     const tx = transactionBuilder.build()
     // output rawhex
     const hex = tx.toHex()
-    //console.log(`TX hex: ${hex}`)
-    console.log(` `)
+    // console.log(`TX hex: ${hex}`)
+    console.log(' ')
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex])
-    const util = require("../util.js")
+    const util = require('../util.js')
     console.log(`Transaction ID: ${txid}`)
-    console.log(`Check the status of your transaction on this block explorer:`)
+    console.log('Check the status of your transaction on this block explorer:')
     util.transactionStatus(txid, NETWORK)
   } catch (err) {
-    console.log(`error: `, err)
+    console.log('error: ', err)
   }
 }
 sendAll()
 
 // Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic(mnemonic) {
+async function changeAddrFromMnemonic (mnemonic) {
   // root seed buffer
   const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
   // master HDNode
   let masterHDNode
-  if (NETWORK === `mainnet`) masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet")
+  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 
   // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, "0/0")
+  const change = bchjs.HDNode.derivePath(account, '0/0')
 
   return change
 }

@@ -5,31 +5,31 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
 // Replace the address below with the address you want to send the BCH to.
-const RECV_ADDR = ``
-//set satoshi amount to send
+const RECV_ADDR = ''
+// set satoshi amount to send
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
-const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'http://api.bchjs.cash/v3/'
+const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 // Open the wallet generated with create-wallet.
 try {
-  var walletInfo = require(`../create-wallet/wallet.json`)
+  var walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
@@ -37,10 +37,10 @@ try {
 const SEND_ADDR = walletInfo.cashAddress
 const SEND_WIF = walletInfo.WIF
 
-async function sendBch() {
+async function sendBch () {
   try {
     // Send the money back to yourself if the users hasn't specified a destination.
-    if (RECV_ADDR === "") RECV_ADDR = SEND_ADDR
+    if (RECV_ADDR === '') RECV_ADDR = SEND_ADDR
 
     // Get the balance of the sending address.
     const balance = await getBCHBalance(SEND_ADDR, false)
@@ -49,7 +49,7 @@ async function sendBch() {
 
     // Exit if the balance is zero.
     if (balance <= 0.0) {
-      console.log(`Balance of sending address is zero. Exiting.`)
+      console.log('Balance of sending address is zero. Exiting.')
       process.exit(0)
     }
 
@@ -62,17 +62,14 @@ async function sendBch() {
     console.log(`Balance of recieving address ${RECV_ADDR} is ${balance2} BCH.`)
 
     const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
-    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    // changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
 
-
-    //console.log(`u: ${JSON.stringify(u, null, 2)}`)
+    // console.log(`u: ${JSON.stringify(u, null, 2)}`)
     const utxo = findBiggestUtxo(u.utxos)
     console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
     // instance of transaction builder
-    if (NETWORK === `mainnet`)
-      var transactionBuilder = new bchjs.TransactionBuilder()
-    else var transactionBuilder = new bchjs.TransactionBuilder("testnet")
+    if (NETWORK === 'mainnet') { var transactionBuilder = new bchjs.TransactionBuilder() } else var transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     const satoshisToSend = SATOSHIS_TO_SEND
     const originalAmount = utxo.satoshis
@@ -114,23 +111,23 @@ async function sendBch() {
     // output rawhex
     const hex = tx.toHex()
     console.log(`TX hex: ${hex}`)
-    console.log(` `)
+    console.log(' ')
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
-    //import from util.js file
-    const util = require("../util.js")
+    // import from util.js file
+    const util = require('../util.js')
     console.log(`Transaction ID: ${txidStr}`)
-    console.log(`Check the status of your transaction on this block explorer:`)
+    console.log('Check the status of your transaction on this block explorer:')
     util.transactionStatus(txidStr, NETWORK)
   } catch (err) {
-    console.log(`error: `, err)
+    console.log('error: ', err)
   }
 }
 sendBch()
 
 // Get the balance in BCH of a BCH address.
-async function getBCHBalance(addr, verbose) {
+async function getBCHBalance (addr, verbose) {
   try {
     const result = await bchjs.Blockbook.balance(addr)
 
@@ -141,14 +138,14 @@ async function getBCHBalance(addr, verbose) {
 
     return bchBalance
   } catch (err) {
-    console.error(`Error in getBCHBalance: `, err)
+    console.error('Error in getBCHBalance: ', err)
     console.log(`addr: ${addr}`)
     throw err
   }
 }
 
 // Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo(utxos) {
+function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 

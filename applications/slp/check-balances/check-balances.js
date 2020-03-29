@@ -4,32 +4,32 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = `https://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'https://api.bchjs.cash/v3/'
+const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
 try {
-  walletInfo = require(`../create-wallet/wallet.json`)
+  walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
 
-async function getBalance() {
+async function getBalance () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -38,13 +38,13 @@ async function getBalance() {
 
     // master HDNode
     let masterHDNode
-    if (NETWORK === `mainnet`) masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+    if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
 
     // HDNode of BIP44 account
     const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")
 
-    const change = bchjs.HDNode.derivePath(account, "0/0")
+    const change = bchjs.HDNode.derivePath(account, '0/0')
 
     // get the cash address
     const cashAddress = bchjs.HDNode.toCashAddress(change)
@@ -55,7 +55,7 @@ async function getBalance() {
 
     console.log(`BCH Balance information for ${slpAddress}:`)
     console.log(balance)
-    console.log(`SLP Token information:`)
+    console.log('SLP Token information:')
 
     // get token balances
     try {
@@ -63,11 +63,11 @@ async function getBalance() {
 
       console.log(JSON.stringify(tokens, null, 2))
     } catch (error) {
-      if (error.message === "Address not found") console.log(`No tokens found.`)
-      else console.log(`Error: `, error)
+      if (error.message === 'Address not found') console.log('No tokens found.')
+      else console.log('Error: ', error)
     }
   } catch (err) {
-    console.error(`Error in getBalance: `, err)
+    console.error('Error in getBalance: ', err)
     console.log(`Error message: ${err.message}`)
     throw err
   }
