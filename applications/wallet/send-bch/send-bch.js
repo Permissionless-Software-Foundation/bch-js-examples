@@ -10,8 +10,8 @@ let RECV_ADDR = "";
 const SATOSHIS_TO_SEND = 1000;
 
 // REST API servers.
-const MAINNET_API = "http://api.fullstack.cash/v3/";
-const TESTNET_API = "http://tapi.fullstack.cash/v3/";
+const MAINNET_API = "https://api.fullstack.cash/v3/";
+const TESTNET_API = "https://tapi.fullstack.cash/v3/";
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require("@chris.troutner/bch-js");

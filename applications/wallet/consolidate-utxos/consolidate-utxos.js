@@ -3,11 +3,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = 'http://api.bchjs.cash/v3/'
-const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
+const MAINNET_API = 'http://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -38,12 +38,11 @@ async function consolidateDust () {
     let sendAmount = 0
     const inputs = []
 
-    const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
-    // changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    const utxos = await bchjs.Blockbook.utxo(SEND_ADDR)
 
     // Loop through each UTXO assigned to this address.
-    for (let i = 0; i < u.utxos.length; i++) {
-      const thisUtxo = u.utxos[i]
+    for (let i = 0; i < utxos.length; i++) {
+      const thisUtxo = utxos[i]
 
       inputs.push(thisUtxo)
 

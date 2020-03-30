@@ -3,11 +3,15 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
+
+// Edit this variable to direct where the BCH should be sent. By default, it
+// will be sent to the address in the wallet.
+let RECV_ADDR = ''
 
 // REST API servers.
-const MAINNET_API = 'http://api.bchjs.cash/v3/'
-const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
+const MAINNET_API = 'http://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -32,7 +36,8 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 
 // Send the money back to the same address. Edit this if you want to send it
 // somewhere else.
-const RECV_ADDR = walletInfo.cashAddress
+if(RECV_ADDR !== '')
+  RECV_ADDR = walletInfo.cashAddress
 
 async function sendAll () {
   try {
