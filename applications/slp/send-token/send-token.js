@@ -5,15 +5,15 @@
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1
 const TOKENID =
-  '497291b8a1dfe69c8daea50677a3d31a5ef0e9484d8bebb610dac64bbc202fb7'
-const TO_SLPADDR = 'simpleledger:qrhgjdlcxaxmcs85fy39lvlfrft5rwce05c4yjdknn'
+  '682d6fd95e7a7612af49823bc44b3e396eb18f47a47926cb27984f342958f37e'
+let TO_SLPADDR = ''
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.bchjs.cash/v3/'
-const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
+const MAINNET_API = 'https://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -126,6 +126,11 @@ async function sendToken () {
 
     // Add OP_RETURN as first output.
     transactionBuilder.addOutput(slpData, 0)
+
+    // Send the token back to the same wallet if the user hasn't specified a
+    // different address.
+    if(TO_SLPADDR === '')
+      TO_SLPADDR = walletInfo.slpAddress
 
     // Send dust transaction representing tokens being sent.
     transactionBuilder.addOutput(

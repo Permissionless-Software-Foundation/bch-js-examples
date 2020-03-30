@@ -136,7 +136,7 @@ async function createToken () {
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log(`Transaction ID: ${txidStr}`)
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in createToken: ', err)
   }
