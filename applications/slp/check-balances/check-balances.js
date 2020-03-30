@@ -4,11 +4,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.bchjs.cash/v3/'
-const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
+const MAINNET_API = 'https://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')

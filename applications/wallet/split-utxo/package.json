@@ -1,0 +1,12 @@
+{
+  "name": "split-utxo",
+  "version": "1.0.0",
+  "description": "Split the largest UTXO into 5 smaller utxos",
+  "main": "split-utxo.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node split-utxo.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

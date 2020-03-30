@@ -4,11 +4,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.bchjs.cash/v3/'
-const TESTNET_API = 'http://tapi.bchjs.cash/v3/'
+const MAINNET_API = 'https://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -51,7 +51,7 @@ async function createToken () {
 
     // Get a UTXO to pay for the transaction.
     const utxos = await bchjs.Blockbook.utxo(cashAddress)
-    // console.log(`u: ${JSON.stringify(u, null, 2)}`)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
     if (utxos.length === 0) { throw new Error('No UTXOs to pay for transaction! Exiting.') }
 
@@ -84,9 +84,9 @@ async function createToken () {
     const configObj = {
       name: 'SLP Test Token',
       ticker: 'SLPTEST',
-      documentUrl: 'https://bchjs.cash',
+      documentUrl: 'https://FullStack.cash',
       decimals: 8,
-      initialQty: 10
+      initialQty: 100
     }
 
     // Generate the OP_RETURN entry for an SLP GENESIS transaction.

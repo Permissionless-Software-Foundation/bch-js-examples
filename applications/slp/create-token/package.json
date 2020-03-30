@@ -7,18 +7,9 @@
     "test": "echo no tests yet",
     "start": "node create-token.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Bitcoin-com/slp-sdk.git"
-  },
-  "keywords": [
-    "slp-sdk",
-    "example"
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>"
   ],
-  "author": "Gabriel Cardona <gabriel@bitcoin.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Bitcoin-com/slp-sdk/issues"
-  },
-  "homepage": "https://github.com/Bitcoin-com/slp-sdk#readme"
+  "license": "MIT"
 }
