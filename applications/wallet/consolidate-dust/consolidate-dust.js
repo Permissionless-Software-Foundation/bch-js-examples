@@ -4,26 +4,26 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = `http://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'http://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 // Open the wallet generated with create-wallet.
 try {
-  var walletInfo = require(`../create-wallet/wallet.json`)
+  var walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
@@ -31,23 +31,20 @@ try {
 const SEND_ADDR = walletInfo.cashAddress
 const SEND_MNEMONIC = walletInfo.mnemonic
 
-async function consolidateDust() {
+async function consolidateDust () {
   try {
     // instance of transaction builder
-    if (NETWORK === `mainnet`)
-      var transactionBuilder = new bchjs.TransactionBuilder()
-    else var transactionBuilder = new bchjs.TransactionBuilder("testnet")
+    if (NETWORK === 'mainnet') { var transactionBuilder = new bchjs.TransactionBuilder() } else var transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     const dust = 546
     let sendAmount = 0
     const inputs = []
 
-    const u = await bchjs.Insight.Address.utxo(SEND_ADDR)
-    //changed from const u = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    const utxos = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
 
     // Loop through each UTXO assigned to this address.
-    for (let i = 0; i < u.utxos.length; i++) {
-      const thisUtxo = u.utxos[i]
+    for (let i = 0; i < utxos.length; i++) {
+      const thisUtxo = utxos[i]
 
       // If the UTXO is dust...
       if (thisUtxo.satoshis <= dust) {
@@ -61,7 +58,7 @@ async function consolidateDust() {
     }
 
     if (inputs.length === 0) {
-      console.log(`No dust found in the wallet address.`)
+      console.log('No dust found in the wallet address.')
       return
     }
 
@@ -79,7 +76,7 @@ async function consolidateDust() {
     // Exit if the transaction costs too much to send.
     if (sendAmount - txFee < 0) {
       console.log(
-        `Transaction fee costs more combined dust. Can't send transaction.`
+        'Transaction fee costs more combined dust. Can\'t send transaction.'
       )
       return
     }
@@ -110,34 +107,34 @@ async function consolidateDust() {
     // output rawhex
     const hex = tx.toHex()
     console.log(`TX hex: ${hex}`)
-    console.log(` `)
+    console.log(' ')
 
     // Broadcast transation to the network
     const broadcast = await bchjs.RawTransactions.sendRawTransaction([hex])
-    //import from util.js file
-    const util = require("../util.js")
+    // import from util.js file
+    const util = require('../util.js')
     console.log(`Transaction ID: ${broadcast}`)
-    console.log(`Check the status of your transaction on this block explorer:`)
+    console.log('Check the status of your transaction on this block explorer:')
     util.transactionStatus(broadcast, NETWORK)
   } catch (err) {
-    console.log(`error: `, err)
+    console.log('error: ', err)
   }
 }
 consolidateDust()
 
 // Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic(mnemonic) {
+async function changeAddrFromMnemonic (mnemonic) {
   // root seed buffer
   const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
   // master HDNode
-  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet")
+  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 
   // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, "0/0")
+  const change = bchjs.HDNode.derivePath(account, '0/0')
 
   return change
 }

@@ -4,37 +4,35 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  "023cd3e95a3947058b994fd15a9a4c47937a9d9b6e0c0b1b5898d2ce84f354e4"
+  '023cd3e95a3947058b994fd15a9a4c47937a9d9b6e0c0b1b5898d2ce84f354e4'
 const TOKENQTY = 100
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const SLPSDK = require('@chris.troutner/bch-js')
 
 // Used for debugging and investigating JS objects.
-const util = require("util")
+const util = require('util')
 util.inspect.defaultOptions = { depth: 1 }
 
 // Instantiate SLP based on the network.
 let SLP
-if (NETWORK === `mainnet`)
-  SLP = new SLPSDK({ restURL: `https://rest.bitcoin.com/v2/` })
-else SLP = new SLPSDK({ restURL: `https://trest.bitcoin.com/v2/` })
+if (NETWORK === 'mainnet') { SLP = new SLPSDK({ restURL: 'https://rest.bitcoin.com/v2/' }) } else SLP = new SLPSDK({ restURL: 'https://trest.bitcoin.com/v2/' })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
 try {
-  walletInfo = require(`../create-wallet/wallet.json`)
+  walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
 
-async function mintToken() {
+async function mintToken () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -42,13 +40,13 @@ async function mintToken() {
     const rootSeed = SLP.Mnemonic.toSeed(mnemonic)
     // master HDNode
     let masterHDNode
-    if (NETWORK === `mainnet`) masterHDNode = SLP.HDNode.fromSeed(rootSeed)
-    else masterHDNode = SLP.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+    if (NETWORK === 'mainnet') masterHDNode = SLP.HDNode.fromSeed(rootSeed)
+    else masterHDNode = SLP.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
 
     // HDNode of BIP44 account
     const account = SLP.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 
-    const change = SLP.HDNode.derivePath(account, "0/0")
+    const change = SLP.HDNode.derivePath(account, '0/0')
 
     // get the cash address
     const cashAddress = SLP.HDNode.toCashAddress(change)
@@ -61,9 +59,9 @@ async function mintToken() {
     const bchChangeReceiverAddress = cashAddress
 
     // Exit if user did not update the TOKENID.
-    if (!TOKENID || TOKENID === "") {
+    if (!TOKENID || TOKENID === '') {
       console.log(
-        `TOKENID value is empty. Update the code with the TOKENID of your token.`
+        'TOKENID value is empty. Update the code with the TOKENID of your token.'
       )
       return
     }
@@ -85,12 +83,10 @@ async function mintToken() {
 
     console.log(`mintTxId: ${util.inspect(mintTxId)}`)
 
-    console.log(`\nView this transaction on the block explorer:`)
-    if (NETWORK === `mainnet`)
-      console.log(`https://explorer.bitcoin.com/bch/tx/${mintTxId}`)
-    else console.log(`https://explorer.bitcoin.com/tbch/tx/${mintTxId}`)
+    console.log('\nView this transaction on the block explorer:')
+    if (NETWORK === 'mainnet') { console.log(`https://explorer.bitcoin.com/bch/tx/${mintTxId}`) } else console.log(`https://explorer.bitcoin.com/tbch/tx/${mintTxId}`)
   } catch (err) {
-    console.error(`Error in mintToken: `, err)
+    console.error('Error in mintToken: ', err)
     console.log(`Error message: ${err.message}`)
     throw err
   }

@@ -1,13 +1,10 @@
 /*
-  Send 1000 satoshis to RECV_ADDR.
+  Split the largest UTXO held by the wallet into 5 equally sized UTXOs.
+  Useful for avoiding slow indexers and utxo-chain limits.
 */
 
 // Set NETWORK to either testnet or mainnet
 const NETWORK = "testnet";
-// Replace the address below with the address you want to send the BCH to.
-let RECV_ADDR = "";
-// set satoshi amount to send
-const SATOSHIS_TO_SEND = 1000;
 
 // REST API servers.
 const MAINNET_API = "https://api.fullstack.cash/v3/";
@@ -38,8 +35,6 @@ async function sendBch() {
   try {
     // Get the balance of the sending address.
     const balance = await getBCHBalance(SEND_ADDR, false);
-    console.log(`balance: ${JSON.stringify(balance, null, 2)}`);
-    console.log(`Balance of sending address ${SEND_ADDR} is ${balance} BCH.`);
 
     // Exit if the balance is zero.
     if (balance <= 0.0) {
@@ -47,15 +42,12 @@ async function sendBch() {
       process.exit(0);
     }
 
-    // If the user fails to specify a reciever address, just send the BCH back
-    // to the origination address, so the example doesn't fail.
-    if (RECV_ADDR === "") RECV_ADDR = SEND_ADDR;
+    // Send the BCH back to the same wallet address.
+    const RECV_ADDR = SEND_ADDR;
 
     // Convert to a legacy address (needed to build transactions).
     const SEND_ADDR_LEGACY = bchjs.Address.toLegacyAddress(SEND_ADDR);
     const RECV_ADDR_LEGACY = bchjs.Address.toLegacyAddress(RECV_ADDR);
-    console.log(`Sender Legacy Address: ${SEND_ADDR_LEGACY}`);
-    console.log(`Receiver Legacy Address: ${RECV_ADDR_LEGACY}`);
 
     // Get UTXOs held by the address.
     // https://developer.bitcoin.com/mastering-bitcoin-cash/4-transactions/
@@ -75,7 +67,6 @@ async function sendBch() {
     } else transactionBuilder = new bchjs.TransactionBuilder("testnet");
 
     // Essential variables of a transaction.
-    const satoshisToSend = SATOSHIS_TO_SEND;
     const originalAmount = utxo.satoshis;
     const vout = utxo.vout;
     const txid = utxo.txid;
@@ -86,22 +77,22 @@ async function sendBch() {
     // get byte count to calculate fee. paying 1.2 sat/byte
     const byteCount = bchjs.BitcoinCash.getByteCount(
       { P2PKH: 1 },
-      { P2PKH: 2 }
+      { P2PKH: 5 }
     );
     console.log(`Transaction byte count: ${byteCount}`);
     const satoshisPerByte = 1.2;
     const txFee = Math.floor(satoshisPerByte * byteCount);
     console.log(`Transaction fee: ${txFee}`);
 
-    // amount to send back to the sending address.
-    // It's the original amount - 1 sat/byte for tx size
-    const remainder = originalAmount - satoshisToSend - txFee;
+    // Calculate the amount to put into each new UTXO.
+    const satoshisToSend = Math.floor((originalAmount - txFee) / 5);
 
-    if(remainder < 0) throw new Error(`Not enough BCH to complete transaction!`)
+    if(satoshisToSend < 546) throw new Error(`Not enough BCH to complete transaction!`)
 
-    // add output w/ address and amount to send
-    transactionBuilder.addOutput(RECV_ADDR, satoshisToSend);
-    transactionBuilder.addOutput(SEND_ADDR, remainder);
+    // add outputs w/ address and amount to send
+    for(let i=0; i < 5; i++) {
+      transactionBuilder.addOutput(RECV_ADDR, satoshisToSend);
+    }
 
     // Generate a change address from a Mnemonic of a private key.
     const change = await changeAddrFromMnemonic(SEND_MNEMONIC);
@@ -128,6 +119,7 @@ async function sendBch() {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex]);
+
     // import from util.js file
     const util = require("../util.js");
     console.log(`Transaction ID: ${txidStr}`);

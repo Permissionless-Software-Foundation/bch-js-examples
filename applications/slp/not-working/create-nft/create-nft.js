@@ -3,29 +3,27 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'mainnet'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const SLPSDK = require('@chris.troutner/bch-js')
 
 // Instantiate SLP based on the network.
 let SLP
-if (NETWORK === `mainnet`)
-  SLP = new SLPSDK({ restURL: `https://rest.bitcoin.com/v2/` })
-else SLP = new SLPSDK({ restURL: `https://trest.bitcoin.com/v2/` })
+if (NETWORK === 'mainnet') { SLP = new SLPSDK({ restURL: 'https://rest.bitcoin.com/v2/' }) } else SLP = new SLPSDK({ restURL: 'https://trest.bitcoin.com/v2/' })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
 try {
-  walletInfo = require(`../create-wallet/wallet.json`)
+  walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
 
-async function createNFT() {
+async function createNFT () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -33,13 +31,13 @@ async function createNFT() {
     const rootSeed = SLP.Mnemonic.toSeed(mnemonic)
     // master HDNode
     let masterHDNode
-    if (NETWORK === `mainnet`) masterHDNode = SLP.HDNode.fromSeed(rootSeed)
-    else masterHDNode = SLP.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+    if (NETWORK === 'mainnet') masterHDNode = SLP.HDNode.fromSeed(rootSeed)
+    else masterHDNode = SLP.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
 
     // HDNode of BIP44 account
     const account = SLP.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
 
-    const change = SLP.HDNode.derivePath(account, "0/0")
+    const change = SLP.HDNode.derivePath(account, '0/0')
 
     // get the SLP address
     const slpAddress = SLP.HDNode.toSLPAddress(change)
@@ -51,11 +49,11 @@ async function createNFT() {
     const bchChangeReceiverAddress = SLP.HDNode.toCashAddress(change)
 
     const decimals = 0
-    const name = "Non Fungible Token"
-    const symbol = "NFT"
-    const documentUri = "documentUri"
+    const name = 'Non Fungible Token'
+    const symbol = 'NFT'
+    const documentUri = 'documentUri'
     const documentHash =
-      "1010101010101010101010101010101010101010101010101010101010101010"
+      '1010101010101010101010101010101010101010101010101010101010101010'
     const initialTokenQty = 1
 
     const genesisTxId = await SLP.TokenType1.create({
@@ -73,15 +71,13 @@ async function createNFT() {
     })
     console.log(`genesisTxID: ${genesisTxId}`)
     console.log(
-      `The genesis TxID above is used to uniquely identify your new class of SLP token. Save it and keep it handy.`
+      'The genesis TxID above is used to uniquely identify your new class of SLP token. Save it and keep it handy.'
     )
-    console.log(` `)
-    console.log(`View this transaction on the block explorer:`)
-    if (NETWORK === `mainnet`)
-      console.log(`https://explorer.bitcoin.com/bch/tx/${genesisTxId}`)
-    else console.log(`https://explorer.bitcoin.com/tbch/tx/${genesisTxId}`)
+    console.log(' ')
+    console.log('View this transaction on the block explorer:')
+    if (NETWORK === 'mainnet') { console.log(`https://explorer.bitcoin.com/bch/tx/${genesisTxId}`) } else console.log(`https://explorer.bitcoin.com/tbch/tx/${genesisTxId}`)
   } catch (err) {
-    console.error(`Error in createNFT: `, err)
+    console.error('Error in createNFT: ', err)
     console.log(`Error message: ${err.message}`)
     throw err
   }

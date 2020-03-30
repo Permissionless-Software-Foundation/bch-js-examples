@@ -5,37 +5,37 @@
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1
 const TOKENID =
-  "497291b8a1dfe69c8daea50677a3d31a5ef0e9484d8bebb610dac64bbc202fb7"
-const TO_SLPADDR = "simpleledger:qrhgjdlcxaxmcs85fy39lvlfrft5rwce05c4yjdknn"
+  '682d6fd95e7a7612af49823bc44b3e396eb18f47a47926cb27984f342958f37e'
+let TO_SLPADDR = ''
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = `mainnet`
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = `https://api.bchjs.cash/v3/`
-const TESTNET_API = `http://tapi.bchjs.cash/v3/`
+const MAINNET_API = 'https://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
-//bch-js-examples require code from the main bch-js repo
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === `mainnet`) bchjs = new BCHJS({ restURL: MAINNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
 else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
 try {
-  walletInfo = require(`../create-wallet/wallet.json`)
+  walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
-    `Could not open wallet.json. Generate a wallet with create-wallet first.`
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
   )
   process.exit(0)
 }
 // console.log(`walletInfo: ${JSON.stringify(walletInfo, null, 2)}`)
 
-async function sendToken() {
+async function sendToken () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -43,12 +43,12 @@ async function sendToken() {
     const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
     // master HDNode
     let masterHDNode
-    if (NETWORK === `mainnet`) masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet") // Testnet
+    if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
 
     // HDNode of BIP44 account
     const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")
-    const change = bchjs.HDNode.derivePath(account, "0/0")
+    const change = bchjs.HDNode.derivePath(account, '0/0')
 
     // Generate an EC key pair for signing the transaction.
     const keyPair = bchjs.HDNode.toKeyPair(change)
@@ -61,7 +61,7 @@ async function sendToken() {
     const utxos = await bchjs.Blockbook.utxo(cashAddress)
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) throw new Error("No UTXOs to spend! Exiting.")
+    if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
 
     // Identify the SLP token UTXOs.
     let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
@@ -74,8 +74,7 @@ async function sendToken() {
     })
     // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`)
 
-    if (bchUtxos.length === 0)
-      throw new Error(`Wallet does not have a BCH UTXO to pay miner fees.`)
+    if (bchUtxos.length === 0) { throw new Error('Wallet does not have a BCH UTXO to pay miner fees.') }
 
     // Filter out the token UTXOs that match the user-provided token ID.
     tokenUtxos = tokenUtxos.filter((utxo, index) => {
@@ -99,17 +98,14 @@ async function sendToken() {
 
     // instance of transaction builder
     let transactionBuilder
-    if (NETWORK === `mainnet`)
-      transactionBuilder = new bchjs.TransactionBuilder()
-    else transactionBuilder = new bchjs.TransactionBuilder("testnet")
+    if (NETWORK === 'mainnet') { transactionBuilder = new bchjs.TransactionBuilder() } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     // Add the BCH UTXO as input to pay for the transaction.
     const originalAmount = bchUtxo.satoshis
     transactionBuilder.addInput(bchUtxo.txid, bchUtxo.vout)
 
     // add each token UTXO as an input.
-    for (let i = 0; i < tokenUtxos.length; i++)
-      transactionBuilder.addInput(tokenUtxos[i].txid, tokenUtxos[i].vout)
+    for (let i = 0; i < tokenUtxos.length; i++) { transactionBuilder.addInput(tokenUtxos[i].txid, tokenUtxos[i].vout) }
 
     // get byte count to calculate fee. paying 1 sat
     // Note: This may not be totally accurate. Just guessing on the byteCount size.
@@ -125,12 +121,16 @@ async function sendToken() {
 
     // amount to send back to the sending address. It's the original amount - 1 sat/byte for tx size
     const remainder = originalAmount - txFee - 546 * 2
-    if (remainder < 1)
-      throw new Error(`Selected UTXO does not have enough satoshis`)
-    //console.log(`remainder: ${remainder}`)
+    if (remainder < 1) { throw new Error('Selected UTXO does not have enough satoshis') }
+    // console.log(`remainder: ${remainder}`)
 
     // Add OP_RETURN as first output.
     transactionBuilder.addOutput(slpData, 0)
+
+    // Send the token back to the same wallet if the user hasn't specified a
+    // different address.
+    if(TO_SLPADDR === '')
+      TO_SLPADDR = walletInfo.slpAddress
 
     // Send dust transaction representing tokens being sent.
     transactionBuilder.addOutput(
@@ -188,19 +188,17 @@ async function sendToken() {
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log(`Transaction ID: ${txidStr}`)
 
-    console.log(`Check the status of your transaction on this block explorer:`)
-    if (NETWORK === "testnet")
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
-    else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log('Check the status of your transaction on this block explorer:')
+    if (NETWORK === 'testnet') { console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`) } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
-    console.error(`Error in sendToken: `, err)
+    console.error('Error in sendToken: ', err)
     console.log(`Error message: ${err.message}`)
   }
 }
 sendToken()
 
 // Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo(utxos) {
+function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
