@@ -4,11 +4,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API = 'https://mainnet.bchjs.cash/v3/'
-const TESTNET_API = 'http://testnet.bchjs.cash/v3/'
+const MAINNET_API = 'https://api.fullstack.cash/v3/'
+const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
 
 const BCHJS = require('@chris.troutner/bch-js')
 
