@@ -59,13 +59,13 @@ async function sendBch() {
 
     // Get UTXOs held by the address.
     // https://developer.bitcoin.com/mastering-bitcoin-cash/4-transactions/
-    const utxos = await bchjs.Blockbook.utxo(SEND_ADDR);
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    const utxos = await bchjs.Electrumx.utxo(SEND_ADDR);
+    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
 
-    if (utxos.length === 0) throw new Error(`No UTXOs found.`);
+    if (utxos.utxos.length === 0) throw new Error(`No UTXOs found.`);
 
     // console.log(`u: ${JSON.stringify(u, null, 2)}`
-    const utxo = await findBiggestUtxo(utxos);
+    const utxo = await findBiggestUtxo(utxos.utxos);
     console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`);
 
     // instance of transaction builder
@@ -76,9 +76,9 @@ async function sendBch() {
 
     // Essential variables of a transaction.
     const satoshisToSend = SATOSHIS_TO_SEND;
-    const originalAmount = utxo.satoshis;
-    const vout = utxo.vout;
-    const txid = utxo.txid;
+    const originalAmount = utxo.value;
+    const vout = utxo.tx_pos;
+    const txid = utxo.tx_hash;
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout);
@@ -97,7 +97,8 @@ async function sendBch() {
     // It's the original amount - 1 sat/byte for tx size
     const remainder = originalAmount - satoshisToSend - txFee;
 
-    if(remainder < 0) throw new Error(`Not enough BCH to complete transaction!`)
+    if (remainder < 0)
+      throw new Error(`Not enough BCH to complete transaction!`);
 
     // add output w/ address and amount to send
     transactionBuilder.addOutput(RECV_ADDR, satoshisToSend);
@@ -182,28 +183,39 @@ async function getBCHBalance(addr, verbose) {
 
 // Returns the utxo with the biggest balance from an array of utxos.
 async function findBiggestUtxo(utxos) {
-  let largestAmount = 0;
-  let largestIndex = 0;
+  try {
+    let largestAmount = 0;
+    let largestIndex = 0;
 
-  for (var i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i];
-    // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
+    for (var i = 0; i < utxos.length; i++) {
+      const thisUtxo = utxos[i];
+      // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 
-    // Validate the UTXO data with the full node.
-    const txout = await bchjs.Blockchain.getTxOut(thisUtxo.txid, thisUtxo.vout);
-    if (txout === null) {
-      // If the UTXO has already been spent, the full node will respond with null.
-      console.log(
-        `Stale UTXO found. You may need to wait for the indexer to catch up.`
+      // Validate the UTXO data with the full node.
+      const txout = await bchjs.Blockchain.getTxOut(
+        thisUtxo.tx_hash,
+        thisUtxo.tx_pos,
+        true
       );
-      continue;
+      console.log(`txout: ${JSON.stringify(txout,null,2)}`)
+
+      if (txout === null) {
+        // If the UTXO has already been spent, the full node will respond with null.
+        console.log(
+          `Stale UTXO found. You may need to wait for the indexer to catch up.`
+        );
+        continue;
+      }
+
+      if (thisUtxo.value > largestAmount) {
+        largestAmount = thisUtxo.value;
+        largestIndex = i;
+      }
     }
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis;
-      largestIndex = i;
-    }
+    return utxos[largestIndex];
+  } catch (err) {
+    console.error(`Error in findBiggestUtxo()`)
+    throw err;
   }
-
-  return utxos[largestIndex];
 }

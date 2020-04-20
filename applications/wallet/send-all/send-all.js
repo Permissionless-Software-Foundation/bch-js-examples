@@ -3,138 +3,145 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = "testnet";
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.
-let RECV_ADDR = ''
+let RECV_ADDR = "";
 
 // REST API servers.
-const MAINNET_API = 'http://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API = "http://api.fullstack.cash/v3/";
+const TESTNET_API = "http://tapi.fullstack.cash/v3/";
 
 // bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require("@chris.troutner/bch-js");
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+let bchjs;
+if (NETWORK === "mainnet") bchjs = new BCHJS({ restURL: MAINNET_API });
+else bchjs = new BCHJS({ restURL: TESTNET_API });
 
 // Open the wallet generated with create-wallet.
 try {
-  var walletInfo = require('../create-wallet/wallet.json')
+  var walletInfo = require("../create-wallet/wallet.json");
 } catch (err) {
   console.log(
-    'Could not open wallet.json. Generate a wallet with create-wallet first.'
-  )
-  process.exit(0)
+    "Could not open wallet.json. Generate a wallet with create-wallet first."
+  );
+  process.exit(0);
 }
 
-const SEND_ADDR = walletInfo.cashAddress
-const SEND_MNEMONIC = walletInfo.mnemonic
+const SEND_ADDR = walletInfo.cashAddress;
+const SEND_MNEMONIC = walletInfo.mnemonic;
 
 // Send the money back to the same address. Edit this if you want to send it
 // somewhere else.
-if(RECV_ADDR === '')
-  RECV_ADDR = walletInfo.cashAddress
+if (RECV_ADDR === "") RECV_ADDR = walletInfo.cashAddress;
 
-async function sendAll () {
+async function sendAll() {
   try {
     // instance of transaction builder
-    if (NETWORK === 'mainnet') { var transactionBuilder = new bchjs.TransactionBuilder() } else var transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    if (NETWORK === "mainnet") {
+      var transactionBuilder = new bchjs.TransactionBuilder();
+    } else var transactionBuilder = new bchjs.TransactionBuilder("testnet");
 
-    let sendAmount = 0
-    const inputs = []
+    let sendAmount = 0;
+    const inputs = [];
 
-    const utxos = await bchjs.Blockbook.utxo(SEND_ADDR)
+    let utxos = await bchjs.Electrumx.utxo(SEND_ADDR);
+    utxos = utxos.utxos;
 
     // Loop through each UTXO assigned to this address.
     for (let i = 0; i < utxos.length; i++) {
-      const thisUtxo = utxos[i]
+      const thisUtxo = utxos[i];
 
-      inputs.push(thisUtxo)
+      inputs.push(thisUtxo);
 
-      sendAmount += thisUtxo.satoshis
+      sendAmount += thisUtxo.value;
 
       // ..Add the utxo as an input to the transaction.
-      transactionBuilder.addInput(thisUtxo.txid, thisUtxo.vout)
+      transactionBuilder.addInput(thisUtxo.tx_hash, thisUtxo.tx_pos);
     }
 
     // get byte count to calculate fee. paying 1 sat/byte
     const byteCount = bchjs.BitcoinCash.getByteCount(
       { P2PKH: inputs.length },
       { P2PKH: 1 }
-    )
-    console.log(`byteCount: ${byteCount}`)
+    );
+    console.log(`byteCount: ${byteCount}`);
 
-    const satoshisPerByte = 1.0
-    const txFee = Math.ceil(satoshisPerByte * byteCount)
-    console.log(`txFee: ${txFee}`)
+    const satoshisPerByte = 1.1;
+    const txFee = Math.ceil(satoshisPerByte * byteCount);
+    console.log(`txFee: ${txFee}`);
 
     // Exit if the transaction costs too much to send.
     if (sendAmount - txFee < 0) {
       console.log(
-        'Transaction fee costs more combined UTXOs. Can\'t send transaction.'
-      )
-      return
+        "Transaction fee costs more combined UTXOs. Can't send transaction."
+      );
+      return;
     }
 
     // add output w/ address and amount to send
-    transactionBuilder.addOutput(RECV_ADDR, sendAmount - txFee)
+    transactionBuilder.addOutput(RECV_ADDR, sendAmount - txFee);
 
     // Generate a change address from a Mnemonic of a private key.
-    const change = await changeAddrFromMnemonic(SEND_MNEMONIC)
+    const change = await changeAddrFromMnemonic(SEND_MNEMONIC);
 
     // Generate a keypair from the change address.
-    const keyPair = bchjs.HDNode.toKeyPair(change)
+    const keyPair = bchjs.HDNode.toKeyPair(change);
 
     // sign w/ HDNode
-    let redeemScript
+    let redeemScript;
     inputs.forEach((input, index) => {
       transactionBuilder.sign(
         index,
         keyPair,
         redeemScript,
         transactionBuilder.hashTypes.SIGHASH_ALL,
-        input.satoshis
-      )
-    })
+        input.value
+      );
+    });
 
     // build tx
-    const tx = transactionBuilder.build()
+    const tx = transactionBuilder.build();
     // output rawhex
-    const hex = tx.toHex()
+    const hex = tx.toHex();
     // console.log(`TX hex: ${hex}`)
-    console.log(' ')
+    console.log(" ");
 
     // Broadcast transation to the network
-    const txid = await bchjs.RawTransactions.sendRawTransaction([hex])
-    const util = require('../util.js')
-    console.log(`Transaction ID: ${txid}`)
-    console.log('Check the status of your transaction on this block explorer:')
-    util.transactionStatus(txid, NETWORK)
+    const txid = await bchjs.RawTransactions.sendRawTransaction([hex]);
+    const util = require("../util.js");
+    console.log(`Transaction ID: ${txid}`);
+    console.log("Check the status of your transaction on this block explorer:");
+    util.transactionStatus(txid, NETWORK);
   } catch (err) {
-    console.log('error: ', err)
+    console.log("error: ", err);
   }
 }
-sendAll()
+sendAll();
 
 // Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic (mnemonic) {
-  // root seed buffer
-  const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
+async function changeAddrFromMnemonic(mnemonic) {
+  try {
+    // root seed buffer
+    const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic);
 
-  // master HDNode
-  let masterHDNode
-  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
+    // master HDNode
+    let masterHDNode;
+    if (NETWORK === "mainnet") masterHDNode = bchjs.HDNode.fromSeed(rootSeed);
+    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet");
 
-  // HDNode of BIP44 account
-  const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
+    // HDNode of BIP44 account
+    const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'");
 
-  // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, '0/0')
+    // derive the first external change address HDNode which is going to spend utxo
+    const change = bchjs.HDNode.derivePath(account, "0/0");
 
-  return change
+    return change;
+  } catch (err) {
+    console.error(`Error in changeAddrFromMnemonic()`);
+    throw err;
+  }
 }
