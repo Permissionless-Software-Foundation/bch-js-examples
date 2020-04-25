@@ -60,13 +60,13 @@ async function sendBch() {
     // Get UTXOs held by the address.
     // https://developer.bitcoin.com/mastering-bitcoin-cash/4-transactions/
     const utxos = await bchjs.Electrumx.utxo(SEND_ADDR);
-    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
 
     if (utxos.utxos.length === 0) throw new Error(`No UTXOs found.`);
 
     // console.log(`u: ${JSON.stringify(u, null, 2)}`
     const utxo = await findBiggestUtxo(utxos.utxos);
-    console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`);
+    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`);
 
     // instance of transaction builder
     let transactionBuilder;
@@ -124,7 +124,7 @@ async function sendBch() {
     const tx = transactionBuilder.build();
     // output rawhex
     const hex = tx.toHex();
-    console.log(`TX hex: ${hex}`);
+    // console.log(`TX hex: ${hex}`);
     console.log(" ");
 
     // Broadcast transation to the network
@@ -197,7 +197,7 @@ async function findBiggestUtxo(utxos) {
         thisUtxo.tx_pos,
         true
       );
-      console.log(`txout: ${JSON.stringify(txout,null,2)}`)
+      // console.log(`txout: ${JSON.stringify(txout,null,2)}`)
 
       if (txout === null) {
         // If the UTXO has already been spent, the full node will respond with null.
