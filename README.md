@@ -4,6 +4,10 @@ the [bch-js](https://www.npmjs.com/package/@chris.troutner/bch-js) JavaScript
 library and the [bch-api](https://fullstack.cash/documentation/) REST API, offered by
 [FullStack.cash](https://fullstack.cash)
 
+Here are two YouTube walk-through videos to help you get started:
+- [Introduction to bch-js and the bch-js-examples repository](https://youtu.be/GD2i1ZUiyrk)
+- [Working with the FullStack.cash JWT token](https://youtu.be/GD2i1ZUiyrk)
+
 The `low-level` directory
 contains low-level applications exercising a single feature of bch-js. Think of
 these examples like lego blocks that can be used to build a bigger app.
