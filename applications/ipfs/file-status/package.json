@@ -1,0 +1,12 @@
+{
+  "name": "upload-file",
+  "version": "1.0.0",
+  "description": "Upload a file to IPFS",
+  "main": "upload-file.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node upload-file.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
