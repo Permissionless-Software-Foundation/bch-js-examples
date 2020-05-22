@@ -2,36 +2,27 @@
   Upload a file to the FullStack.cash IPFS server.
 */
 
-// Change this path to point to the file you want to upload to IPFS.
-const FILEPATH = `${__dirname}/upload-file.js`;
+// Change this string to the File ID associated with your file.
+const FILE_ID = `5ec75c0389bee24962c06dd9`;
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require("@chris.troutner/bch-js");
 const bchjs = new BCHJS();
 
 // Get the balance of the wallet.
-async function uploadFile() {
+async function checkFileStatus() {
   try {
-    // Request a BCH address and amount of BCH to pay for hosting the file.
-    const fileModel = await bchjs.IPFS.createFileModel(FILEPATH);
-    // console.log(`fileModel: ${JSON.stringify(fileModel, null, 2)}`);
+    const result = await bchjs.IPFS.getStatus(FILE_ID)
 
-    // This file ID is used to identify the file we're about to upload.
-    const fileId = fileModel.file._id;
-    console.log(`ID for your file: ${fileId}`)
+    // Calculate the cost in BCH.
+    const bchCost = bchjs.BitcoinCash.toBitcoinCash(result.satCost)
+    result.bchCost = bchCost
 
-    // Upload the actual file, include the ID assigned to it by the server.
-    const fileObj = await bchjs.IPFS.uploadFile(FILEPATH, fileId);
-    // console.log(`fileObj: ${JSON.stringify(fileObj, null, 2)}`);
+    console.log(`File status: ${JSON.stringify(result,null,2)}`)
 
-    console.log(
-      `Pay ${fileModel.hostingCostBCH} BCH to ${
-        fileModel.file.bchAddr
-      } and your file will be uploaded to IPFS for 1 month.`
-    );
   } catch (err) {
-    console.error("Error in uploadFile: ", err);
+    console.error("Error in checkFileStatus: ", err);
     throw err;
   }
 }
-uploadFile();
+checkFileStatus();

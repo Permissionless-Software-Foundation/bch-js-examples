@@ -1,11 +1,11 @@
 {
-  "name": "upload-file",
+  "name": "file-status",
   "version": "1.0.0",
-  "description": "Upload a file to IPFS",
-  "main": "upload-file.js",
+  "description": "Check on the status of the file you uploaded to IPFS.",
+  "main": "file-status.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node upload-file.js"
+    "start": "node file-status.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT"
