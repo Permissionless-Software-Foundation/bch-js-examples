@@ -15,9 +15,9 @@
     "slp-sdk",
     "example"
   ],
-  "author": "Gabriel Cardona <gabriel@bitcoin.com>",
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
   "contributors": [
-    "Chris Troutner <chris.troutner@gmail.com>",
+    "Gabriel Cardona <gabriel@bitcoin.com>",
     "James Cramer @ SLP"
   ],
   "license": "MIT",
