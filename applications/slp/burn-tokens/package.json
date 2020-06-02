@@ -1,0 +1,16 @@
+{
+  "name": "burn-tokens",
+  "version": "1.0.0",
+  "description": "Burn a specific quantity of tokens",
+  "main": "burn-tokens.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node burn-tokens.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>",
+    "James Cramer @ SLP"
+  ],
+  "license": "MIT"
+}

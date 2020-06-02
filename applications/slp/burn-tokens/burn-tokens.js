@@ -1,12 +1,11 @@
 /*
-  Send tokens of type TOKENID to user with SLPADDR address.
+  Burn a specific quantity of tokens of type TOKENID
 */
 
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1;
 const TOKENID =
   "9d35c1803ed3ab8bd23c198b027f7b3b530586494dc265de6391b74a6b090136";
-let TO_SLPADDR = "simpleledger:qpejxz3qpg05edvywmadvh3wuqm8cfylvqeawp6nnf";
 
 // Set NETWORK to either testnet or mainnet
 const NETWORK = "mainnet";
@@ -35,7 +34,7 @@ try {
 }
 // console.log(`walletInfo: ${JSON.stringify(walletInfo, null, 2)}`)
 
-async function sendToken() {
+async function burnTokens() {
   try {
     const mnemonic = walletInfo.mnemonic;
 
@@ -104,12 +103,10 @@ async function sendToken() {
     // )
     // const slpData = bchjs.Script.encode(slpSendObj.script)
 
-    const slpSendObj = bchjs.SLP.TokenType1.generateSendOpReturn(
+    const slpData = bchjs.SLP.TokenType1.generateBurnOpReturn(
       tokenUtxos,
       TOKENQTY
     );
-    const slpData = slpSendObj.script;
-    // console.log(`slpOutputs: ${slpSendObj.outputs}`);
 
     // BEGIN transaction construction.
 
@@ -141,7 +138,7 @@ async function sendToken() {
     const txFee = 250;
 
     // amount to send back to the sending address. It's the original amount - 1 sat/byte for tx size
-    const remainder = originalAmount - txFee - 546 * 2;
+    const remainder = originalAmount - txFee - 546;
     if (remainder < 1) {
       throw new Error("Selected UTXO does not have enough satoshis");
     }
@@ -152,21 +149,14 @@ async function sendToken() {
 
     // Send the token back to the same wallet if the user hasn't specified a
     // different address.
-    if (TO_SLPADDR === "") TO_SLPADDR = walletInfo.slpAddress;
+    // if (TO_SLPADDR === "") TO_SLPADDR = walletInfo.slpAddress;
 
     // Send dust transaction representing tokens being sent.
     transactionBuilder.addOutput(
-      bchjs.SLP.Address.toLegacyAddress(TO_SLPADDR),
+      bchjs.SLP.Address.toLegacyAddress(walletInfo.slpAddress),
       546
     );
 
-    // Return any token change back to the sender.
-    if (slpSendObj.outputs > 1) {
-      transactionBuilder.addOutput(
-        bchjs.SLP.Address.toLegacyAddress(slpAddress),
-        546
-      );
-    }
 
     // Last output: send the BCH change back to the wallet.
     transactionBuilder.addOutput(
@@ -215,11 +205,11 @@ async function sendToken() {
       console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
     } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
   } catch (err) {
-    console.error("Error in sendToken: ", err);
+    console.error("Error in burnTokens: ", err);
     console.log(`Error message: ${err.message}`);
   }
 }
-sendToken();
+burnTokens();
 
 // Returns the utxo with the biggest balance from an array of utxos.
 function findBiggestUtxo(utxos) {

@@ -3,11 +3,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = "testnet";
+const NETWORK = "mainnet";
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.
-let RECV_ADDR = "";
+let RECV_ADDR = "bitcoincash:qqe0f6fk8nyv5x49fs06g2k66pvshnmxluny8vjf4x";
 
 // REST API servers.
 const MAINNET_API = "http://api.fullstack.cash/v3/";
@@ -134,7 +134,7 @@ async function changeAddrFromMnemonic(mnemonic) {
     else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet");
 
     // HDNode of BIP44 account
-    const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'");
+    const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'");
 
     // derive the first external change address HDNode which is going to spend utxo
     const change = bchjs.HDNode.derivePath(account, "0/0");
