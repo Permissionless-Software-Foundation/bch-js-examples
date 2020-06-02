@@ -1,0 +1,12 @@
+{
+  "name": "burn-all",
+  "version": "1.0.0",
+  "description": "Send all tokens and send entire balance of an address",
+  "main": "burn-all.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node burn-all.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

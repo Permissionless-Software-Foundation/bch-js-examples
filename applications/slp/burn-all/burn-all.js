@@ -1,5 +1,6 @@
 /*
-  Send all BCH from one address to another. Similar to consolidating UTXOs.
+  Send all BCH from one address to another, burning all SLP information.
+  Similar to consolidating UTXOs as done in wallet/send-all example.
 */
 
 // Set NETWORK to either testnet or mainnet
@@ -7,7 +8,7 @@ const NETWORK = "testnet";
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.
-let RECV_ADDR = "bitcoincash:qpzs7dve5sn5hmexckxlxpz86w4p6n423vntupu3sh";
+let RECV_ADDR = "";
 
 // REST API servers.
 const MAINNET_API = "http://api.fullstack.cash/v3/";
@@ -112,9 +113,12 @@ async function sendAll() {
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex]);
-    const util = require("../util.js");
-    console.log(`Transaction ID: ${txid}`);
+    console.log(`Transaction ID: ${txidStr}`);
+    
     console.log("Check the status of your transaction on this block explorer:");
+    if (NETWORK === "testnet") {
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
     util.transactionStatus(txid, NETWORK);
   } catch (err) {
     console.log("error: ", err);
@@ -134,7 +138,7 @@ async function changeAddrFromMnemonic(mnemonic) {
     else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, "testnet");
 
     // HDNode of BIP44 account
-    const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'");
+    const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'");
 
     // derive the first external change address HDNode which is going to spend utxo
     const change = bchjs.HDNode.derivePath(account, "0/0");

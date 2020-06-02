@@ -5,11 +5,11 @@
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1;
 const TOKENID =
-  "9d35c1803ed3ab8bd23c198b027f7b3b530586494dc265de6391b74a6b090136";
-let TO_SLPADDR = "simpleledger:qpejxz3qpg05edvywmadvh3wuqm8cfylvqeawp6nnf";
+  "0ebe9dd7f8367e1ee3c8341cc3f5257a8609cf5118f85e8e0626eadf4454e054";
+let TO_SLPADDR = "";
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = "mainnet";
+const NETWORK = "testnet";
 
 // REST API servers.
 const MAINNET_API = "https://api.fullstack.cash/v3/";
