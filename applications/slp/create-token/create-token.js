@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
 const MAINNET_API = 'https://api.fullstack.cash/v3/'
@@ -86,16 +86,18 @@ async function createToken () {
       ticker: 'SLPTEST',
       documentUrl: 'https://FullStack.cash',
       decimals: 8,
-      initialQty: 100
+      initialQty: 100,
+      documentHash: '',
+      mintBatonVout: 2
     }
 
     // Generate the OP_RETURN entry for an SLP GENESIS transaction.
     const script = bchjs.SLP.TokenType1.generateGenesisOpReturn(configObj)
-    const data = bchjs.Script.encode(script)
+    // const data = bchjs.Script.encode(script)
     // const data = compile(script)
 
     // OP_RETURN needs to be the first output in the transaction.
-    transactionBuilder.addOutput(data, 0)
+    transactionBuilder.addOutput(script, 0)
 
     // Send dust transaction representing the tokens.
     transactionBuilder.addOutput(
@@ -134,9 +136,10 @@ async function createToken () {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
-    console.log(`Transaction ID: ${txidStr}`)
-    console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    console.log("Check the status of your transaction on this block explorer:");
+    if (NETWORK === "testnet") {
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
   } catch (err) {
     console.error('Error in createToken: ', err)
   }
