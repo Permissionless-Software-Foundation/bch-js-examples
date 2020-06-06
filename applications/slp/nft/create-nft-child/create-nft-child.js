@@ -13,7 +13,7 @@ const TOKENQTY = 1; // The quantity of new tokens to mint.
 let TO_SLPADDR = ""; // The address to send the new tokens.
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = "mainnet";
+const NETWORK = "testnet";
 
 // REST API servers.
 const MAINNET_API = "https://api.fullstack.cash/v3/";
