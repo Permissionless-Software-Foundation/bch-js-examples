@@ -4,8 +4,8 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  "eee4b82e4bb7113eca433829144363fc45f110693c286494fbf5b5c8043cc981";
-const TOKENQTY = 10; // The quantity of new tokens to mint.
+  "50d89aeb3bd5a5d2abffcc00ccafbe90cb6611d95458de3897f79ce195fb46a8";
+const TOKENQTY = 1; // The quantity of new tokens to mint.
 let TO_SLPADDR = ""; // The address to send the new tokens.
 
 // Set NETWORK to either testnet or mainnet

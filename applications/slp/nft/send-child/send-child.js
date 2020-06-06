@@ -5,7 +5,7 @@
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1;
 const TOKENID =
-  "9b6db26b64aedcedc0bd9a3037b29b3598573ec5cea99eec03faa838616cd683";
+  "85eb621d3f770693687de6126f41b7f9141611e640d1efbfe9a79516afed8ee1";
 let TO_SLPADDR = "";
 
 // Set NETWORK to either testnet or mainnet

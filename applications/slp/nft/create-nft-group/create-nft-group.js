@@ -85,7 +85,8 @@ async function createNFT () {
       name: 'NFT Test Token',
       ticker: 'NFTTT',
       documentUrl: 'https://FullStack.cash',
-      mintBatonVout: 2
+      mintBatonVout: 2,
+      initialQty: 1
     }
 
     // Generate the OP_RETURN entry for an SLP GENESIS transaction.
