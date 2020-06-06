@@ -1,10 +1,13 @@
 /*
   Check the BCH and SLP token balances for the wallet created with the
   create-wallet example app.
+
+  TODO:
+  - Add diffentiator for TokenType1 vs NFT1.
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
 const MAINNET_API = 'https://api.fullstack.cash/v3/'

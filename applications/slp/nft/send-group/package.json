@@ -1,0 +1,16 @@
+{
+  "name": "send-group",
+  "version": "1.0.0",
+  "description": "Send SLP NFT Group tokens to an address",
+  "main": "send-group.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node send-group.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>",
+    "James Cramer @ SLP"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "mint-nft-group",
+  "version": "1.0.0",
+  "description": "Mint new NFT Group Tokens",
+  "main": "mint-nft-group.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node mint-nft-group.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>"
+  ],
+  "license": "MIT"
+}

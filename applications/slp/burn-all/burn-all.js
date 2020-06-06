@@ -4,11 +4,11 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = "testnet";
+const NETWORK = "mainnet";
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.
-let RECV_ADDR = "";
+let RECV_ADDR = "bitcoincash:qqe0f6fk8nyv5x49fs06g2k66pvshnmxluny8vjf4x";
 
 // REST API servers.
 const MAINNET_API = "http://api.fullstack.cash/v3/";
@@ -113,13 +113,12 @@ async function sendAll() {
 
     // Broadcast transation to the network
     const txid = await bchjs.RawTransactions.sendRawTransaction([hex]);
-    console.log(`Transaction ID: ${txidStr}`);
-    
+    console.log(`Transaction ID: ${txid}`);
+
     console.log("Check the status of your transaction on this block explorer:");
     if (NETWORK === "testnet") {
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
-    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
-    util.transactionStatus(txid, NETWORK);
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txid}`);
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
   } catch (err) {
     console.log("error: ", err);
   }

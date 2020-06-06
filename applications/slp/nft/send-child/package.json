@@ -1,0 +1,16 @@
+{
+  "name": "send-child",
+  "version": "1.0.0",
+  "description": "Send SLP NFT (child) tokens to an address",
+  "main": "send-child.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node send-child.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>",
+    "James Cramer @ SLP"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "create-nft-child",
+  "version": "1.0.0",
+  "description": "Create an NFT Token",
+  "main": "create-nft-child.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node create-nft-child.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "contributors": [
+    "Gabriel Cardona <gabriel@bitcoin.com>"
+  ],
+  "license": "MIT"
+}
