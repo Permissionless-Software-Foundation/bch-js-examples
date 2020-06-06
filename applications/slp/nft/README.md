@@ -4,7 +4,7 @@ The examples in this directory show how to generate and work with Non-fugable
 Tokens (NFTs) using the [NFT1 Specification](https://github.com/simpleledger/slp-specifications/blob/master/slp-nft-1.md).
 
 ## NFT Workflow
-![nft-example.jpg](nfg-example.jpg)
+![nft-example.jpg](./nfg-example.jpg)
 
 The workflow of working with NFT tokens using SLP and the BCH blockchain can be non-intuitive. The image above is an example of the workflow. Here are the steps to generating an NFT token:
 
