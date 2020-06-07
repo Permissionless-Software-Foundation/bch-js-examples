@@ -3,6 +3,8 @@
 The examples in this directory show how to generate and work with Non-fugable
 Tokens (NFTs) using the [NFT1 Specification](https://github.com/simpleledger/slp-specifications/blob/master/slp-nft-1.md).
 
+- [This YouTube Video](https://www.youtube.com/watch?v=vvlpYUx6HRs) walks through the examples in this folder.
+
 ## NFT Workflow
 ![nft-example.jpg](nft-example.jpg)
 
