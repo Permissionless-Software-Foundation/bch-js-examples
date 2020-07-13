@@ -1,0 +1,2 @@
+# Bitcoin Files Protocol (BFP)
+This folder contains examples for using the [Bitcoin Files Protocol](https://github.com/simpleledger/slp-specifications/blob/master/bitcoinfiles.md) to write data to the BCH blockchain. This allows files of up to 10KB to be written on-chain. It makes use of the [bitcoinfiles-node](https://www.npmjs.com/package/bitcoinfiles-node) npm package that was created by James Cramer and then modified by Vin Armani.

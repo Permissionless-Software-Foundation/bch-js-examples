@@ -1,0 +1,12 @@
+{
+  "name": "write-bfp",
+  "version": "1.0.0",
+  "description": "Write some data to the chain using BFP",
+  "main": "write-bfp.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node write-bfp.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
