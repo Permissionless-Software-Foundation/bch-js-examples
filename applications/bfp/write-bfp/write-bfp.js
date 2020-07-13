@@ -3,7 +3,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = "testnet";
+const NETWORK = "mainnet";
 
 // REST API servers.
 const MAINNET_API = "https://api.fullstack.cash/v3/";
@@ -18,7 +18,10 @@ if (NETWORK === "mainnet") bchjs = new BCHJS({ restURL: MAINNET_API });
 else bchjs = new BCHJS({ restURL: TESTNET_API });
 
 const Bfp = require("bitcoinfiles-node").bfp;
-const bfp = new Bfp(bchjs, 'testnet');
+
+let bfp;
+if (NETWORK === "mainnet") bfp = new Bfp(bchjs, "mainnet");
+else bfp = new Bfp(bchjs, "testnet");
 
 // Open the wallet generated with create-wallet.
 try {
@@ -130,6 +133,8 @@ async function writeBFP() {
     console.log(
       `The JSON has been uploaded to the blockchain with BFP file ID: ${fileId}`
     );
+
+    console.log(`There is a bug. The transaction hash is reversed.`)
   } catch (err) {
     console.log("error: ", err);
   }

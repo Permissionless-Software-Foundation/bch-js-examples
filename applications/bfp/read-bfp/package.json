@@ -1,0 +1,12 @@
+{
+  "name": "read-bfp",
+  "version": "1.0.0",
+  "description": "Read data off the chain that was written with the write-bfp example.",
+  "main": "read-bfp.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node read-bfp.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
