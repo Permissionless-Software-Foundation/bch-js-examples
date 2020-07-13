@@ -41,7 +41,6 @@ async function createWallet () {
 
     // root seed buffer
     const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
-    console.log(`rootSeed: ${rootSeed}`)
 
     // master HDNode
     let masterHDNode

@@ -7,7 +7,7 @@ const NETWORK = "testnet";
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.
-let RECV_ADDR = "bitcoincash:qpzs7dve5sn5hmexckxlxpz86w4p6n423vntupu3sh";
+let RECV_ADDR = "";
 
 // REST API servers.
 const MAINNET_API = "http://api.fullstack.cash/v3/";
