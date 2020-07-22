@@ -33,7 +33,7 @@ try {
 const SEND_ADDR = walletInfo.cashAddress
 const SEND_MNEMONIC = walletInfo.mnemonic
 
-async function sendBch () {
+async function splitUtxo () {
   try {
     // Get the balance of the sending address.
     const balance = await getBCHBalance(SEND_ADDR, false)
@@ -53,8 +53,9 @@ async function sendBch () {
 
     // Get UTXOs held by the address.
     // https://developer.bitcoin.com/mastering-bitcoin-cash/4-transactions/
-    const utxos = await bchjs.Blockbook.utxo(SEND_ADDR)
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    const data = await bchjs.Electrumx.utxo(SEND_ADDR)
+    const utxos = data.utxos
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
     if (utxos.length === 0) throw new Error('No UTXOs found.')
 
@@ -69,18 +70,15 @@ async function sendBch () {
     } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     // Essential variables of a transaction.
-    const originalAmount = utxo.satoshis
-    const vout = utxo.vout
-    const txid = utxo.txid
+    const originalAmount = utxo.value
+    const vout = utxo.tx_pos
+    const txid = utxo.tx_hash
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
 
     // get byte count to calculate fee. paying 1.2 sat/byte
-    const byteCount = bchjs.BitcoinCash.getByteCount(
-      { P2PKH: 1 },
-      { P2PKH: 5 }
-    )
+    const byteCount = bchjs.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 5 })
     console.log(`Transaction byte count: ${byteCount}`)
     const satoshisPerByte = 1.2
     const txFee = Math.floor(satoshisPerByte * byteCount)
@@ -89,7 +87,7 @@ async function sendBch () {
     // Calculate the amount to put into each new UTXO.
     const satoshisToSend = Math.floor((originalAmount - txFee) / 5)
 
-    if (satoshisToSend < 546) throw new Error('Not enough BCH to complete transaction!')
+    if (satoshisToSend < 546) { throw new Error('Not enough BCH to complete transaction!') }
 
     // add outputs w/ address and amount to send
     for (let i = 0; i < 5; i++) {
@@ -131,7 +129,7 @@ async function sendBch () {
     console.log('error: ', err)
   }
 }
-sendBch()
+splitUtxo()
 
 // Generate a change address from a Mnemonic of a private key.
 async function changeAddrFromMnemonic (mnemonic) {
@@ -155,13 +153,13 @@ async function changeAddrFromMnemonic (mnemonic) {
 // Get the balance in BCH of a BCH address.
 async function getBCHBalance (addr, verbose) {
   try {
-    const result = await bchjs.Blockbook.balance(addr)
+    const result = await bchjs.Electrumx.balance(addr)
 
     if (verbose) console.log(result)
 
     // The total balance is the sum of the confirmed and unconfirmed balances.
     const satBalance =
-      Number(result.balance) + Number(result.unconfirmedBalance)
+      Number(result.balance.confirmed) + Number(result.balance.unconfirmed)
 
     // Convert the satoshi balance to a BCH balance
     const bchBalance = bchjs.BitcoinCash.toBitcoinCash(satBalance)
@@ -184,7 +182,7 @@ async function findBiggestUtxo (utxos) {
     // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 
     // Validate the UTXO data with the full node.
-    const txout = await bchjs.Blockchain.getTxOut(thisUtxo.txid, thisUtxo.vout)
+    const txout = await bchjs.Blockchain.getTxOut(thisUtxo.tx_hash, thisUtxo.tx_pos)
     if (txout === null) {
       // If the UTXO has already been spent, the full node will respond with null.
       console.log(
@@ -193,8 +191,8 @@ async function findBiggestUtxo (utxos) {
       continue
     }
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }
