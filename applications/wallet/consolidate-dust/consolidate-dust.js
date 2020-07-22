@@ -4,19 +4,21 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'http://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 try {
@@ -43,20 +45,21 @@ async function consolidateDust () {
     let sendAmount = 0
     const inputs = []
 
-    const utxos = await bchjs.Blockbook.Address.utxo(SEND_ADDR)
+    const data = await bchjs.Electrumx.utxo(SEND_ADDR)
+    const utxos = data.utxos
 
     // Loop through each UTXO assigned to this address.
     for (let i = 0; i < utxos.length; i++) {
       const thisUtxo = utxos[i]
 
       // If the UTXO is dust...
-      if (thisUtxo.satoshis <= dust) {
+      if (thisUtxo.value <= dust) {
         inputs.push(thisUtxo)
 
-        sendAmount += thisUtxo.satoshis
+        sendAmount += thisUtxo.value
 
         // ..Add the utxo as an input to the transaction.
-        transactionBuilder.addInput(thisUtxo.txid, thisUtxo.vout)
+        transactionBuilder.addInput(thisUtxo.tx_hash, thisUtxo.tx_pos)
       }
     }
 
@@ -101,7 +104,7 @@ async function consolidateDust () {
         keyPair,
         redeemScript,
         transactionBuilder.hashTypes.SIGHASH_ALL,
-        input.satoshis
+        input.value
       )
     })
 
@@ -109,7 +112,7 @@ async function consolidateDust () {
     const tx = transactionBuilder.build()
     // output rawhex
     const hex = tx.toHex()
-    console.log(`TX hex: ${hex}`)
+    // console.log(`TX hex: ${hex}`)
     console.log(' ')
 
     // Broadcast transation to the network
@@ -131,7 +134,9 @@ async function changeAddrFromMnemonic (mnemonic) {
   const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
   // master HDNode
-  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
+  let masterHDNode
+  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
