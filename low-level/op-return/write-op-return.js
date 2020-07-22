@@ -6,7 +6,7 @@
 // You can generate a WIF (private key) and public address using the
 // 'get-key' command of slp-cli-wallet.
 const WIF = 'L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e'
-const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
+// const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
 
 // Customize the message you want to send
 const MESSAGE = 'BURN abcdef'

@@ -20,7 +20,7 @@ else bchjs = new BCHJS({ restURL: TESTNET_API })
 
 const txid = '5b81b332c8fa5a2b2e77bb928bd18072af4485f02a7325d346f1f28cf3d4a6bb'
 
-function parseOP_RETURN (txid) {
+function parseOpReturn (txid) {
   console.log(`Parsing transaction ${txid} for messages in OP_RETURN...`)
   console.log('')
 
@@ -74,4 +74,4 @@ function parseOP_RETURN (txid) {
   )
 }
 
-parseOP_RETURN(txid)
+parseOpReturn(txid)

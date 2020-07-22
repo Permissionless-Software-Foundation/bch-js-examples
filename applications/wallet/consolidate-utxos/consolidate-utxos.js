@@ -33,7 +33,10 @@ const SEND_MNEMONIC = walletInfo.mnemonic
 async function consolidateDust () {
   try {
     // instance of transaction builder
-    if (NETWORK === 'mainnet') { var transactionBuilder = new bchjs.TransactionBuilder() } else var transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    let transactionBuilder
+    if (NETWORK === 'mainnet') {
+      transactionBuilder = new bchjs.TransactionBuilder()
+    } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     let sendAmount = 0
     const inputs = []
@@ -66,7 +69,7 @@ async function consolidateDust () {
     // Exit if the transaction costs too much to send.
     if (sendAmount - txFee < 0) {
       console.log(
-        'Transaction fee costs more combined UTXOs. Can\'t send transaction.'
+        "Transaction fee costs more combined UTXOs. Can't send transaction."
       )
       return
     }

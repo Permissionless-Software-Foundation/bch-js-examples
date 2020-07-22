@@ -4,7 +4,8 @@
   "description": "Examples for working with bch-js from FullStack.cash",
   "main": "index.js",
   "scripts": {
-    "test": "standard --fix"
+    "test": "npm run lint",
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",

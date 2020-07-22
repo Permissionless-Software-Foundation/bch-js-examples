@@ -78,7 +78,7 @@ async function createNFT () {
 
     // amount to send back to the sending address.
     // Subtract two dust transactions for minting baton and tokens.
-    const remainder = originalAmount - 546*2 - txFee
+    const remainder = originalAmount - 546 * 2 - txFee
 
     // Generate SLP config object
     const configObj = {
@@ -134,10 +134,10 @@ async function createNFT () {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
-    console.log("Check the status of your transaction on this block explorer:");
-    if (NETWORK === "testnet") {
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
-    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
+    console.log('Check the status of your transaction on this block explorer:')
+    if (NETWORK === 'testnet') {
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in createToken: ', err)
   }

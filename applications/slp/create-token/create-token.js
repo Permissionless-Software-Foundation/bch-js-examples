@@ -136,10 +136,10 @@ async function createToken () {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
-    console.log("Check the status of your transaction on this block explorer:");
-    if (NETWORK === "testnet") {
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
-    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
+    console.log('Check the status of your transaction on this block explorer:')
+    if (NETWORK === 'testnet') {
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in createToken: ', err)
   }
