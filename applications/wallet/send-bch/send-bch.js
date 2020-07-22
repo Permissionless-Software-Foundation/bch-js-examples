@@ -7,7 +7,7 @@ const NETWORK = 'mainnet'
 // Replace the address below with the address you want to send the BCH to.
 let RECV_ADDR = ''
 // set satoshi amount to send
-const SATOSHIS_TO_SEND = 546
+const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
