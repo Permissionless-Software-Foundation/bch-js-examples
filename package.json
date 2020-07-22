@@ -28,6 +28,14 @@
     "bitcoinfiles-node": "^0.5.4"
   },
   "devDependencies": {
+    "husky": "^4.2.5",
     "standard": "^14.3.3"
+  },
+  {
+    "husky": {
+      "hooks": {
+        "pre-commit": "npm run lint"
+      }
+    }
   }
 }
