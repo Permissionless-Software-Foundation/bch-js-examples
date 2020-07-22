@@ -3,23 +3,25 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 // Replace the address below with the address you want to send the BCH to.
 let RECV_ADDR = ''
 // set satoshi amount to send
-const SATOSHIS_TO_SEND = 1000
+const SATOSHIS_TO_SEND = 546
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'https://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 try {
@@ -161,13 +163,13 @@ async function changeAddrFromMnemonic (mnemonic) {
 // Get the balance in BCH of a BCH address.
 async function getBCHBalance (addr, verbose) {
   try {
-    const result = await bchjs.Blockbook.balance(addr)
+    const result = await bchjs.Electrumx.balance(addr)
 
     if (verbose) console.log(result)
 
     // The total balance is the sum of the confirmed and unconfirmed balances.
     const satBalance =
-      Number(result.balance) + Number(result.unconfirmedBalance)
+      Number(result.balance.confirmed) + Number(result.balance.unconfirmed)
 
     // Convert the satoshi balance to a BCH balance
     const bchBalance = bchjs.BitcoinCash.toBitcoinCash(satBalance)
@@ -182,39 +184,28 @@ async function getBCHBalance (addr, verbose) {
 
 // Returns the utxo with the biggest balance from an array of utxos.
 async function findBiggestUtxo (utxos) {
-  try {
-    let largestAmount = 0
-    let largestIndex = 0
+  let largestAmount = 0
+  let largestIndex = 0
 
-    for (var i = 0; i < utxos.length; i++) {
-      const thisUtxo = utxos[i]
-      // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
+  for (var i = 0; i < utxos.length; i++) {
+    const thisUtxo = utxos[i]
+    // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 
-      // Validate the UTXO data with the full node.
-      const txout = await bchjs.Blockchain.getTxOut(
-        thisUtxo.tx_hash,
-        thisUtxo.tx_pos,
-        true
+    // Validate the UTXO data with the full node.
+    const txout = await bchjs.Blockchain.getTxOut(thisUtxo.tx_hash, thisUtxo.tx_pos)
+    if (txout === null) {
+      // If the UTXO has already been spent, the full node will respond with null.
+      console.log(
+        'Stale UTXO found. You may need to wait for the indexer to catch up.'
       )
-      // console.log(`txout: ${JSON.stringify(txout,null,2)}`)
-
-      if (txout === null) {
-        // If the UTXO has already been spent, the full node will respond with null.
-        console.log(
-          'Stale UTXO found. You may need to wait for the indexer to catch up.'
-        )
-        continue
-      }
-
-      if (thisUtxo.value > largestAmount) {
-        largestAmount = thisUtxo.value
-        largestIndex = i
-      }
+      continue
     }
 
-    return utxos[largestIndex]
-  } catch (err) {
-    console.error('Error in findBiggestUtxo()')
-    throw err
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
+      largestIndex = i
+    }
   }
+
+  return utxos[largestIndex]
 }
