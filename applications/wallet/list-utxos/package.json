@@ -1,11 +1,11 @@
 {
-  "name": "check-balance",
+  "name": "list-utxos",
   "version": "1.0.0",
-  "description": "Check the balance of an HDNode wallet",
-  "main": "create-wallet.js",
+  "description": "List the UTXOs associated with the wallet address.",
+  "main": "list-utxos.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node check-balance.js"
+    "start": "node list-utxos.js"
   },
   "repository": {
     "type": "git",

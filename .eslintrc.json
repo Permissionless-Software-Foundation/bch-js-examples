@@ -1,0 +1,13 @@
+{
+  "extends": "standard",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 10
+  },
+  "rules": {
+    "no-unused-vars": "off"
+  }
+}

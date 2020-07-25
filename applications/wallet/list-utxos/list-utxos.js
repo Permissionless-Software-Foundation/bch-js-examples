@@ -1,6 +1,5 @@
 /*
-  Check the balance of the root address of an HD node wallet generated
-  with the create-wallet example.
+  List the UTXOs associated with the BCH address in the wallet.
 */
 
 // Set NETWORK to either testnet or mainnet
@@ -12,6 +11,7 @@ const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 // const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
 // const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
+// bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
@@ -21,7 +21,7 @@ else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 try {
-  var walletInfo = require('../../applications/wallet/create-wallet/wallet.json')
+  var walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
     'Could not open wallet.json. Generate a wallet with create-wallet first.'
@@ -29,19 +29,17 @@ try {
   process.exit(0)
 }
 
-const ADDR = walletInfo.cashAddress
-
-async function getUtxos () {
+// Get the balance of the wallet.
+async function listUtxos () {
   try {
     // first get BCH balance
-    const data = await bchjs.Electrumx.utxo(ADDR)
-    const utxos = data.utxos
+    const balance = await bchjs.Electrumx.utxo(walletInfo.cashAddress)
 
-    console.log(`UTXO information for address ${ADDR}:`)
-    console.log(`result: ${JSON.stringify(utxos, null, 2)}`)
+    console.log(`UTXOs associated with ${walletInfo.cashAddress}:`)
+    console.log(JSON.stringify(balance, null, 2))
   } catch (err) {
-    console.error('Error in getUtxos: ', err)
+    console.error('Error in listUtxos: ', err)
     throw err
   }
 }
-getUtxos()
+listUtxos()

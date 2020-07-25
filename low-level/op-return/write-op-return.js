@@ -6,7 +6,7 @@
 // You can generate a WIF (private key) and public address using the
 // 'get-key' command of slp-cli-wallet.
 const WIF = 'L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e'
-const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
+// const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
 
 // Customize the message you want to send
 const MESSAGE = 'BURN abcdef'
@@ -24,15 +24,18 @@ async function writeOpReturn (msg, wif) {
     console.log(`Publishing "${msg}" to ${addr}`)
 
     // Pick a UTXO controlled by this address.
-    const utxos = await bchjs.Blockbook.utxo(addr)
+    const utxoData = await bchjs.Electrumx.utxo(addr)
+    const utxos = utxoData.utxos
+    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+
     const utxo = await findBiggestUtxo(utxos)
 
     // instance of transaction builder
     const transactionBuilder = new bchjs.TransactionBuilder()
 
-    const originalAmount = utxo.satoshis
-    const vout = utxo.vout
-    const txid = utxo.txid
+    const originalAmount = utxo.value
+    const vout = utxo.tx_out
+    const txid = utxo.tx_hash
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
@@ -99,12 +102,15 @@ async function findBiggestUtxo (utxos) {
   for (var i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
-    if (thisUtxo.satoshis > largestAmount) {
+    if (thisUtxo.value > largestAmount) {
       // Ask the full node to validate the UTXO. Skip if invalid.
-      const isValid = await bchjs.Blockchain.getTxOut(thisUtxo.txid, thisUtxo.vout)
+      const isValid = await bchjs.Blockchain.getTxOut(
+        thisUtxo.tx_hash,
+        thisUtxo.tx_pos
+      )
       if (isValid === null) continue
 
-      largestAmount = thisUtxo.satoshis
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }

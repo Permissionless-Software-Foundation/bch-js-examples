@@ -4,19 +4,21 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -50,25 +52,27 @@ async function createToken () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const utxos = await bchjs.Blockbook.utxo(cashAddress)
+    const data = await bchjs.Electrumx.utxo(cashAddress)
+    const utxos = data.utxos
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) { throw new Error('No UTXOs to pay for transaction! Exiting.') }
+    if (utxos.length === 0) {
+      throw new Error('No UTXOs to pay for transaction! Exiting.')
+    }
 
     // Get the biggest UTXO to pay for the transaction.
-    const utxo = findBiggestUtxo(utxos)
-    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+    const utxo = await findBiggestUtxo(utxos)
+    console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
     // instance of transaction builder
     let transactionBuilder
-    if (NETWORK === 'mainnet') { transactionBuilder = new bchjs.TransactionBuilder() } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    if (NETWORK === 'mainnet') {
+      transactionBuilder = new bchjs.TransactionBuilder()
+    } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
-    // Convert Blockbook UTXOs to Insight format.
-    if (utxo.value) utxo.satoshis = Number(utxo.value)
-
-    const originalAmount = utxo.satoshis
-    const vout = utxo.vout
-    const txid = utxo.txid
+    const originalAmount = utxo.value
+    const vout = utxo.tx_pos
+    const txid = utxo.tx_hash
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
@@ -136,10 +140,10 @@ async function createToken () {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
-    console.log("Check the status of your transaction on this block explorer:");
-    if (NETWORK === "testnet") {
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`);
-    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`);
+    console.log('Check the status of your transaction on this block explorer:')
+    if (NETWORK === 'testnet') {
+      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
+    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in createToken: ', err)
   }
@@ -147,15 +151,26 @@ async function createToken () {
 createToken()
 
 // Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo (utxos) {
+async function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
   for (var i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
+    // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis
+    // Validate the UTXO data with the full node.
+    const txout = await bchjs.Blockchain.getTxOut(thisUtxo.tx_hash, thisUtxo.tx_pos)
+    if (txout === null) {
+      // If the UTXO has already been spent, the full node will respond with null.
+      console.log(
+        'Stale UTXO found. You may need to wait for the indexer to catch up.'
+      )
+      continue
+    }
+
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }

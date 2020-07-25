@@ -4,7 +4,8 @@
   "description": "Examples for working with bch-js from FullStack.cash",
   "main": "index.js",
   "scripts": {
-    "test": "standard --fix"
+    "test": "npm run lint",
+    "lint": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,16 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@chris.troutner/bch-js": "3.1.2",
+    "@chris.troutner/bch-js": "3.3.5",
     "bitcoinfiles-node": "^0.5.4"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  },
   "devDependencies": {
+    "husky": "^4.2.5",
     "standard": "^14.3.3"
   }
 }
