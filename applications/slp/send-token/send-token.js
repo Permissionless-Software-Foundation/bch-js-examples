@@ -5,23 +5,25 @@
 // CUSTOMIZE THESE VALUES FOR YOUR USE
 const TOKENQTY = 1
 const TOKENID =
-  '0ebe9dd7f8367e1ee3c8341cc3f5257a8609cf5118f85e8e0626eadf4454e054'
+  '8de4984472af772f144a74de473d6c21505a6d89686b57445c3e4fc7db3773b6'
 let TO_SLPADDR = ''
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -58,21 +60,22 @@ async function sendToken () {
     const slpAddress = bchjs.HDNode.toSLPAddress(change)
 
     // Get UTXOs held by this address.
-    const utxos = await bchjs.Blockbook.utxo(cashAddress)
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    const data = await bchjs.Electrumx.utxo(cashAddress)
+    const utxos = data.utxos
+    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
     if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
 
     // Identify the SLP token UTXOs.
     let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
+    console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
 
     // Filter out the non-SLP token UTXOs.
     const bchUtxos = utxos.filter((utxo, index) => {
       const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo) return true
+      if (!tokenUtxo.isValid) return true
     })
-    // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
+    console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`)
 
     if (bchUtxos.length === 0) {
       throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
@@ -97,12 +100,6 @@ async function sendToken () {
     // console.log(`bchUtxo: ${JSON.stringify(bchUtxo, null, 2)}`);
 
     // Generate the OP_RETURN code.
-    // const slpSendObj = bchjs.SLP.TokenType1.generateSendOpReturn(
-    //   tokenUtxos,
-    //   TOKENQTY
-    // )
-    // const slpData = bchjs.Script.encode(slpSendObj.script)
-
     const slpSendObj = bchjs.SLP.TokenType1.generateSendOpReturn(
       tokenUtxos,
       TOKENQTY
@@ -119,12 +116,12 @@ async function sendToken () {
     } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     // Add the BCH UTXO as input to pay for the transaction.
-    const originalAmount = bchUtxo.satoshis
-    transactionBuilder.addInput(bchUtxo.txid, bchUtxo.vout)
+    const originalAmount = bchUtxo.value
+    transactionBuilder.addInput(bchUtxo.tx_hash, bchUtxo.tx_pos)
 
     // add each token UTXO as an input.
     for (let i = 0; i < tokenUtxos.length; i++) {
-      transactionBuilder.addInput(tokenUtxos[i].txid, tokenUtxos[i].vout)
+      transactionBuilder.addInput(tokenUtxos[i].tx_hash, tokenUtxos[i].tx_pos)
     }
 
     // get byte count to calculate fee. paying 1 sat
@@ -192,7 +189,7 @@ async function sendToken () {
         keyPair,
         redeemScript,
         transactionBuilder.hashTypes.SIGHASH_ALL,
-        thisUtxo.satoshis
+        thisUtxo.value
       )
     }
 
@@ -228,8 +225,8 @@ function findBiggestUtxo (utxos) {
   for (var i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }

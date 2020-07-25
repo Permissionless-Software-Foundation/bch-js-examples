@@ -59,7 +59,7 @@ async function getBalance () {
     const balance = await bchjs.Electrumx.balance(cashAddress)
 
     console.log(`BCH Balance information for ${slpAddress}:`)
-    console.log(balance)
+    console.log(`${JSON.stringify(balance.balance, null, 2)}`)
     console.log('SLP Token information:')
 
     // get token balances
