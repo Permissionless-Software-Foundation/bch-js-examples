@@ -4,18 +4,20 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 try {
@@ -32,7 +34,8 @@ const ADDR = walletInfo.cashAddress
 async function getUtxos () {
   try {
     // first get BCH balance
-    const utxos = await bchjs.Blockbook.utxo(ADDR)
+    const data = await bchjs.Electrumx.utxo(ADDR)
+    const utxos = data.utxos
 
     console.log(`UTXO information for address ${ADDR}:`)
     console.log(`result: ${JSON.stringify(utxos, null, 2)}`)

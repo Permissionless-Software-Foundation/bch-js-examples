@@ -3,7 +3,7 @@
 */
 
 // Change this string to the File ID associated with your file.
-const FILE_ID = '5ec75c0389bee24962c06dd9'
+const FILE_ID = '5f1c50ad62c0761b9473f0c5'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
@@ -21,7 +21,7 @@ async function checkFileStatus () {
     console.log(`File status: ${JSON.stringify(result, null, 2)}`)
   } catch (err) {
     console.error('Error in checkFileStatus: ', err)
-    throw err
+    // throw err
   }
 }
 checkFileStatus()

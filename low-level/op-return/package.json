@@ -7,12 +7,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node read-op-return.js"
   },
-  "keywords": [
-    "bch"
-  ],
   "author": "Chris Troutner <chris.troutner@gmail.com>",
-  "license": "MIT",
-  "dependencies": {
-    "@chris.troutner/bch-js": "^2.1.7"
-  }
+  "license": "MIT"
 }
