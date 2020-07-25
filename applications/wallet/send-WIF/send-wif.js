@@ -5,7 +5,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // Replace the address below with the address you want to send the BCH to.
 let RECV_ADDR = ''
@@ -68,7 +68,7 @@ async function sendBch () {
     // console.log('utxos: ', utxos)
 
     const utxo = await findBiggestUtxo(utxos)
-    console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
     // instance of transaction builder
     let transactionBuilder
@@ -115,7 +115,7 @@ async function sendBch () {
     const tx = transactionBuilder.build()
     // output rawhex
     const hex = tx.toHex()
-    console.log(`TX hex: ${hex}`)
+    // console.log(`TX hex: ${hex}`)
     console.log(' ')
 
     // Broadcast transation to the network

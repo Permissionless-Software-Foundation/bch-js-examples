@@ -3,7 +3,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // Edit this variable to direct where the BCH should be sent. By default, it
 // will be sent to the address in the wallet.

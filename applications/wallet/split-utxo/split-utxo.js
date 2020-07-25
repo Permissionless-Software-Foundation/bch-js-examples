@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
+const NETWORK = 'testnet'
 
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
@@ -114,7 +114,7 @@ async function splitUtxo () {
     const tx = transactionBuilder.build()
     // output rawhex
     const hex = tx.toHex()
-    console.log(`TX hex: ${hex}`)
+    // console.log(`TX hex: ${hex}`)
     console.log(' ')
 
     // Broadcast transation to the network
