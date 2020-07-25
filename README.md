@@ -53,3 +53,5 @@ research labs, and even malicious miners, use the testnet and can disrupt the
 development workflow. Most professional developers on the Bitcoin Cash network
 prefer to use mainnet. They use 1000 satoshi transactions (a fraction of a penny)
 to test their software, and avoid using the disruptive testnet.
+
+That being said. FullStack.cash provides a [testnet faucet here](https://fullstack.cash/faucet/) to help developers get started without needing to purchase any Bitcoin Cash.
