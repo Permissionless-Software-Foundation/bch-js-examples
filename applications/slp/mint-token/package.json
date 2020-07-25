@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Bitcoin-com/slp-sdk.git"
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
   },
   "keywords": [
     "slp-sdk",
