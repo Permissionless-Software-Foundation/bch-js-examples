@@ -4,19 +4,21 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -50,10 +52,13 @@ async function createNFT () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const utxos = await bchjs.Blockbook.utxo(cashAddress)
+    const data = await bchjs.Electrumx.utxo(cashAddress)
+    const utxos = data.utxos
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) { throw new Error('No UTXOs to pay for transaction! Exiting.') }
+    if (utxos.length === 0) {
+      throw new Error('No UTXOs to pay for transaction! Exiting.')
+    }
 
     // Get the biggest UTXO to pay for the transaction.
     const utxo = findBiggestUtxo(utxos)
@@ -61,14 +66,13 @@ async function createNFT () {
 
     // instance of transaction builder
     let transactionBuilder
-    if (NETWORK === 'mainnet') { transactionBuilder = new bchjs.TransactionBuilder() } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    if (NETWORK === 'mainnet') {
+      transactionBuilder = new bchjs.TransactionBuilder()
+    } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
-    // Convert Blockbook UTXOs to Insight format.
-    if (utxo.value) utxo.satoshis = Number(utxo.value)
-
-    const originalAmount = utxo.satoshis
-    const vout = utxo.vout
-    const txid = utxo.txid
+    const originalAmount = utxo.value
+    const vout = utxo.tx_pos
+    const txid = utxo.tx_hash
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
@@ -152,8 +156,8 @@ function findBiggestUtxo (utxos) {
   for (var i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }

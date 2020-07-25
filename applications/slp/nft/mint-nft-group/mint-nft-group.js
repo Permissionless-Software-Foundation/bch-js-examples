@@ -4,24 +4,26 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  '50d89aeb3bd5a5d2abffcc00ccafbe90cb6611d95458de3897f79ce195fb46a8'
-// const TOKENQTY = 1 // The quantity of new tokens to mint.
+  'ba6c400e66190baf7f101c6ea54c0ab81c7fcfa45e9a239088f2ac0a570ec0e5'
+const TOKENQTY = 10 // The quantity of new tokens to mint.
 // const TO_SLPADDR = '' // The address to send the new tokens.
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://api.fullstack.cash/v3/'
-const TESTNET_API = 'http://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@chris.troutner/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -55,7 +57,8 @@ async function mintNFTGroup () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const utxos = await bchjs.Blockbook.utxo(cashAddress)
+    const data = await bchjs.Electrumx.utxo(cashAddress)
+    const utxos = data.utxos
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
     if (utxos.length === 0) {
@@ -69,7 +72,7 @@ async function mintNFTGroup () {
     // Filter out the non-SLP token UTXOs.
     const bchUtxos = utxos.filter((utxo, index) => {
       const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo) return true
+      if (!tokenUtxo.isValid) return true
     })
     // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
 
@@ -103,18 +106,15 @@ async function mintNFTGroup () {
       transactionBuilder = new bchjs.TransactionBuilder()
     } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
-    // Convert Blockbook UTXOs to Insight format.
-    if (utxo.value) utxo.satoshis = Number(utxo.value)
-
-    const originalAmount = utxo.satoshis
-    const vout = utxo.vout
-    const txid = utxo.txid
+    const originalAmount = utxo.value
+    const vout = utxo.tx_pos
+    const txid = utxo.tx_hash
 
     // add input to pay for the transaction.
     transactionBuilder.addInput(txid, vout)
 
     // add the mint baton as an input.
-    transactionBuilder.addInput(tokenUtxos[0].txid, tokenUtxos[0].vout)
+    transactionBuilder.addInput(tokenUtxos[0].tx_hash, tokenUtxos[0].tx_pos)
 
     // Set the transaction fee. Manually set for ease of example.
     const txFee = 550
@@ -124,7 +124,7 @@ async function mintNFTGroup () {
     const remainder = originalAmount - 546 - txFee
 
     // Generate the SLP OP_RETURN.
-    const script = bchjs.SLP.NFT1.mintNFTGroupOpReturn(tokenUtxos, 10)
+    const script = bchjs.SLP.NFT1.mintNFTGroupOpReturn(tokenUtxos, TOKENQTY)
 
     // OP_RETURN needs to be the first output in the transaction.
     transactionBuilder.addOutput(script, 0)
@@ -193,8 +193,8 @@ function findBiggestUtxo (utxos) {
   for (var i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
-    if (thisUtxo.satoshis > largestAmount) {
-      largestAmount = thisUtxo.satoshis
+    if (thisUtxo.value > largestAmount) {
+      largestAmount = thisUtxo.value
       largestIndex = i
     }
   }
