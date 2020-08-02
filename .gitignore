@@ -1,4 +1,5 @@
 node_modules/
 wallet.json
+wallet-*.json
 wallet-info.txt
 tempJSONObj.json
