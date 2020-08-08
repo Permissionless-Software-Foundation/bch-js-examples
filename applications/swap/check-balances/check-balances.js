@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
@@ -49,10 +49,10 @@ async function getBalance () {
 
     console.log('BCH Balances information')
     console.log('------------------------')
-    console.log('First Wallet:')
+    console.log(`First Wallet (${walletInfo.cashAddress}):`)
     console.log(JSON.stringify(balance, null, 2))
     console.log('--')
-    console.log('Second Wallet:')
+    console.log(`Second Wallet (${walletInfo1.cashAddress}):`)
     console.log(JSON.stringify(balance1, null, 2))
   } catch (err) {
     console.error('Error in getBalance: ', err)

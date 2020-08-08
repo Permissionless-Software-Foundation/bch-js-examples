@@ -5,8 +5,8 @@
   "main": "e2e-exchange.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node step1-generate-tx.js && node step2-add-to-tx.js && node step3-broadcast.js",
-    "step1": "node step1-generate-tx.js",
+    "start": "node step1-generate-signal.js && node step2-add-to-tx.js && node step3-broadcast.js",
+    "step1": "node step1-generate-signal.js",
     "step2": "node step2-add-to-tx.js",
     "step3": "node step3-broadcast.js"
   },

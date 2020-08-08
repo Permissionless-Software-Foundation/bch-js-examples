@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
@@ -96,7 +96,7 @@ async function createWallets () {
     // Write out the basic information into a json file for other example apps to use.
     fs.writeFile('wallet-1.json', JSON.stringify(outObj1, null, 2), function (err) {
       if (err) return console.error(err)
-      console.log('walleti-1.json written successfully.')
+      console.log('wallet-1.json written successfully.')
     })
   } catch (err) {
     console.error('Error in createWallet(): ', err)
