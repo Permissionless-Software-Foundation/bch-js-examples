@@ -62,7 +62,7 @@ const exchangeTokenId = '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4
 const exchangeRate = 600 // number of satoshis to buy one unit
 
 // Generate partial transaction
-async function generatePartialTx () {
+async function generateSignalTx () {
   try {
     // Get the balance of the offering address.
     const offerBalance = await appUtils.getBCHBalance(offerAddr)
@@ -128,4 +128,4 @@ async function generatePartialTx () {
   }
 }
 
-generatePartialTx()
+generateSignalTx()
