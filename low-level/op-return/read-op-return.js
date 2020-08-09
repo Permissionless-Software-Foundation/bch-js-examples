@@ -9,7 +9,7 @@
 // Specific TXID to analyize.
 const TXID = 'c0fef17174397e9fd2cdbada0ac121d134296ace94d12bd990d6e1e1351139b9'
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS()
 
 async function readOpReturn (txid) {
