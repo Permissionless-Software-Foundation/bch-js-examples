@@ -6,7 +6,7 @@
 const FILE_ID = '5f1c50ad62c0761b9473f0c5'
 
 // bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS()
 
 // Get the balance of the wallet.

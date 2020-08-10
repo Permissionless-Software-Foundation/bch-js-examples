@@ -8,7 +8,7 @@ const IPFS_HASH = 'QmU8k7XEF6TYT1ZqeuNkU3ofdn9uUdXsiFZ2KhKzRSVUK8'
 const GATEWAY = 'https://gateway.temporal.cloud/'
 
 // bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS()
 
 // Get the balance of the wallet.

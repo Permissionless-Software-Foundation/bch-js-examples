@@ -12,7 +12,7 @@ const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 // const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
 // const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs

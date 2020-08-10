@@ -11,7 +11,7 @@ const WIF = 'L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e'
 // Customize the message you want to send
 const MESSAGE = 'BURN abcdef'
 
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS()
 
 async function writeOpReturn (msg, wif) {
