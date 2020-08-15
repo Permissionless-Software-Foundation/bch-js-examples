@@ -1,6 +1,6 @@
 /*
-  Generate collaborative transaction for SLP tokens exchange
-  Assuming addresses, balances, tokens etc. are already checked in step1
+  Get IPFS hash of encrypted message from a plain text transaction OP_RETURN
+  Download the IPFS JSON file and decrypt the message
 */
 
 const IPFS_GATEWAY = 'https://gateway.temporal.cloud'

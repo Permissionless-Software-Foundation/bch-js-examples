@@ -1,6 +1,5 @@
 /*
-  Generate collaborative transaction for SLP tokens exchange
-  Assuming addresses, balances, tokens etc. are already checked in step1
+  Generate transaction with a plain text message as a payload
 */
 
 // Set NETWORK to either testnet or mainnet
@@ -104,10 +103,10 @@ async function sendUTXO (msg, wif) {
     console.log(`Transaction raw hex: ${hex}`)
 
     // Broadcast transation to the network
-    // const txidStr = await bchjs.RawTransactions.sendRawTransaction(hex)
-    // console.log(`Transaction ID: ${txidStr}`)
-    // console.log(`https://memo.cash/post/${txidStr}`)
-    // console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    const txidStr = await bchjs.RawTransactions.sendRawTransaction(hex)
+    console.log(`Transaction ID: ${txidStr}`)
+    console.log(`https://memo.cash/post/${txidStr}`)
+    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in generateUTXO: ', err)
     process.exit(0)

@@ -1,6 +1,6 @@
 /*
-  Generate collaborative transaction for SLP tokens exchange
-  Assuming addresses, balances, tokens etc. are already checked in step1
+  Upload IPFS JSON file with encrypted message and
+  send signal via plain message in Tx OP_RETURN
 */
 
 // Set NETWORK to either testnet or mainnet

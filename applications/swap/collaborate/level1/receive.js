@@ -1,6 +1,5 @@
 /*
-  Generate collaborative transaction for SLP tokens exchange
-  Assuming addresses, balances, tokens etc. are already checked in step1
+  Read plain text messages, uploaded to the BCH blockchain (OP_RETURN)
 */
 
 // Set NETWORK to either testnet or mainnet
