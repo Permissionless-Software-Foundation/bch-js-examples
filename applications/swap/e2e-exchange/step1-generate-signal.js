@@ -1,6 +1,5 @@
 /*
-  Check the balance of the root address of an HD node wallet generated
-  with the create-wallet example.
+  Generate SELL signal transaction offering SLP tokens for exchange
 */
 
 // Set NETWORK to either testnet or mainnet
@@ -23,6 +22,8 @@ else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
+
+const fs = require('fs')
 
 // Open the offering part wallet generated with create-wallets.
 try {
@@ -58,10 +59,11 @@ const offerNeedSats = 1000
 const acceptNeedSats = 11000
 
 // Choose the token you want to use in exchange for BCH
-const exchangeTokenId = '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1' // Honk
+// const exchangeTokenId = '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1' // Honk
+const exchangeTokenId = '1a1fd545b922c8ee4ecd89bc312904f4e3ba4cf7850141066ad3e3f281668188' // mint
 const exchangeRate = 600 // number of satoshis to buy one unit
 
-// Generate partial transaction
+// Generate signal transaction
 async function generateSignalTx () {
   try {
     // Get the balance of the offering address.
@@ -120,12 +122,19 @@ async function generateSignalTx () {
     }
 
     const msgType = 1 // exchange
-    const offerSignalTx = await appUtils.uploadSignal(msgType, offerWif, config)
-    console.log(`Signal Tx: ${offerSignalTx}`)
+    // TODO: really upload the signal transaction to the blockchain
+    // const offerSignalTx = await appUtils.uploadSignal(msgType, offerWif, config)
+    const offerSignalTx = '2359265b340e106c2ecce27e67c32190335581b8ca3ba9c1728cb64764b08d29'
+    // console.log(`Signal Tx: ${offerSignalTx}`)
+    config.timestamp = 'unconfirmed'
+    config.URI = `swap:${offerSignalTx}`
+    fs.writeFile('signal.json', JSON.stringify(config, null, 2), function (err) {
+      if (err) return console.error(err)
+      console.log('signal.json written successfully.')
+    })
   } catch (err) {
     console.error('Error in generatePartialTx: ', err)
     throw err
   }
 }
-
 generateSignalTx()

@@ -24,6 +24,8 @@ else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
 
 const BFP = require('bitcoinfiles-node').bfp
 
+const fs = require('fs')
+
 // let bfp
 // if (NETWORK === 'mainnet') bfp = new BFP(bchjs, 'mainnet')
 // else bfp = new BFP(bchjs, 'testnet')
@@ -35,6 +37,7 @@ class Util {
     _this = this
     this.bchjs = bchjs
     this.util = util
+    this.fs = fs
   }
 
   int2FixedBuffer (amount, size) {
@@ -42,6 +45,10 @@ class Util {
     hex = hex.padStart(size * 2, '0')
     if (hex.length % 2) hex = '0' + hex
     return Buffer.from(hex, 'hex')
+  }
+
+  sleep (ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   // Get the balance in BCH of a BCH address.
@@ -344,6 +351,213 @@ class Util {
       return script
     } catch (err) {
       console.error('Error in buildSignalMeta: ', err)
+      throw err
+    }
+  }
+
+  // Poll the IPFS file server until it returns an IPFS hash
+  async waitForIpfsHash (fileId) {
+    try {
+      if (!fileId) {
+        throw new Error('File ID required to get info from IPFS hosting server.')
+      }
+
+      let ipfsHash = ''
+      while (!ipfsHash) {
+        // Wait for 30 seconds.
+        console.log('waiting for IPFS upload confirm...')
+        await _this.sleep(30000)
+
+        const result = await _this.bchjs.IPFS.getStatus(fileId)
+        console.log(`result: ${JSON.stringify(result, null, 2)}`)
+
+        if (result.ipfsHash) ipfsHash = result.ipfsHash
+      }
+
+      return ipfsHash
+    } catch (err) {
+      console.error(`Error in waitForIpfsHash(): ${err}`)
+      throw err
+    }
+  }
+
+  // Write an object to a JSON file.
+  writeObject (obj) {
+    return new Promise(function (resolve, reject) {
+      let filename
+      try {
+        const fileStr = JSON.stringify(obj, null, 2)
+
+        // Generate a random filename.
+        const serialNum = Math.floor(100000000 * Math.random())
+        filename = `${serialNum}.json`
+
+        _this.fs.writeFile(`./${filename}`, fileStr, function (err) {
+          if (err) {
+            console.error(`Error while trying to write ${filename} file.`)
+            return reject(err)
+          }
+          return resolve(filename)
+        })
+      } catch (err) {
+        console.error(
+          `Error trying to write out ${filename} file in writeObject.`
+        )
+        return reject(err)
+      }
+    })
+  }
+
+  // Delete the file that was generate with writeObject.
+  deleteFile (filename) {
+    try {
+      fs.unlinkSync(`./${filename}`)
+    } catch (err) {
+      console.error(`Error in deleteFile(): ${err}`)
+      throw err
+    }
+  }
+
+  // Upload an object to IPFS as a JSON file.
+  async uploadToIpfs (obj) {
+    try {
+      // Write the object to a temporary file.
+      const filename = await _this.writeObject(obj)
+
+      // Request a BCH address and amount of BCH to pay for hosting the file.
+      const fileModel = await _this.bchjs.IPFS.createFileModel(`./${filename}`)
+      // console.log(`fileModel: ${JSON.stringify(fileModel, null, 2)}`)
+
+      // This file ID is used to identify the file we're about to upload.
+      const fileId = fileModel.file._id
+      // console.log(`ID for your file: ${fileId}`)
+
+      // Upload the actual file, include the ID assigned to it by the server.
+      await _this.bchjs.IPFS.uploadFile(`./${filename}`, fileId)
+      // console.log(`fileObj: ${JSON.stringify(fileObj, null, 2)}`)
+
+      _this.deleteFile(filename)
+
+      return {
+        paymentAddr: fileModel.file.bchAddr,
+        paymentAmount: fileModel.hostingCostBCH,
+        fileId: fileId
+      }
+    } catch (err) {
+      console.error(`Error in uploadToIpfs(): ${err}`)
+      throw err
+    }
+  }
+
+  paymentPerByte () {
+    // get byte count to calculate fee. paying 1 sat/byte
+    const byteCount = _this.bchjs.BitcoinCash.getByteCount(
+      { P2PKH: 1 },
+      { P2PKH: 2 }
+    )
+    const satoshisPerByte = 1.1
+    return Math.floor(satoshisPerByte * byteCount)
+  }
+
+  // broadcast single in single out Tx to pay amount to addr
+  // addr: address to pay to
+  // amount: amount to pay
+  // wif: private key of the paying part
+  // utxo: UTXO with funds to pay from
+  async buildPaymentTx (addr, amount, wif) {
+    try {
+      // Create an EC Key Pair from the user-supplied WIF.
+      const ecPair = _this.bchjs.ECPair.fromWIF(wif)
+
+      // Generate the public address that corresponds to this WIF.
+      const payAddr = _this.bchjs.ECPair.toCashAddress(ecPair)
+      // console.log(`Publishing ${hash} to ${ADDR}`)
+
+      // All UTXO for address
+      const utxoData = await _this.bchjs.Electrumx.utxo(payAddr)
+      if (!utxoData.success) throw new Error(`Could not get UTXOs for address ${payAddr}`)
+      const utxos = utxoData.utxos
+      // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+
+      // BCH UTXO to pay for the exchange
+      const utxo = await _this.findBiggestUtxo(utxos)
+      // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+
+      // instance of transaction builder
+      let transactionBuilder
+      if (NETWORK === 'mainnet') {
+        transactionBuilder = new _this.bchjs.TransactionBuilder()
+      } else transactionBuilder = new _this.bchjs.TransactionBuilder('testnet')
+
+      const originalAmount = utxo.value
+      const vout = utxo.tx_pos
+      const txid = utxo.tx_hash
+
+      const txFee = _this.paymentPerByte()
+      // add input with txid and index of vout
+      transactionBuilder.addInput(txid, vout)
+
+      // Send the payment for IPFS hosting.
+      transactionBuilder.addOutput(addr, amount)
+
+      // Send the change back to the yourself.
+      transactionBuilder.addOutput(payAddr, originalAmount - amount - txFee)
+
+      // Sign the transaction with the HD node.
+      let redeemScript
+      transactionBuilder.sign(
+        0,
+        ecPair,
+        redeemScript,
+        transactionBuilder.hashTypes.SIGHASH_ALL,
+        originalAmount
+      )
+
+      // build tx
+      const tx = transactionBuilder.build()
+      // output rawhex
+      const hex = tx.toHex()
+
+      return hex
+    } catch (err) {
+      console.error(`Error in buildPaymentTx(): ${err}`)
+      throw err
+    }
+  }
+
+  // Converts a serialized buffer containing encrypted data into an object
+  // that can interpreted by the eccryptoJS library.
+  convertToEncryptStruct (encbuf) {
+    try {
+      let offset = 0
+      const tagLength = 32
+      let pub
+      switch (encbuf[0]) {
+        case 4:
+          pub = encbuf.slice(0, 65)
+          break
+        case 3:
+        case 2:
+          pub = encbuf.slice(0, 33)
+          break
+        default:
+          throw new Error(`Invalid type: ${encbuf[0]}`)
+      }
+      offset += pub.length
+
+      const c = encbuf.slice(offset, encbuf.length - tagLength)
+      const ivbuf = c.slice(0, 128 / 8)
+      const ctbuf = c.slice(128 / 8)
+      const d = encbuf.slice(encbuf.length - tagLength, encbuf.length)
+
+      return {
+        iv: ivbuf,
+        ephemPublicKey: pub,
+        ciphertext: ctbuf,
+        mac: d
+      }
+    } catch (err) {
+      console.error(`Error in convertToEncryptStruct(): ${err}`)
       throw err
     }
   }
