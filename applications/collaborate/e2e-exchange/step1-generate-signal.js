@@ -4,7 +4,7 @@
 */
 
 // !!! choose UTXO from for_sale.json
-const exchangeTokenTxId = '4e2b99231e3f954c7245505ee043cf3c0fbb1681a4adc0562a17364c1462eccf'
+const exchangeTokenTxId = '------- CHANGE THIS -------'
 const exchangeRate = 600 // number of satoshis to buy one unit
 
 // Set NETWORK to either testnet or mainnet
