@@ -1,0 +1,16 @@
+{
+  "name": "check-balances",
+  "version": "1.0.0",
+  "description": "Check the balances of the two collaborative tx wallets",
+  "main": "check-balances.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node check-balances.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

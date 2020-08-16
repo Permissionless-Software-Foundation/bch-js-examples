@@ -1,4 +1,8 @@
 node_modules/
 wallet.json
+wallet-1.json
+for_sell.json
+signal.json
+payment.json
 wallet-info.txt
 tempJSONObj.json
