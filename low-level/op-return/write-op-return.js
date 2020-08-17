@@ -34,7 +34,7 @@ async function writeOpReturn (msg, wif) {
     const transactionBuilder = new bchjs.TransactionBuilder()
 
     const originalAmount = utxo.value
-    const vout = utxo.tx_out
+    const vout = utxo.tx_pos
     const txid = utxo.tx_hash
 
     // add input with txid and index of vout
