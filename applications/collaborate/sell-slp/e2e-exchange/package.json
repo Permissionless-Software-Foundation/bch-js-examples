@@ -5,8 +5,7 @@
   "main": "e2e-exchange.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node step1-generate-signal.js && node step2-purchase-tx.js && node step3-approve.js",
-    "step0": "node step0-utxo-for-sale.js",
+    "start": "npm run step1",
     "step1": "node step1-generate-signal.js",
     "step2": "node step2-purchase-tx.js",
     "step3": "node step3-approve.js"

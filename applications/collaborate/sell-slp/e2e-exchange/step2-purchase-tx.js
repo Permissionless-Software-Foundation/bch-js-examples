@@ -3,12 +3,9 @@
   Assuming addresses, balances, tokens etc. are already checked in step1
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 // const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
 // const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
@@ -16,41 +13,39 @@ const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
-else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
+const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
 
 const fs = require('fs')
 
-// Open the offering part wallet generated with create-wallets.
+// Open the Seller's wallet generated with create-wallets.
 try {
-  var walletInfo = require('../create-wallets/wallet.json')
+  var sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet.json. Generate wallets with create-wallets first.'
+    'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
 
-// Open the accepting part wallet generated with create-wallets.
+// Open the Buyer's wallet generated with create-wallets.
 try {
-  var walletInfo1 = require('../create-wallets/wallet-1.json')
+  var buyerWallet = require('../create-wallets/buyer-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet-1.json. Generate wallets with create-wallets first.'
+    'Could not open buyer-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
 
-const offerAddr = walletInfo.cashAddress
+const sellerAddr = sellerWallet.cashAddress
 
-const acceptAddr = walletInfo1.cashAddress
-const acceptWif = walletInfo1.WIF
-const acceptECPair = bchjs.ECPair.fromWIF(acceptWif)
-const acceptSLP = bchjs.SLP.Address.toSLPAddress(acceptAddr)
+const buyerAddr = buyerWallet.cashAddress
+const buyerWif = buyerWallet.WIF
+const buyerECPair = bchjs.ECPair.fromWIF(buyerWif)
+const buyerSLP = bchjs.SLP.Address.toSLPAddress(buyerAddr)
 
 // Open the sell signal information generated with step1-generate-signal.js
 try {
@@ -62,24 +57,35 @@ try {
   process.exit(0)
 }
 
+// Buyer generates a partially signed transaction to accept the offer from the
+// Seller.
 async function generatePurchaseTx (signal) {
   try {
     // console.log(`signal meta: ${JSON.stringify(signal, null, 2)}`)
-    console.log(`accepter:\naddr = ${acceptAddr}\nslp = ${acceptSLP}`)
+    console.log(`buyer:\naddr = ${buyerAddr}\nslp = ${buyerSLP}`)
 
     // UTXO with  all token information included - TxId from the signal
-    const offeredUTXO = await appUtils.getUtxoDetails(offerAddr, signal.exactUtxoTxId)
+    const offeredUTXO = await appUtils.getUtxoDetails(
+      sellerAddr,
+      signal.exactUtxoTxId
+    )
     // console.log(`offered UTXO: ${JSON.stringify(offeredUTXO, null, 2)}`)
 
-    console.log(`\npay for:\ntokenId = ${offeredUTXO.tokenId} (${offeredUTXO.tokenTicker})`)
+    console.log(
+      `\npay for:\ntokenId = ${offeredUTXO.tokenId} (${
+        offeredUTXO.tokenTicker
+      })`
+    )
     console.log(`amount = ${offeredUTXO.tokenQty}`)
     console.log(`per token = ${signal.rate} satoshis`)
     console.log(`total = ${signal.rate * offeredUTXO.tokenQty} satoshis`)
 
     // All UTXO for address
-    const utxos = await bchjs.Electrumx.utxo(acceptAddr)
+    const utxos = await bchjs.Electrumx.utxo(buyerAddr)
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
-    if (!utxos.success) throw new Error(`Could not get UTXOs for address ${acceptAddr}`)
+    if (!utxos.success) {
+      throw new Error(`Could not get UTXOs for address ${buyerAddr}`)
+    }
 
     // --------[ Construct Purchase Tx ]--------
 
@@ -98,23 +104,33 @@ async function generatePurchaseTx (signal) {
     )
     const slpData = slpSendObj.script
     // console.log(`slpOutputs: ${slpSendObj.outputs}`)
+
+    // This example only supports a single SLP token UTXO for exact token quantities
+    // (no token change). e.g. 1 UTXO representing 0.01 tokens.
     if (slpSendObj.outputs > 1) {
       console.log('WARNING: choose one UTXO with all tokens to exchange')
+      return
     }
 
+    // Calculate sats needed to pay the offer.
     const satsRequiredToBuy = offeredUTXO.tokenQty * signal.rate
+
+    // Calculate miner fees.
     // Get byte count (minimum 2 inputs, 3 outputs)
     const opReturnBufLength = slpData.byteLength + 32 // add padding
-    const byteCount = bchjs.BitcoinCash.getByteCount({ P2PKH: 2 }, { P2PKH: 4 }) + opReturnBufLength
+    const byteCount =
+      bchjs.BitcoinCash.getByteCount({ P2PKH: 2 }, { P2PKH: 4 }) +
+      opReturnBufLength
     const satsNeeded = byteCount + satsRequiredToBuy
     // console.log(`satoshis needed: ${satsNeeded}`)
 
     // add UTXO for sell(STILL CANNOT SPEND - not signed yet)
     transactionBuilder.addInput(offeredUTXO.tx_hash, offeredUTXO.tx_pos)
 
-    // add payment URXO
+    // add payment UTXO
     transactionBuilder.addInput(paymentUtxo.tx_hash, paymentUtxo.tx_pos)
 
+    // Add the SLP OP_RETURN data as the first output.
     transactionBuilder.addOutput(slpData, 0)
 
     const originalAmount = paymentUtxo.value
@@ -123,24 +139,26 @@ async function generatePurchaseTx (signal) {
 
     // Send dust transaction representing tokens being sent.
     transactionBuilder.addOutput(
-      bchjs.SLP.Address.toLegacyAddress(acceptSLP),
+      bchjs.SLP.Address.toLegacyAddress(buyerSLP),
       dust
     )
 
     const remainder = originalAmount - satsNeeded - dust // exchange fee + token UTXO dust
-    if (remainder < 1) throw new Error('Selected UTXO does not have enough satoshis')
+    if (remainder < 1) {
+      throw new Error('Selected UTXO does not have enough satoshis')
+    }
     // console.log(`remainder: ${remainder}`)
 
     // Send payment to the offer side
-    transactionBuilder.addOutput(offerAddr, satsRequiredToBuy)
+    transactionBuilder.addOutput(sellerAddr, satsRequiredToBuy)
 
     // Send the BCH change back to the payment part
-    transactionBuilder.addOutput(acceptAddr, remainder)
+    transactionBuilder.addOutput(buyerAddr, remainder)
 
     // Sign the payment transaction
     transactionBuilder.sign(
       1,
-      acceptECPair,
+      buyerECPair,
       null,
       transactionBuilder.hashTypes.SIGHASH_ALL,
       originalAmount
@@ -150,10 +168,9 @@ async function generatePurchaseTx (signal) {
 
     const hex = tx.toHex()
     // console.log(`Half-signed Tx hex: ${hex}`)
-    fs.writeFile('payment.json', JSON.stringify(hex, null, 2), function (err) {
-      if (err) return console.error(err)
-      console.log('payment.json written successfully.')
-    })
+    fs.writeFileSync('payment.json', JSON.stringify(hex, null, 2))
+    console.log('\npayment.json written successfully.')
+    console.log('Next, run: npm run step3')
   } catch (err) {
     console.error(`Error in generatePaymentTx(): ${err}`)
     throw err

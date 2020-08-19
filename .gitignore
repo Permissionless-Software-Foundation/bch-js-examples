@@ -6,3 +6,5 @@ signal.json
 payment.json
 wallet-info.txt
 tempJSONObj.json
+buyer-wallet.json
+seller-wallet.json
