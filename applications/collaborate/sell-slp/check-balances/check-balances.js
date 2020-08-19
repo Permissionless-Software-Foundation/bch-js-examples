@@ -52,11 +52,15 @@ async function getBalance () {
 
     console.log('BCH Balances information')
     console.log('------------------------')
-    console.log(`Seller's Wallet (${sellerWallet.cashAddress}):`)
+    console.log('Seller\'s Wallet:')
+    console.log(`${sellerWallet.cashAddress}`)
+    console.log(`${sellerWallet.slpAddress}`)
     console.log(JSON.stringify(sellerBalance.balance, null, 2))
     console.log(`Token Balance: ${JSON.stringify(sellerTokenBalance, null, 2)}`)
     console.log('--')
-    console.log(`Buyer's Wallet (${buyerWallet.cashAddress}):`)
+    console.log('Buyer\'s Wallet:')
+    console.log(`${buyerWallet.cashAddress}`)
+    console.log(`${buyerWallet.slpAddress}`)
     console.log(JSON.stringify(buyerBalance.balance, null, 2))
     console.log(`Token Balance: ${JSON.stringify(buyerTokenBalance, null, 2)}`)
   } catch (err) {
