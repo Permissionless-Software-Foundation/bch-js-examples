@@ -2,12 +2,9 @@
   Check the balance of the Buyer and Seller wallets.
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 // const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
 // const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
