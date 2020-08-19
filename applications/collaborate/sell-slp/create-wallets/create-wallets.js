@@ -24,11 +24,6 @@ const fs = require('fs')
 
 const lang = 'english' // Set the language of the wallet.
 
-// These objects used for writing wallet information out to a file.
-const outStr = ''
-const outObj = {}
-const outObj1 = {}
-
 async function createWallets () {
   try {
     // create 256 bit BIP39 mnemonic
