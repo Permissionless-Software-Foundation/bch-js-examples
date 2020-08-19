@@ -49,12 +49,14 @@ async function createWallets () {
     const buyerChildNode = buyerMasterHDNode.derivePath("m/44'/245'/0'/0/0")
 
     const sellerObj = {}
+    sellerObj.mnemonic = sellerMnemonic
     sellerObj.cashAddress = bchjs.HDNode.toCashAddress(sellerChildNode)
     sellerObj.legacyAddress = bchjs.HDNode.toLegacyAddress(sellerChildNode)
     sellerObj.slpAddress = bchjs.SLP.HDNode.toSLPAddress(sellerChildNode)
     sellerObj.WIF = bchjs.HDNode.toWIF(sellerChildNode)
 
     const buyerObj = {}
+    buyerObj.mnemonic = buyerMnemonic
     buyerObj.cashAddress = bchjs.HDNode.toCashAddress(buyerChildNode)
     buyerObj.legacyAddress = bchjs.HDNode.toLegacyAddress(buyerChildNode)
     buyerObj.slpAddress = bchjs.SLP.HDNode.toSLPAddress(buyerChildNode)

@@ -7,17 +7,8 @@
 const tokenId =
   '38e97c5d7d3585a2cbf3f9580c82ca33985f9cb0845d4dcce220cb709f9538b0'
 
-const exchangeRate = 60000 // number of satoshis to buy one unit
-
-// REST API servers.
-// const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-// const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
-// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
-// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
-
-// bch-js-examples require code from the main bch-js repo
-// const BCHJS = require('@psf/bch-js')
-// const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+// number of satoshis to buy 1 whole token.
+const exchangeRate = 60000
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
@@ -29,7 +20,7 @@ try {
   var sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet.json. Generate wallets with create-wallets first.'
+    'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
@@ -56,7 +47,7 @@ async function checkSetup () {
       sellerWallet.cashAddress,
       tokenId
     )
-    console.log(`offerTokenUtxos: ${JSON.stringify(offerTokenUtxos, null, 2)}`)
+    // console.log(`offerTokenUtxos: ${JSON.stringify(offerTokenUtxos, null, 2)}`)
 
     if (offerTokenUtxos[0].tokenId !== tokenId) {
       console.log(
@@ -80,10 +71,7 @@ async function checkSetup () {
   }
 }
 
-// const offerAddr = walletInfo.cashAddress
-// const offerSLP = bchjs.SLP.Address.toSLPAddress(offerAddr)
-
-// Generate signal transaction
+// Generate 'signal' JSON file.
 async function generateSignalTx (tokenUtxoForSale) {
   try {
     console.log(
@@ -107,19 +95,15 @@ async function generateSignalTx (tokenUtxoForSale) {
       tokenId: exchangeTokenId,
       buyOrSell: 'SELL',
       rate: exchangeRate,
-      reserve: false,
       exactUtxoTxId: tokenUtxoForSale.txid, // or biggestUtxo.txid
-      exactUtxoIndex: tokenUtxoForSale.vout, // or biggestUtxo.vout
-      minSatsToExchange: 0
+      exactUtxoIndex: tokenUtxoForSale.vout // or biggestUtxo.vout
     }
 
-    fs.writeFile('signal.json', JSON.stringify(config, null, 2), function (err) {
-      if (err) return console.error(err)
-      console.log('signal.json written successfully.')
-    })
+    fs.writeFileSync('signal.json', JSON.stringify(config, null, 2))
+    console.log('\nsignal.json written successfully.')
+    console.log('Next, run: npm run step2')
   } catch (err) {
     console.error('Error in generatePartialTx: ', err)
     throw err
   }
 }
-// generateSignalTx()
