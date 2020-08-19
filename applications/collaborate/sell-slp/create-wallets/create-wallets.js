@@ -60,24 +60,23 @@ async function createWallets () {
     buyerObj.WIF = bchjs.HDNode.toWIF(buyerChildNode)
 
     // Write out the basic information into a json file for other example apps to use.
-    fs.writeFile(
-      'seller-wallet.json',
-      JSON.stringify(sellerObj, null, 2),
-      function (err) {
-        if (err) return console.error(err)
-        console.log('seller-wallet.json written successfully.')
-      }
-    )
+    fs.writeFileSync('seller-wallet.json', JSON.stringify(sellerObj, null, 2))
+    fs.writeFileSync('buyer-wallet.json', JSON.stringify(buyerObj, null, 2))
 
-    // Write out the basic information into a json file for other example apps to use.
-    fs.writeFile(
-      'buyer-wallet.json',
-      JSON.stringify(buyerObj, null, 2),
-      function (err) {
-        if (err) return console.error(err)
-        console.log('buyer-wallet.json written successfully.')
-      }
-    )
+    console.log(`
+      Wallets created. To continue the example, you need to fund these wallets.
+
+      Send 3000 sats to the Sellers address:
+      ${sellerObj.cashAddress}
+
+      Send 3000 sats to the Buyers address:
+      ${buyerObj.cashAddress}
+
+      Also send 0.01 PSF tokens to the Sellers address:
+      ${sellerObj.slpAddress}
+
+      You can buy PSF tokens at https://PSFoundation.cash
+      `)
   } catch (err) {
     console.error('Error in createWallet(): ', err)
   }

@@ -6,4 +6,6 @@ This example shows the basics of how to construct a collaborative transaction fo
 
 To run through the example. Follow these instructions and run each step with `npm start` or `npm run <script>`:
 
-- [create-wallets](./create-wallets) will create two wallets. One for the Seller and one for the Buyer. Run with `npm start`.
+- [create-wallets](./create-wallets) will create two wallets. One for the Seller and one for the Buyer. Run with `npm start`. Follow the on-screen instructions after running the script.
+- [check-balances](./check-balances) can be used to ensure the wallets have the appropriate amount of sats and tokens, as per the instructions produced by create-wallets.js. Run with `npm start`.
+- 

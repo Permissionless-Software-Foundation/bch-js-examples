@@ -1,6 +1,5 @@
 /*
-  Check the balance of the root address of an HD node wallet generated
-  with the create-wallet example.
+  Check the balance of the Buyer and Seller wallets.
 */
 
 // Set NETWORK to either testnet or mainnet
@@ -16,26 +15,24 @@ const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
-else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
+const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
 
-// Open the first wallet generated with create-wallets.
+// Open the sellers wallet
 try {
-  var walletInfo = require('../create-wallets/wallet.json')
+  var sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet.json. Generate wallets with create-wallets first.'
+    'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
 
 // Open the second wallet generated with create-wallets.
 try {
-  var walletInfo1 = require('../create-wallets/wallet-1.json')
+  var buyerWallet = require('../create-wallets/buyer-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet-1.json. Generate wallets with create-wallets first.'
+    'Could not open buyer-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
@@ -44,16 +41,27 @@ try {
 async function getBalance () {
   try {
     // first get BCH balance
-    const balance = await bchjs.Electrumx.balance(walletInfo.cashAddress)
-    const balance1 = await bchjs.Electrumx.balance(walletInfo1.cashAddress)
+    const sellerBalance = await bchjs.Electrumx.balance(
+      sellerWallet.cashAddress
+    )
+    const buyerBalance = await bchjs.Electrumx.balance(buyerWallet.cashAddress)
+
+    const sellerTokenBalance = await bchjs.SLP.Utils.balancesForAddress(
+      sellerWallet.slpAddress
+    )
+    const buyerTokenBalance = await bchjs.SLP.Utils.balancesForAddress(
+      buyerWallet.slpAddress
+    )
 
     console.log('BCH Balances information')
     console.log('------------------------')
-    console.log(`First Wallet (${walletInfo.cashAddress}):`)
-    console.log(JSON.stringify(balance, null, 2))
+    console.log(`Seller's Wallet (${sellerWallet.cashAddress}):`)
+    console.log(JSON.stringify(sellerBalance.balance, null, 2))
+    console.log(`Token Balance: ${JSON.stringify(sellerTokenBalance, null, 2)}`)
     console.log('--')
-    console.log(`Second Wallet (${walletInfo1.cashAddress}):`)
-    console.log(JSON.stringify(balance1, null, 2))
+    console.log(`Buyer's Wallet (${buyerWallet.cashAddress}):`)
+    console.log(JSON.stringify(buyerBalance.balance, null, 2))
+    console.log(`Token Balance: ${JSON.stringify(buyerTokenBalance, null, 2)}`)
   } catch (err) {
     console.error('Error in getBalance: ', err)
     throw err
