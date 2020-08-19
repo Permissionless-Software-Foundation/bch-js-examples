@@ -46,7 +46,7 @@ const offerSLP = bchjs.SLP.Address.toSLPAddress(offerAddr)
 // Generate signal transaction
 async function generateSignalTx () {
   try {
-    console.log(`offerer:\naddr = ${offerAddr}\nslp = ${offerSLP}`)
+    console.log(`seller:\naddr = ${offerAddr}\nslp = ${offerSLP}`)
 
     // UTXO with  all token information included
     const offeredUTXO = await appUtils.getUtxoDetails(offerAddr, exchangeTokenTxId)

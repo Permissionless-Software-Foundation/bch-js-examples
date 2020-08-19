@@ -68,12 +68,15 @@ async function approvePaymentTx (signal, payment) {
     const signalTxHash = signal.URI.replace('swap:', '')
     const offeredUTXO = await appUtils.getUtxoDetails(offerAddr, signalTxHash)
     // console.log(`offered UTXO: ${JSON.stringify(offeredUTXO, null, 2)}`)
-    if (offeredUTXO.spentTxId) throw new Error('Offered UTXO has already been spent')
+    if (offeredUTXO.spentTxId) { throw new Error('Offered UTXO has already been spent') }
 
     const paymentFileBuffer = Buffer.from(payment, 'hex')
     const csTransaction = Bitcoin.Transaction.fromBuffer(paymentFileBuffer)
     // console.log(`payment tx: ${JSON.stringify(csTransaction, null, 2)}`)
-    const csTransactionBuilder = Bitcoin.TransactionBuilder.fromTransaction(csTransaction, 'mainnet')
+    const csTransactionBuilder = Bitcoin.TransactionBuilder.fromTransaction(
+      csTransaction,
+      'mainnet'
+    )
     // console.log(`tx builder: ${JSON.stringify(csTransactionBuilder, null, 2)}`)
     // console.log(csTransactionBuilder.tx.ins[1].script)
     // console.log(csTransactionBuilder.tx.outs)

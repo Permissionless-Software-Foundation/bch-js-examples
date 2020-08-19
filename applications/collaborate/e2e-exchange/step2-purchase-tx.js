@@ -65,13 +65,20 @@ try {
 async function generatePurchaseTx (signal) {
   try {
     // console.log(`signal meta: ${JSON.stringify(signal, null, 2)}`)
-    console.log(`accepter:\naddr = ${acceptAddr}\nslp = ${acceptSLP}`)
+    console.log(`buyer:\naddr = ${acceptAddr}\nslp = ${acceptSLP}`)
 
     // UTXO with  all token information included - TxId from the signal
-    const offeredUTXO = await appUtils.getUtxoDetails(offerAddr, signal.exactUtxoTxId)
+    const offeredUTXO = await appUtils.getUtxoDetails(
+      offerAddr,
+      signal.exactUtxoTxId
+    )
     // console.log(`offered UTXO: ${JSON.stringify(offeredUTXO, null, 2)}`)
 
-    console.log(`\npay for:\ntokenId = ${offeredUTXO.tokenId} (${offeredUTXO.tokenTicker})`)
+    console.log(
+      `\npay for:\ntokenId = ${offeredUTXO.tokenId} (${
+        offeredUTXO.tokenTicker
+      })`
+    )
     console.log(`amount = ${offeredUTXO.tokenQty}`)
     console.log(`per token = ${signal.rate} satoshis`)
     console.log(`total = ${signal.rate * offeredUTXO.tokenQty} satoshis`)
@@ -79,7 +86,9 @@ async function generatePurchaseTx (signal) {
     // All UTXO for address
     const utxos = await bchjs.Electrumx.utxo(acceptAddr)
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
-    if (!utxos.success) throw new Error(`Could not get UTXOs for address ${acceptAddr}`)
+    if (!utxos.success) {
+      throw new Error(`Could not get UTXOs for address ${acceptAddr}`)
+    }
 
     // --------[ Construct Purchase Tx ]--------
 
@@ -98,23 +107,33 @@ async function generatePurchaseTx (signal) {
     )
     const slpData = slpSendObj.script
     // console.log(`slpOutputs: ${slpSendObj.outputs}`)
+
+    // This example only supports a single SLP token UTXO for exact token quantities
+    // (no token change). e.g. 1 UTXO representing 2 tokens.
     if (slpSendObj.outputs > 1) {
       console.log('WARNING: choose one UTXO with all tokens to exchange')
+      return
     }
 
+    // Calculate sats needed to pay the offer.
     const satsRequiredToBuy = offeredUTXO.tokenQty * signal.rate
+
+    // Calculate miner fees.
     // Get byte count (minimum 2 inputs, 3 outputs)
     const opReturnBufLength = slpData.byteLength + 32 // add padding
-    const byteCount = bchjs.BitcoinCash.getByteCount({ P2PKH: 2 }, { P2PKH: 4 }) + opReturnBufLength
+    const byteCount =
+      bchjs.BitcoinCash.getByteCount({ P2PKH: 2 }, { P2PKH: 4 }) +
+      opReturnBufLength
     const satsNeeded = byteCount + satsRequiredToBuy
     // console.log(`satoshis needed: ${satsNeeded}`)
 
     // add UTXO for sell(STILL CANNOT SPEND - not signed yet)
     transactionBuilder.addInput(offeredUTXO.tx_hash, offeredUTXO.tx_pos)
 
-    // add payment URXO
+    // add payment UTXO
     transactionBuilder.addInput(paymentUtxo.tx_hash, paymentUtxo.tx_pos)
 
+    // Add the SLP OP_RETURN data as the first output.
     transactionBuilder.addOutput(slpData, 0)
 
     const originalAmount = paymentUtxo.value
@@ -128,7 +147,9 @@ async function generatePurchaseTx (signal) {
     )
 
     const remainder = originalAmount - satsNeeded - dust // exchange fee + token UTXO dust
-    if (remainder < 1) throw new Error('Selected UTXO does not have enough satoshis')
+    if (remainder < 1) {
+      throw new Error('Selected UTXO does not have enough satoshis')
+    }
     // console.log(`remainder: ${remainder}`)
 
     // Send payment to the offer side
