@@ -69,6 +69,7 @@ async function createWallets () {
       if (i === 0) {
         outObj.cashAddress = bchjs.HDNode.toCashAddress(childNode)
         outObj.legacyAddress = bchjs.HDNode.toLegacyAddress(childNode)
+        outObj.slpAddress = bchjs.SLP.HDNode.toSLPAddress(childNode)
         outObj.WIF = bchjs.HDNode.toWIF(childNode)
       }
 
@@ -76,6 +77,7 @@ async function createWallets () {
       if (i === 1) {
         outObj1.cashAddress = bchjs.HDNode.toCashAddress(childNode)
         outObj1.legacyAddress = bchjs.HDNode.toLegacyAddress(childNode)
+        outObj1.slpAddress = bchjs.SLP.HDNode.toSLPAddress(childNode)
         outObj1.WIF = bchjs.HDNode.toWIF(childNode)
       }
     }
