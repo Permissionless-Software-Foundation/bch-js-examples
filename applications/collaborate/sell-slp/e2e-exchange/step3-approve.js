@@ -5,12 +5,9 @@
 
 const Bitcoin = require('bitcoincashjs-lib')
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
+// const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 // const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
 // const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
 
@@ -18,26 +15,24 @@ const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
-else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
+const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
 
-// Open the offering part wallet generated with create-wallets.
+// Open the Seller's wallet generated with create-wallets.
 try {
-  var walletInfo = require('../create-wallets/wallet.json')
+  var sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
-    'Could not open wallet.json. Generate wallets with create-wallets first.'
+    'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
   )
   process.exit(0)
 }
 
-const offerAddr = walletInfo.cashAddress
-const offerWif = walletInfo.WIF
-const offerECPair = bchjs.ECPair.fromWIF(offerWif)
+const sellerAddr = sellerWallet.cashAddress
+const sellerWif = sellerWallet.WIF
+const sellerECPair = bchjs.ECPair.fromWIF(sellerWif)
 
 // Open the sell signal information generated with step1-generate-signal.js
 try {
@@ -64,15 +59,24 @@ async function approvePaymentTx (signal, payment) {
     // console.log(`signal meta: ${JSON.stringify(signal, null, 2)}`)
     // console.log(`payment meta: ${JSON.stringify(payment, null, 2)}`)
 
-    // UTXO with  all token information included - TxId from the signal
-    const signalTxHash = signal.URI.replace('swap:', '')
-    const offeredUTXO = await appUtils.getUtxoDetails(offerAddr, signalTxHash)
-    // console.log(`offered UTXO: ${JSON.stringify(offeredUTXO, null, 2)}`)
-    if (offeredUTXO.spentTxId) { throw new Error('Offered UTXO has already been spent') }
+    // UTXO with  all token information included
+    const signalTxHash = signal.exactUtxoTxId
+    const sellerUTXO = await appUtils.getUtxoDetails(sellerAddr, signalTxHash)
+    console.log(`offered UTXO: ${JSON.stringify(sellerUTXO, null, 2)}`)
 
+    // Ensure the UTXO has not been spent.
+    if (sellerUTXO.spentTxId) {
+      throw new Error('Offered UTXO has already been spent')
+    }
+
+    // Convert the hex string version of the transaction into a Buffer.
     const paymentFileBuffer = Buffer.from(payment, 'hex')
+
+    // Generate a Transaction object from the transaction binary data.
     const csTransaction = Bitcoin.Transaction.fromBuffer(paymentFileBuffer)
     // console.log(`payment tx: ${JSON.stringify(csTransaction, null, 2)}`)
+
+    // Instantiate the Transaction Builder.
     const csTransactionBuilder = Bitcoin.TransactionBuilder.fromTransaction(
       csTransaction,
       'mainnet'
@@ -81,22 +85,31 @@ async function approvePaymentTx (signal, payment) {
     // console.log(csTransactionBuilder.tx.ins[1].script)
     // console.log(csTransactionBuilder.tx.outs)
 
+    // At this point, it would be up to the Seller's wallet to verify that the
+    // transaction has not been manipulated by the Buyer. For the sake of this
+    // example, it is assumed that the transaction is valid.
+
+    // If payment is valid, offering party countersigns their input in the
+    // transaction.
     const dust = 546
-    // If payment is valid, offering party countersigns and broadcasts
     csTransactionBuilder.sign(
       0,
-      offerECPair,
+      sellerECPair,
       null,
       Bitcoin.Transaction.SIGHASH_ALL,
       dust
     )
+
     // build tx
     const csTx = csTransactionBuilder.build()
+
     // output rawhex
     const csTxHex = csTx.toHex()
     // console.log(`Fully signed Tx hex: ${csTxHex}`)
+
     // Broadcast transaction to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction(csTxHex)
+
     console.log(`Exchange Tx ID: ${txidStr}`)
     console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
