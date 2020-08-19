@@ -1,0 +1,20 @@
+{
+  "name": "e2e-exchange",
+  "version": "1.0.0",
+  "description": "Exchange SLP tokens with collaborative txs",
+  "main": "e2e-exchange.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node step1-generate-signal.js && node step2-purchase-tx.js && node step3-approve.js",
+    "step0": "node step0-utxo-for-sale.js",
+    "step1": "node step1-generate-signal.js",
+    "step2": "node step2-purchase-tx.js",
+    "step3": "node step3-approve.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
