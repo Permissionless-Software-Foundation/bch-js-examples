@@ -8,7 +8,7 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  'ba6c400e66190baf7f101c6ea54c0ab81c7fcfa45e9a239088f2ac0a570ec0e5'
+  '8cd26481aaed66198e22e05450839fda763daadbb9938b0c71521ef43c642299'
 // const TO_SLPADDR = '' // The address to send the new tokens.
 
 // Set NETWORK to either testnet or mainnet
@@ -90,7 +90,9 @@ async function createNFTChild () {
         utxo && // UTXO is associated with a token.
         utxo.tokenId === TOKENID && // UTXO matches the token ID.
         utxo.utxoType === 'token' // UTXO is not a minting baton.
-      ) { return true }
+      ) {
+        return true
+      }
     })
     // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
 
@@ -112,12 +114,12 @@ async function createNFTChild () {
     const vout = utxo.tx_pos
     const txid = utxo.tx_hash
 
-    // add input with txid and index of vout
-    transactionBuilder.addInput(txid, vout)
-
     // add the NFT Group UTXO as an input. This NFT Group token must be burned
     // to create a Child NFT, as per the spec.
     transactionBuilder.addInput(tokenUtxos[0].tx_hash, tokenUtxos[0].tx_pos)
+
+    // add input with txid and index of vout
+    transactionBuilder.addInput(txid, vout)
 
     // Set the transaction fee. Manually set for ease of example.
     const txFee = 550
@@ -129,7 +131,7 @@ async function createNFTChild () {
     // Generate SLP config object
     const configObj = {
       name: 'NFT Child',
-      ticker: 'NFT002',
+      ticker: 'NFT004',
       documentUrl: 'https://FullStack.cash'
     }
 
@@ -159,24 +161,25 @@ async function createNFTChild () {
     // Generate a keypair from the change address.
     const keyPair = bchjs.HDNode.toKeyPair(change)
 
-    // Sign the input for the UTXO paying for the TX.
     let redeemScript
+
+    // Sign the Token UTXO for the NFT Group token that will be burned in this
+    // transaction.
     transactionBuilder.sign(
       0,
       keyPair,
       redeemScript,
       transactionBuilder.hashTypes.SIGHASH_ALL,
-      originalAmount
+      546
     )
 
-    // Sign the Token UTXO for the NFT Group token that will be burned in this
-    // transaction.
+    // Sign the input for the UTXO paying for the TX.
     transactionBuilder.sign(
       1,
       keyPair,
       redeemScript,
       transactionBuilder.hashTypes.SIGHASH_ALL,
-      546
+      originalAmount
     )
 
     // build tx
