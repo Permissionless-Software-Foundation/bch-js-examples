@@ -6,7 +6,7 @@ signal.json
 payment.json
 wallet-info.txt
 tempJSONObj.json
-+*-wallet.json
-+signed_tx*.json
-+combined_inputs.json
-+unsigned_tx.json
+*-wallet.json
+signed_tx*.json
+combined_inputs.json
+unsigned_tx.json
