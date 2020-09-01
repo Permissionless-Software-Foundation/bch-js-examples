@@ -10,3 +10,4 @@ tempJSONObj.json
 signed_tx*.json
 combined_inputs.json
 unsigned_tx.json
+combined_tx.json

@@ -103,7 +103,7 @@ function utxoForAddress (address) {
   }
 }
 
-// Find inputs belinging to particular address (the ones can be signed)
+// Find inputs belonging to particular address (the ones can be signed)
 function inputForAddress (address, allInputs) {
   try {
     const addressUTXO = utxoForAddress(address)
