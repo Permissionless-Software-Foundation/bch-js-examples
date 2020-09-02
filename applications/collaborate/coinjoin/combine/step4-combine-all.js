@@ -64,11 +64,11 @@ async function combineAllInputs () {
     // console.log(`tx: ${JSON.stringify(unsignedTx, null, 2)}`)
 
     const decodedTx = await bchjs.RawTransactions.decodeRawTransaction(unsignedTx)
-    // console.log(`tx: ${JSON.stringify(decodedTx, null, 2)}`)
+    console.log(`tx: ${JSON.stringify(decodedTx, null, 2)}`)
 
     // extract ONLY SIGNED INPUTS from all transactions copies
     const onlySignedInputs = await extractSignedInputs(signedInputTxs)
-    // console.log(`signed inputs: ${JSON.stringify(onlySignedInputs, null, 2)}`)
+    console.log(`signed inputs: ${JSON.stringify(onlySignedInputs, null, 2)}`)
 
     const transactionBuilder = new bchjs.TransactionBuilder()
 

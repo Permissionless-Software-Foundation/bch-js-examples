@@ -57,7 +57,7 @@ async function buildUnsignedTx () {
       // Send payment
       transactionBuilder.addOutput(endAddr, satsNeeded)
       // Send the BCH change back to the payment part
-      transactionBuilder.addOutput(account.address, remainder)
+      transactionBuilder.addOutput(account.address, remainder - 300)
     })
 
     const tx = transactionBuilder.transaction.buildIncomplete()
