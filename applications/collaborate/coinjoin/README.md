@@ -30,7 +30,7 @@ To run through the example. Follow these instructions and run each step with `np
 
 - [create-wallets](./create-wallets) will create three wallets. One for the Alice, Bob, and Sam. Run with `npm start`. Follow the on-screen instructions after running the script.
 - [check-balances](./check-balances) can be used to ensure the wallets have the appropriate amount of sats, as per the instructions produced by create-wallets.js. Run with `npm start`.
-- [step1](./combine) will check to ensure the wallets are funded correctly. If they are, it will generate a 'signal' JSON file, representing the token UTXO the Seller is offering for sale. Run with `npm run step1`.
+- [step1](./combine) will check to ensure the wallets are funded correctly. If they are, it will generate a JSON file with the UTXO input data from each wallet. Run with `npm run step1`.
 - [step2](./combine) will accept the offer. This simulates the Buyer opening the signal file and creating a partially signed transaction, attaching their own BCH UTXO to pay for the token. It will generate another JSON file containing the partially signed transaction. Run with `npm run step2`.
 - [step3](./combine) simulates the Seller accepting the partially-signed transaction from the Buyer. They would inspect the transaction, sign their input if they accept it, and broadcast the transaction to the network. Run with `npm run step3`.
 
