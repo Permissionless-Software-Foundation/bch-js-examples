@@ -10,11 +10,12 @@ const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
+const Bitcoin = require('bitcoincashjs-lib')
 
 // Instantiate bch-js based on the network.
 const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
 
-const fs = require('fs')
+// const fs = require('fs')
 
 // Open the all signed tx information generated with step3-sign-own-tx.js
 try {
@@ -30,76 +31,50 @@ try {
   process.exit(0)
 }
 
-// Open the unsigned tx information generated with step2-unsigned-tx.js
-try {
-  var unsignedTx = require('./unsigned_tx.json')
-} catch (err) {
-  console.log(
-    'Could not open unsigned_tx.json. Generate tx information with step2-unsigned-tx.js first.'
-  )
-  process.exit(0)
-}
-
-// extract ONLY SIGNED inputs from a transaction copy
-// result [{txId: '', scriptSig: ''}, ...]
-async function extractSignedInputs (allInputs) {
-  const signedInputs = []
-  for (let i = 0; i < allInputs.length; i++) {
-    const txHex = allInputs[i]
-    const decodedTx = await bchjs.RawTransactions.decodeRawTransaction(txHex)
-    decodedTx.vin.forEach(function (input) {
-      // console.log(`tx: ${JSON.stringify(input.txid, null, 2)}`)
-      if (input.scriptSig.hex !== '') {
-        signedInputs.push({ txId: input.txid, scriptSig: input.scriptSig })
-      }
-    })
-  }
-  // console.log(`inputs: ${JSON.stringify(signedInputs, null, 2)}`)
-  return signedInputs
-}
-
 // Combine all signed inputs and all outputs in a valid Tx
 async function combineAllInputs () {
   try {
-    // console.log(`tx: ${JSON.stringify(unsignedTx, null, 2)}`)
+    // Convert the hex string version of the first partially-signed transaction into a Buffer.
+    const txBuffer = Buffer.from(signedInputTxs[0], 'hex')
 
-    const decodedTx = await bchjs.RawTransactions.decodeRawTransaction(unsignedTx)
-    console.log(`tx: ${JSON.stringify(decodedTx, null, 2)}`)
+    // Generate a Transaction object from the transaction binary data.
+    const txObj = Bitcoin.Transaction.fromBuffer(txBuffer)
+    // console.log(`partially-signed tx object: ${JSON.stringify(txObj, null, 2)}`)
+    // console.log(`First partially-signed txObj.ins: ${JSON.stringify(txObj.ins, null, 2)}`)
 
-    // extract ONLY SIGNED INPUTS from all transactions copies
-    const onlySignedInputs = await extractSignedInputs(signedInputTxs)
-    console.log(`signed inputs: ${JSON.stringify(onlySignedInputs, null, 2)}`)
+    // Convert the second partially-signed TX from hex into a TX object.
+    const txBuffer2 = Buffer.from(signedInputTxs[1], 'hex')
+    const txObj2 = Bitcoin.Transaction.fromBuffer(txBuffer2)
 
-    const transactionBuilder = new bchjs.TransactionBuilder()
+    // Convert the third partially-signed TX from hex into a TX object.
+    const txBuffer3 = Buffer.from(signedInputTxs[2], 'hex')
+    const txObj3 = Bitcoin.Transaction.fromBuffer(txBuffer3)
 
-    const inputScripts = []
-    for (let i = 0; i < onlySignedInputs.length; i++) {
-      const input = onlySignedInputs[i]
-      transactionBuilder.addInput(input.txId, i)
-      const scriptBuffer = Buffer.from(input.scriptSig.hex, 'hex')
-      inputScripts.push({ vout: i, script: scriptBuffer })
-    }
+    // Overwrite the tx inputs of the first partially-signed TX with the signed
+    // inputs from the other two transactions.
+    txObj.ins[1].script = txObj2.ins[1].script
+    txObj.ins[2].script = txObj3.ins[2].script
 
-    decodedTx.vout.forEach(function (output) {
-      transactionBuilder.addOutput(
-        output.scriptPubKey.addresses[0],
-        bchjs.BitcoinCash.toSatoshi(output.value)
-      )
-    })
+    // console.log(`Fully-signed txObj.ins: ${JSON.stringify(txObj.ins, null, 2)}`)
 
-    transactionBuilder.addInputScripts(inputScripts)
+    // Port the transaction object into the TransactionBuilder.
+    const transactionBuilder = Bitcoin.TransactionBuilder.fromTransaction(
+      txObj,
+      'mainnet'
+    )
+
     // build tx
     const tx = transactionBuilder.build()
     // output rawhex
     const txHex = tx.toHex()
-    console.log(`Valid Tx hex: ${txHex}`)
-    fs.writeFileSync('combined_tx.json', JSON.stringify(txHex, null, 2))
-    console.log('combined_tx.json written successfully.')
+
+    // const finalTx = await bchjs.RawTransactions.decodeRawTransaction(txHex)
+    // console.log(`finalTx: ${JSON.stringify(finalTx, null, 2)}`)
 
     // Broadcast transaction to the network
-    // const txidStr = await bchjs.RawTransactions.sendRawTransaction(txHex)
-    // console.log(`Exchange Tx ID: ${txidStr}`)
-    // console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    const txidStr = await bchjs.RawTransactions.sendRawTransaction(txHex)
+    console.log(`Exchange Tx ID: ${txidStr}`)
+    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in combineAllInputs():', err)
     throw err
