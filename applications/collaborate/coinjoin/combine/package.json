@@ -1,0 +1,20 @@
+{
+  "name": "token-starter",
+  "version": "1.0.0",
+  "description": "Crowd Funding",
+  "main": "token-starter.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "npm run step1",
+    "step1": "node step1-combine-inputs.js",
+    "step2": "node step2-unsigned-tx.js",
+    "step3": "node step3-sign-own-tx.js",
+    "step4": "node step4-combine-all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
