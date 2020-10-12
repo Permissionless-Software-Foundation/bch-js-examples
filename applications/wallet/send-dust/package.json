@@ -1,0 +1,12 @@
+{
+  "name": "send-dust",
+  "version": "1.0.0",
+  "description": "Send 'n' dust outputs to an address",
+  "main": "send-dust.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node send-dust.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
