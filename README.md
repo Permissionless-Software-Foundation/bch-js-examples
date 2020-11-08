@@ -35,7 +35,7 @@ You can run each example script by entering its directory and executing `npm sta
 ## More Information
 If you're new to Bitcoin Cash or need to brush up on your fundamentals, here are
 some resources:
-- [Mastering Bitcoin Cash](https://developer.bitcoin.com/mastering-bitcoin-cash/)
+- [Mastering Bitcoin Cash](https://github.com/Bitcoin-com/mastering-bitcoin-cash)
 - [bch-js and bch-api Documentation](https://fullstack.cash/documentation/)
 
 ## Basic BCH Wallet Functions
