@@ -6,7 +6,7 @@ library and the [bch-api](https://fullstack.cash/documentation/) REST API, offer
 
 Here are two YouTube walk-through videos to help you get started:
 - [Introduction to bch-js and the bch-js-examples repository](https://youtu.be/GD2i1ZUiyrk)
-- [Working with the FullStack.cash JWT token](https://youtu.be/GD2i1ZUiyrk)
+- [Working with the FullStack.cash JWT token](https://youtu.be/OdJOleHoSo8)
 
 The `low-level` directory
 contains low-level applications exercising a single feature of bch-js. Think of
