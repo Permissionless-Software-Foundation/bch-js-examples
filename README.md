@@ -6,7 +6,7 @@ library and the [bch-api](https://fullstack.cash/documentation/) REST API, offer
 
 Here are two YouTube walk-through videos to help you get started:
 - [Introduction to bch-js and the bch-js-examples repository](https://youtu.be/GD2i1ZUiyrk)
-- [Working with the FullStack.cash JWT token](https://youtu.be/GD2i1ZUiyrk)
+- [Working with the FullStack.cash JWT token](https://youtu.be/OdJOleHoSo8)
 
 The `low-level` directory
 contains low-level applications exercising a single feature of bch-js. Think of
@@ -35,7 +35,7 @@ You can run each example script by entering its directory and executing `npm sta
 ## More Information
 If you're new to Bitcoin Cash or need to brush up on your fundamentals, here are
 some resources:
-- [Mastering Bitcoin Cash](https://developer.bitcoin.com/mastering-bitcoin-cash/)
+- [Mastering Bitcoin Cash](https://github.com/Bitcoin-com/mastering-bitcoin-cash)
 - [bch-js and bch-api Documentation](https://fullstack.cash/documentation/)
 
 ## Basic BCH Wallet Functions
