@@ -4,16 +4,15 @@
 */
 
 // REST API servers.
-const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-// const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
-// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
-// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v3/'
+// const ABC_MAINNET = 'https://abc.fullstack.cash/v3/'
+// const TESTNET3 = 'https://testnet3.fullstack.cash/v3/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
+const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 
 const AppUtils = require('./util')
 const appUtils = new AppUtils()
