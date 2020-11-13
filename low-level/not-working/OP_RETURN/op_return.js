@@ -6,15 +6,16 @@
 const NETWORK = 'mainnet'
 
 // REST API servers.
-const MAINNET_API = 'https://mainnet.bchjs.cash/v3/'
-const TESTNET_API = 'http://testnet.bchjs.cash/v3/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v3/'
+// const ABC_MAINNET = 'https://abc.fullstack.cash/v3/'
+const TESTNET3 = 'https://testnet3.fullstack.cash/v3/'
 
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API })
-else bchjs = new BCHJS({ restURL: TESTNET_API })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: BCHN_MAINNET })
+else bchjs = new BCHJS({ restURL: TESTNET3 })
 
 // Choose a transaction to parse for OP_Return
 
