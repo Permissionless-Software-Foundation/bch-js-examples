@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@psf/bch-js": "^4.5.0",
+    "@psf/bch-js": "^4.5.4",
     "bitcoinfiles-node": "^0.5.4"
   },
   "husky": {
