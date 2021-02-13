@@ -9,9 +9,9 @@ util.inspect.defaultOptions = {
 const NETWORK = 'mainnet'
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v3/'
-// const ABC_MAINNET = 'https://abc.fullstack.cash/v3/'
-const TESTNET3 = 'https://testnet3.fullstack.cash/v3/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+// const ABC_MAINNET = 'https://abc.fullstack.cash/v4/'
+const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
