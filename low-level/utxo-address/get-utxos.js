@@ -7,10 +7,10 @@
 const NETWORK = 'testnet'
 
 // REST API servers.
-const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v3/'
-const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v3/'
-// const MAINNET_API_PAID = 'https://api.fullstack.cash/v3/'
-// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v3/'
+const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v4/'
+const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v4/'
+// const MAINNET_API_PAID = 'https://api.fullstack.cash/v4/'
+// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v4/'
 
 const BCHJS = require('@psf/bch-js')
 
