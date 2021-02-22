@@ -3,9 +3,9 @@
 */
 
 // CUSTOMIZE THESE VALUES FOR YOUR USE
-const TOKENQTY = 1
+const TOKENQTY = 0.01
 const TOKENID =
-  '8de4984472af772f144a74de473d6c21505a6d89686b57445c3e4fc7db3773b6'
+  'dd2fc6e47bfef7c9cfef39bd1be86b3a263a1822736a0c7a0655a758c6ea1713'
 
 // Set NETWORK to either testnet or mainnet
 const NETWORK = 'mainnet'
@@ -60,20 +60,20 @@ async function burnTokens () {
     // Get UTXOs held by this address.
     const data = await bchjs.Electrumx.utxo(cashAddress)
     const utxos = data.utxos
-    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
     if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
 
     // Identify the SLP token UTXOs.
     let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
+    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
 
     // Filter out the non-SLP token UTXOs.
     const bchUtxos = utxos.filter((utxo, index) => {
       const tokenUtxo = tokenUtxos[index]
       if (!tokenUtxo.isValid) return true
     })
-    console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`)
+    // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`)
 
     if (bchUtxos.length === 0) {
       throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
@@ -112,7 +112,7 @@ async function burnTokens () {
     } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     // Add the BCH UTXO as input to pay for the transaction.
-    const originalAmount = bchUtxo.satoshis
+    const originalAmount = bchUtxo.value
     transactionBuilder.addInput(bchUtxo.tx_hash, bchUtxo.tx_pos)
 
     // add each token UTXO as an input.
