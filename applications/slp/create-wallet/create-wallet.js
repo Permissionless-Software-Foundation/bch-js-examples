@@ -47,8 +47,8 @@ async function createWallet () {
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")
-  console.log('BIP44 Account: "m/44\'/245\'/0\'"')
-  outStr += 'BIP44 Account: "m/44\'/245\'/0\'"\n'
+  console.log("BIP44 Account: \"m/44'/245'/0'\"")
+  outStr += "BIP44 Account: \"m/44'/245'/0'\"\n"
 
   for (let i = 0; i < 10; i++) {
     const childNode = masterHDNode.derivePath(`m/44'/245'/0'/0/${i}`)
@@ -59,6 +59,7 @@ async function createWallet () {
 
     if (i === 0) {
       outObj.cashAddress = bchjs.HDNode.toCashAddress(childNode)
+      outObj.WIF = bchjs.HDNode.toWIF(childNode)
       outObj.slpAddress = bchjs.SLP.Address.toSLPAddress(outObj.cashAddress)
       outObj.legacyAddress = bchjs.Address.toLegacyAddress(outObj.cashAddress)
     }
