@@ -85,7 +85,9 @@ async function burnTokens () {
         utxo && // UTXO is associated with a token.
         utxo.tokenId === TOKENID && // UTXO matches the token ID.
         utxo.utxoType === 'token' // UTXO is not a minting baton.
-      ) { return true }
+      ) {
+        return true
+      }
     })
     // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
 
@@ -112,7 +114,7 @@ async function burnTokens () {
     } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
 
     // Add the BCH UTXO as input to pay for the transaction.
-    const originalAmount = bchUtxo.satoshis
+    const originalAmount = bchUtxo.value
     transactionBuilder.addInput(bchUtxo.tx_hash, bchUtxo.tx_pos)
 
     // add each token UTXO as an input.
