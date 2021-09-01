@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // Set the number of dust outputs to send.
 const NUM_OUTPUTS = 5
