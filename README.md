@@ -44,12 +44,12 @@ some resources:
 - [bch-js and bch-api Documentation](https://fullstack.cash/documentation/)
 
 ## Basic BCH Wallet Functions
-These basic examples in the `applications/wallet` directory are used to bootstrap
+These basic examples in the `bch/applications/wallet` directory are used to bootstrap
 a BCH wallet for use with the other examples. Recommended path:
 
-1. [Create a wallet](applications/wallet/create-wallet/create-wallet.js)
-2. [Check the balance](applications/wallet/check-balance/check-balance.js)
-3. [Send some BCH](applications/wallet/send-bch/send-bch.js)
+1. [Create a wallet](bch/applications/wallet/create-wallet/create-wallet.js)
+2. [Check the balance](bch/applications/wallet/check-balance/check-balance.js)
+3. [Send some BCH](bch/applications/wallet/send-bch/send-bch.js)
 
 ### A note about testnet
 Testnet isn't just a network for software developers. Many mining pools,
