@@ -85,7 +85,9 @@ async function burnTokens () {
         utxo && // UTXO is associated with a token.
         utxo.tokenId === TOKENID && // UTXO matches the token ID.
         utxo.utxoType === 'token' // UTXO is not a minting baton.
-      ) { return true }
+      ) {
+        return true
+      }
     })
     // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
 

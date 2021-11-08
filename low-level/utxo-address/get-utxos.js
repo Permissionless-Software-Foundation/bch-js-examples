@@ -4,7 +4,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v4/'

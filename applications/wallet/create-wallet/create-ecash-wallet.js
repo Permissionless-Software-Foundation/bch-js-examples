@@ -1,22 +1,25 @@
 /*
   Create an HDNode wallet using bch-js. The mnemonic from this wallet
   will be used by later examples.
+  This is an eCash (XEC) specific example
 */
 
 // Set NETWORK to either testnet or mainnet
 const NETWORK = 'mainnet'
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
-// const ABC_MAINNET = 'https://abc.fullstack.cash/v4/'
+const ABC_MAINNET = 'https://abc.fullstack.cash/v5/'
 const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
+// CashAddr address format library require code from the eCashAddr js repo
+const ecashaddr = require('ecashaddrjs');
+
 // Instantiate bch-js based on the network.
 let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: BCHN_MAINNET })
+if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: ABC_MAINNET })
 else bchjs = new BCHJS({ restURL: TESTNET3 })
 
 const fs = require('fs')
@@ -34,8 +37,8 @@ async function createWallet () {
       128,
       bchjs.Mnemonic.wordLists()[lang]
     )
-    console.log('BIP44 $BCH Wallet')
-    outStr += 'BIP44 $BCH Wallet\n'
+    console.log('BIP44 $XEC Wallet')
+    outStr += 'BIP44 $XEC Wallet\n'
     console.log(`128 bit ${lang} BIP39 Mnemonic: `, mnemonic)
     outStr += `\n128 bit ${lang} BIP32 Mnemonic:\n${mnemonic}\n\n`
     outObj.mnemonic = mnemonic
@@ -55,16 +58,21 @@ async function createWallet () {
     // Generate the first 10 seed addresses.
     for (let i = 0; i < 10; i++) {
       const childNode = masterHDNode.derivePath(`m/44'/145'/0'/0/${i}`)
+      var bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
+
+      // decode to eCash address format
+      const { prefix, type, hash } = ecashaddr.decode(bchjs.HDNode.toCashAddress(childNode));
+      var eCashAddress = ecashaddr.encode('ecash', type, hash)
+
+      // outputs the address in ecash format
       console.log(
-        `m/44'/145'/0'/0/${i}: ${bchjs.HDNode.toCashAddress(childNode)}`
+        `m/44'/145'/0'/0/${i}: ${eCashAddress}`
       )
-      outStr += `m/44'/145'/0'/0/${i}: ${bchjs.HDNode.toCashAddress(
-        childNode
-      )}\n`
 
       // Save the first seed address for use in the .json output file.
       if (i === 0) {
-        outObj.cashAddress = bchjs.HDNode.toCashAddress(childNode)
+        outObj.eCashAddress = eCashAddress
+        outObj.bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
         outObj.legacyAddress = bchjs.HDNode.toLegacyAddress(childNode)
         outObj.WIF = bchjs.HDNode.toWIF(childNode)
       }

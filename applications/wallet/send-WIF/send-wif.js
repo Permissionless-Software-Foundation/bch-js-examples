@@ -5,7 +5,7 @@
 */
 
 // Set NETWORK to either testnet or mainnet
-const NETWORK = 'testnet'
+const NETWORK = 'mainnet'
 
 // Replace the address below with the address you want to send the BCH to.
 let RECV_ADDR = ''
