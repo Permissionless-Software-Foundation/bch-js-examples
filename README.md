@@ -16,9 +16,9 @@ The `applications` directory contains example applications like wallets, tokens,
 voting, and other ideas.
 
 For a full-blown wallet app, check out the following libraries:
-- [minimal-slp-wallet](https://www.npmjs.com/package/minimal-slp-wallet) is a single-address wallet library that has been optimized for web apps. It's the wallet engine that power [wallet.FullStack.cash](https://wallet.fullstack.cash).
+- [minimal-slp-wallet](https://www.npmjs.com/package/minimal-slp-wallet) is a single-address wallet library that has been optimized for web apps. It's the wallet engine that powers [wallet.FullStack.cash](https://wallet.fullstack.cash).
 - [slp-cli-wallet](https://www.npmjs.com/package/slp-cli-wallet) is both a command-line wallet as well as an NPM
-JavaScript library for providing high-level wallet functionality to your own applications. It's primarily used as a sand-box for rapid prototyping of ideas. It support [HD wallet] functionality.
+JavaScript library for providing high-level wallet functionality to your own applications. It's primarily used as a sand-box for rapid prototyping of ideas. It support [HD wallet](https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch05.asciidoc#hd-wallets-bip-32bip-44) functionality.
 - [psf-bch-wallet](https://github.com/Permissionless-Software-Foundation/psf-bch-wallet) is a single-address command line wallet used by the [PSF community](https://psfoundation.cash) to access 'freedom-enforcing' software.
 
 If you want to chat with other developers interested in Bitcoin Cash, be sure

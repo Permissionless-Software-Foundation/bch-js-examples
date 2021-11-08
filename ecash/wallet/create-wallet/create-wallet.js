@@ -4,12 +4,8 @@
   This is an eCash (XEC) specific example
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const ABC_MAINNET = 'https://abc.fullstack.cash/v5/'
-const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -17,10 +13,8 @@ const BCHJS = require('@psf/bch-js')
 // CashAddr address format library require code from the eCashAddr js repo
 const ecashaddr = require('ecashaddrjs')
 
-// Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: ABC_MAINNET })
-else bchjs = new BCHJS({ restURL: TESTNET3 })
+// Instantiate bch-js.
+const bchjs = new BCHJS({ restURL: ABC_MAINNET })
 
 const fs = require('fs')
 
@@ -47,9 +41,7 @@ async function createWallet () {
     const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
     // master HDNode
-    let masterHDNode
-    if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
+    const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
 
     // HDNode of BIP44 account
     console.log('BIP44 Account: "m/44\'/145\'/0\'"')
