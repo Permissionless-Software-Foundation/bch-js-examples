@@ -1,0 +1,29 @@
+{
+  "name": "create-wallets",
+  "version": "1.0.0",
+  "description": "Create two collaborative tx wallets",
+  "main": "create-wallets.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node create-wallets.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "keywords": [
+    "bitbox",
+    "example",
+    "bch",
+    "bitcoin",
+    "bitcoin cash",
+    "bitcoin.com",
+    "javascript"
+  ],
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Permissionless-Software-Foundation/bch-js-examples/issues"
+  },
+  "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples/blob/master/README.md"
+}
