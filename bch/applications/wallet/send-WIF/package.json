@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Bitcoin-com/bitbox-javascript-sdk.git"
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT"

@@ -15,7 +15,7 @@ const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 const BCHJS = require('@psf/bch-js')
 
 // CashAddr address format library require code from the eCashAddr js repo
-const ecashaddr = require('ecashaddrjs');
+const ecashaddr = require('ecashaddrjs')
 
 // Instantiate bch-js based on the network.
 let bchjs
@@ -58,10 +58,10 @@ async function createWallet () {
     // Generate the first 10 seed addresses.
     for (let i = 0; i < 10; i++) {
       const childNode = masterHDNode.derivePath(`m/44'/145'/0'/0/${i}`)
-      var bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
+      // var bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
 
       // decode to eCash address format
-      const { prefix, type, hash } = ecashaddr.decode(bchjs.HDNode.toCashAddress(childNode));
+      const { type, hash } = ecashaddr.decode(bchjs.HDNode.toCashAddress(childNode))
       var eCashAddress = ecashaddr.encode('ecash', type, hash)
 
       // outputs the address in ecash format
