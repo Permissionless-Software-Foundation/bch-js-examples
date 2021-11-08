@@ -3,9 +3,6 @@
   example will generate any number of dust outputs and send them to an address.
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // Set the number of dust outputs to send.
 const NUM_OUTPUTS = 5
 
@@ -14,16 +11,12 @@ let RECV_ADDR = ''
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
-// const ABC_MAINNET = 'https://abc.fullstack.cash/v4/'
-const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: BCHN_MAINNET })
-else bchjs = new BCHJS({ restURL: TESTNET3 })
+const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 
 // Open the wallet generated with create-wallet.
 try {
@@ -77,10 +70,7 @@ async function sendDust () {
     }
 
     // instance of transaction builder
-    let transactionBuilder
-    if (NETWORK === 'mainnet') {
-      transactionBuilder = new bchjs.TransactionBuilder()
-    } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    const transactionBuilder = new bchjs.TransactionBuilder()
 
     // Essential variables of a transaction.
     const originalAmount = utxo.value
@@ -145,7 +135,7 @@ async function sendDust () {
     const util = require('../util.js')
     console.log(`Transaction ID: ${txidStr}`)
     console.log('Check the status of your transaction on this block explorer:')
-    util.transactionStatus(txidStr, NETWORK)
+    util.transactionStatus(txidStr, 'mainnet')
   } catch (err) {
     console.log('error: ', err)
   }
@@ -158,9 +148,7 @@ async function changeAddrFromMnemonic (mnemonic) {
   const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
   // master HDNode
-  let masterHDNode
-  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet')
+  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
