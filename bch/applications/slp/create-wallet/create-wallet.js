@@ -3,21 +3,14 @@
   will be used in the other examples.
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
-// const ABC_MAINNET = 'https://abc.fullstack.cash/v4/'
-const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: BCHN_MAINNET })
-else bchjs = new BCHJS({ restURL: TESTNET3 })
+const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 
 const fs = require('fs')
 
@@ -41,9 +34,7 @@ async function createWallet () {
   const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
 
   // master HDNode
-  let masterHDNode
-  if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-  else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
+  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
 
   // HDNode of BIP44 account
   const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")

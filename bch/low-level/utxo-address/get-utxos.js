@@ -3,21 +3,13 @@
   with the create-wallet example.
 */
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const MAINNET_API_FREE = 'https://free-main.fullstack.cash/v4/'
-const TESTNET_API_FREE = 'https://free-test.fullstack.cash/v4/'
-// const MAINNET_API_PAID = 'https://api.fullstack.cash/v4/'
-// const TESTNET_API_PAID = 'https://tapi.fullstack.cash/v4/'
 
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
-else bchjs = new BCHJS({ restURL: TESTNET_API_FREE })
+const bchjs = new BCHJS({ restURL: MAINNET_API_FREE })
 
 // Open the wallet generated with create-wallet.
 try {

@@ -7,21 +7,14 @@ const TOKENQTY = 0.01
 const TOKENID =
   'dd2fc6e47bfef7c9cfef39bd1be86b3a263a1822736a0c7a0655a758c6ea1713'
 
-// Set NETWORK to either testnet or mainnet
-const NETWORK = 'mainnet'
-
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
-// const ABC_MAINNET = 'https://abc.fullstack.cash/v4/'
-const TESTNET3 = 'https://testnet3.fullstack.cash/v4/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-let bchjs
-if (NETWORK === 'mainnet') bchjs = new BCHJS({ restURL: BCHN_MAINNET })
-else bchjs = new BCHJS({ restURL: TESTNET3 })
+const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -42,9 +35,7 @@ async function burnTokens () {
     // root seed buffer
     const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
     // master HDNode
-    let masterHDNode
-    if (NETWORK === 'mainnet') masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-    else masterHDNode = bchjs.HDNode.fromSeed(rootSeed, 'testnet') // Testnet
+    const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
 
     // HDNode of BIP44 account
     const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'")
@@ -108,10 +99,7 @@ async function burnTokens () {
     // BEGIN transaction construction.
 
     // instance of transaction builder
-    let transactionBuilder
-    if (NETWORK === 'mainnet') {
-      transactionBuilder = new bchjs.TransactionBuilder()
-    } else transactionBuilder = new bchjs.TransactionBuilder('testnet')
+    const transactionBuilder = new bchjs.TransactionBuilder()
 
     // Add the BCH UTXO as input to pay for the transaction.
     const originalAmount = bchUtxo.value
@@ -197,9 +185,7 @@ async function burnTokens () {
     console.log(`Transaction ID: ${txidStr}`)
 
     console.log('Check the status of your transaction on this block explorer:')
-    if (NETWORK === 'testnet') {
-      console.log(`https://explorer.bitcoin.com/tbch/tx/${txidStr}`)
-    } else console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in burnTokens: ', err)
     console.log(`Error message: ${err.message}`)
