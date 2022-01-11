@@ -9,13 +9,13 @@ let RECV_ADDR = ''
 const SATOSHIS_TO_SEND = 1000
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
+const ECASH_MAINNET = 'https://abc.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
 // Instantiate bch-js based on the network.
-const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
+const bchjs = new BCHJS({ restURL: ECASH_MAINNET })
 
 // Open the wallet generated with create-wallet.
 try {
@@ -121,10 +121,10 @@ async function sendBch () {
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     // import from util.js file
-    const util = require('../util.js')
+    // const util = require('../util.js')
     console.log(`Transaction ID: ${txidStr}`)
     console.log('Check the status of your transaction on this block explorer:')
-    util.transactionStatus(txidStr, 'mainnet')
+    // util.transactionStatus(txidStr, 'mainnet')
   } catch (err) {
     console.log('error: ', err)
   }

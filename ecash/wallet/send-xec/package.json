@@ -1,0 +1,12 @@
+{
+  "name": "send-xec",
+  "version": "1.0.0",
+  "description": "Send some xec to another address.",
+  "main": "send-xec.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node send-xec.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

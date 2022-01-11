@@ -10,9 +10,6 @@ const ABC_MAINNET = 'https://abc.fullstack.cash/v5/'
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
-// CashAddr address format library require code from the eCashAddr js repo
-const ecashaddr = require('ecashaddrjs')
-
 // Instantiate bch-js.
 const bchjs = new BCHJS({ restURL: ABC_MAINNET })
 
@@ -44,27 +41,26 @@ async function createWallet () {
     const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
 
     // HDNode of BIP44 account
-    console.log('BIP44 Account: "m/44\'/145\'/0\'"')
-    outStr += 'BIP44 Account: "m/44\'/145\'/0\'"\n'
+    console.log("BIP44 Account: \"m/44'/145'/0'\"")
+    outStr += "BIP44 Account: \"m/44'/145'/0'\"\n"
 
     // Generate the first 10 seed addresses.
     for (let i = 0; i < 10; i++) {
       const childNode = masterHDNode.derivePath(`m/44'/145'/0'/0/${i}`)
-      // var bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
 
-      // decode to eCash address format
-      const { type, hash } = ecashaddr.decode(bchjs.HDNode.toCashAddress(childNode))
-      var eCashAddress = ecashaddr.encode('ecash', type, hash)
+      // Generate a BCH address.
+      const bchAddr = bchjs.HDNode.toCashAddress(childNode)
+
+      // Convert the BCH address to eCash.
+      const eCashAddress = bchjs.Address.toEcashAddress(bchAddr)
 
       // outputs the address in ecash format
-      console.log(
-        `m/44'/145'/0'/0/${i}: ${eCashAddress}`
-      )
+      console.log(`m/44'/145'/0'/0/${i}: ${eCashAddress}`)
 
       // Save the first seed address for use in the .json output file.
       if (i === 0) {
         outObj.eCashAddress = eCashAddress
-        outObj.bchCashAddress = bchjs.HDNode.toCashAddress(childNode)
+        outObj.cashAddress = bchjs.HDNode.toCashAddress(childNode)
         outObj.legacyAddress = bchjs.HDNode.toLegacyAddress(childNode)
         outObj.WIF = bchjs.HDNode.toWIF(childNode)
       }
