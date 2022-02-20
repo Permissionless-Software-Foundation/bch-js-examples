@@ -3,16 +3,21 @@
   including text data in the transaction.
 */
 
-// You can generate a WIF (private key) and public address using the
-// 'get-key' command of slp-cli-wallet.
-const WIF = 'L3E1e8td9o71q8oYwFs4dwnNpq3LnxB67dtEo5aAqsHCgysJye5e'
-// const ADDR = 'bitcoincash:qr9jqgjlx2fqldyy2pj8nmxr0vuu59k0wsumalhexa'
-
 // Customize the message you want to send
 const MESSAGE = 'BURN abcdef'
 
 const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS()
+
+// Open the wallet generated with create-wallet.
+try {
+  var walletInfo = require('../../applications/wallet/create-wallet/wallet.json')
+} catch (err) {
+  console.log(
+    'Could not open wallet.json. Generate a wallet with create-wallet first.'
+  )
+  process.exit(0)
+}
 
 async function writeOpReturn (msg, wif) {
   try {
@@ -90,7 +95,7 @@ async function writeOpReturn (msg, wif) {
     console.log('Error in writeOpReturn(): ', err)
   }
 }
-writeOpReturn(MESSAGE, WIF)
+writeOpReturn(MESSAGE, walletInfo.WIF)
 
 // Returns the utxo with the biggest balance from an array of utxos.
 async function findBiggestUtxo (utxos) {

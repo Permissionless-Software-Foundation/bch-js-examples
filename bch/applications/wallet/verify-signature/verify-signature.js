@@ -5,7 +5,7 @@
 
 const SIGNATURE =
   'H+Np7l5Ee/wTzpEIUYqcSDDJBu8BkOGnk/jCsZDiHzxAIu7V2rJsoisTftyF3Gx0Sk9In94GdiEX7C5xwb7ThmU='
-const MESSAGE = 'This is a test message'
+const MESSAGE = 'test'
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'

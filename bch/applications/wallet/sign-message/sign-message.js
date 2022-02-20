@@ -3,7 +3,7 @@
   This signature can then be verified with the verify-signature example.
 */
 
-const MESSAGE = 'This is a test message'
+const MESSAGE = 'test'
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
@@ -31,6 +31,7 @@ async function signMessage () {
     const signedMessage = bchjs.BitcoinCash.signMessageWithPrivKey(wif, MESSAGE)
 
     console.log(`Address: ${walletInfo.cashAddress}`)
+    console.log(`Message: ${MESSAGE}`)
     console.log(`Signed message: ${signedMessage}`)
   } catch (err) {
     console.log('error: ', err)
