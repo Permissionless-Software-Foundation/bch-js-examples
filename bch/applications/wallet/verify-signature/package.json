@@ -1,0 +1,16 @@
+{
+  "name": "verify-signature",
+  "version": "1.0.0",
+  "description": "Verify a signed message",
+  "main": "send-wif.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node verify-signature.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

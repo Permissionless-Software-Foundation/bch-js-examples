@@ -1,0 +1,16 @@
+{
+  "name": "sign-message",
+  "version": "1.0.0",
+  "description": "Sign a message with the private key",
+  "main": "send-wif.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node sign-message.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Permissionless-Software-Foundation/bch-js-examples.git"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
