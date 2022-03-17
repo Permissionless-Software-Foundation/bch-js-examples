@@ -5,7 +5,7 @@
 const Bitcoin = require('bitcoincashjs-lib')
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -16,8 +16,9 @@ const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 const fs = require('fs')
 
 // Open Alice's wallet generated with create-wallets.
+let aliceWallet
 try {
-  var aliceWallet = require('../create-wallets/alice-wallet.json')
+  aliceWallet = require('../create-wallets/alice-wallet.json')
 } catch (err) {
   console.log(
     'Could not open alice-wallet.json. Generate wallets with create-wallets first.'
@@ -26,8 +27,9 @@ try {
 }
 
 // Open Bob's wallet generated with create-wallets.
+let bobWallet
 try {
-  var bobWallet = require('../create-wallets/bob-wallet.json')
+  bobWallet = require('../create-wallets/bob-wallet.json')
 } catch (err) {
   console.log(
     'Could not open bob-wallet.json. Generate wallets with create-wallets first.'
@@ -36,8 +38,9 @@ try {
 }
 
 // Open Sam's wallet generated with create-wallets.
+let samWallet
 try {
-  var samWallet = require('../create-wallets/sam-wallet.json')
+  samWallet = require('../create-wallets/sam-wallet.json')
 } catch (err) {
   console.log(
     'Could not open sam-wallet.json. Generate wallets with create-wallets first.'
@@ -54,8 +57,9 @@ const bobWIF = bobWallet.WIF
 const samWIF = samWallet.WIF
 
 // Open the combined inputs information generated with step1-combine-inputs.js
+let combinedInputs
 try {
-  var combinedInputs = require('./combined_inputs.json')
+  combinedInputs = require('./combined_inputs.json')
 } catch (err) {
   console.log(
     'Could not open combined_inputs.json. Generate inputs information with step1-combine-inputs.js first.'
@@ -64,8 +68,9 @@ try {
 }
 
 // Open the unsigned tx information generated with step2-unsigned-tx.js
+let unsignedTx
 try {
-  var unsignedTx = require('./unsigned_tx.json')
+  unsignedTx = require('./unsigned_tx.json')
 } catch (err) {
   console.log(
     'Could not open unsigned_tx.json. Generate tx information with step2-unsigned-tx.js first.'

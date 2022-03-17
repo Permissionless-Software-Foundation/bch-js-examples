@@ -9,7 +9,7 @@ const TOKENID =
 let TO_SLPADDR = 'simpleledger:qphnz7yl9xasyzd0aldxq3q875shts0dmgep39tq3e'
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -65,6 +65,7 @@ async function sendGroupToken () {
     const bchUtxos = utxos.filter((utxo, index) => {
       const tokenUtxo = tokenUtxos[index]
       if (!tokenUtxo.isValid) return true
+      return false
     })
     // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
 
@@ -80,6 +81,8 @@ async function sendGroupToken () {
         utxo.utxoType === 'token' && // UTXO is not a minting baton.
         utxo.tokenType === 129 // UTXO is for an NFT
       ) { return true }
+
+      return false
     })
     // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
 
@@ -208,7 +211,7 @@ function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
-  for (var i = 0; i < utxos.length; i++) {
+  for (let i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
     if (thisUtxo.value > largestAmount) {

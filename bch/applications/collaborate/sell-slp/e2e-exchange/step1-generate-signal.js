@@ -16,8 +16,9 @@ const appUtils = new AppUtils()
 const fs = require('fs')
 
 // Open the offering part wallet generated with create-wallets.
+let sellerWallet
 try {
-  var sellerWallet = require('../create-wallets/seller-wallet.json')
+  sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
     'Could not open seller-wallet.json. Generate wallets with create-wallets first.'

@@ -3,7 +3,7 @@
 */
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -15,8 +15,9 @@ const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 // const fs = require('fs')
 
 // Open the all signed tx information generated with step3-sign-own-tx.js
+let signedInputTxs
 try {
-  var signedInputTxs = [
+  signedInputTxs = [
     require('./signed_tx_0.json'),
     require('./signed_tx_1.json'),
     require('./signed_tx_2.json')

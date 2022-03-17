@@ -6,7 +6,7 @@
 const Bitcoin = require('bitcoincashjs-lib')
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -18,8 +18,9 @@ const AppUtils = require('./util')
 const appUtils = new AppUtils()
 
 // Open the Seller's wallet generated with create-wallets.
+let sellerWallet
 try {
-  var sellerWallet = require('../create-wallets/seller-wallet.json')
+  sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
     'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
@@ -32,8 +33,9 @@ const sellerWif = sellerWallet.WIF
 const sellerECPair = bchjs.ECPair.fromWIF(sellerWif)
 
 // Open the sell signal information generated with step1-generate-signal.js
+let offerMeta
 try {
-  var offerMeta = require('./signal.json')
+  offerMeta = require('./signal.json')
 } catch (err) {
   console.log(
     'Could not open signal.json. Generate signal information with step1-generate-signal.js first.'
@@ -42,8 +44,9 @@ try {
 }
 
 // Open the payment Tx generated with step2-payment-tx.js
+let paymentMeta
 try {
-  var paymentMeta = require('./payment.json')
+  paymentMeta = require('./payment.json')
 } catch (err) {
   console.log(
     'Could not open payment.json. Generate payment transaction with step2-payment-tx.js first.'

@@ -1,0 +1,12 @@
+{
+  "name": "sweep-wallet",
+  "version": "1.0.0",
+  "description": "Scan addresses controlled by a 12-word mnemonic, and sweep the funds into the first address controlled by that wallet.",
+  "main": "sweep-wallet.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node consolidate-dust.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}
