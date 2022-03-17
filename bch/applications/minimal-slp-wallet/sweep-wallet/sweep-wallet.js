@@ -12,7 +12,7 @@
 */
 
 // Modify these constants for your own needs.
-const NUM_ADDR_TO_SCAN = 20
+const NUM_ADDR_TO_SCAN = 60
 
 // Public npm libraries
 const BchWallet = require('minimal-slp-wallet/index')
@@ -68,10 +68,13 @@ async function sweepWallet () {
       await tempWallet.walletInfoPromise
 
       // Skip if there is no BCH in this address.
-      if (tempWallet.utxos.utxoStore.bchUtxos.length === 0) continue
+      if (tempWallet.utxos.utxoStore.bchUtxos.length === 0) {
+        console.log(`${i}: WIF ${thisWif} controlls no BCH. Skipping.`)
+        continue
+      }
 
       const txid = await tempWallet.sendAll(rootAddr)
-      console.log(`Swept funds from ${tempWallet.walletInfo.cashAddress} using WIF ${thisWif} to root address ${rootAddr}. TXID: ${txid}`)
+      console.log(`${i}: Swept funds from ${tempWallet.walletInfo.cashAddress} using WIF ${thisWif} to root address ${rootAddr}. TXID: ${txid}`)
     }
   } catch (err) {
     console.error('Error in sweepWallet(): ', err)
