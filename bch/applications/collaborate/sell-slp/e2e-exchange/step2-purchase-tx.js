@@ -4,7 +4,7 @@
 */
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -18,8 +18,9 @@ const appUtils = new AppUtils()
 const fs = require('fs')
 
 // Open the Seller's wallet generated with create-wallets.
+let sellerWallet
 try {
-  var sellerWallet = require('../create-wallets/seller-wallet.json')
+  sellerWallet = require('../create-wallets/seller-wallet.json')
 } catch (err) {
   console.log(
     'Could not open seller-wallet.json. Generate wallets with create-wallets first.'
@@ -28,8 +29,9 @@ try {
 }
 
 // Open the Buyer's wallet generated with create-wallets.
+let buyerWallet
 try {
-  var buyerWallet = require('../create-wallets/buyer-wallet.json')
+  buyerWallet = require('../create-wallets/buyer-wallet.json')
 } catch (err) {
   console.log(
     'Could not open buyer-wallet.json. Generate wallets with create-wallets first.'
@@ -45,8 +47,9 @@ const buyerECPair = bchjs.ECPair.fromWIF(buyerWif)
 const buyerSLP = bchjs.SLP.Address.toSLPAddress(buyerAddr)
 
 // Open the sell signal information generated with step1-generate-signal.js
+let offerMeta
 try {
-  var offerMeta = require('./signal.json')
+  offerMeta = require('./signal.json')
 } catch (err) {
   console.log(
     'Could not open signal.json. Generate signal information with step1-generate-signal.js first.'

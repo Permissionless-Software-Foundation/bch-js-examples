@@ -18,8 +18,9 @@ const BCHJS = require('@psf/bch-js')
 const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 
 // Open the wallet generated with create-wallet.
+let walletInfo
 try {
-  var walletInfo = require('../create-wallet/wallet.json')
+  walletInfo = require('../create-wallet/wallet.json')
 } catch (err) {
   console.log(
     'Could not open wallet.json. Generate a wallet with create-wallet first.'
@@ -175,7 +176,7 @@ async function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
-  for (var i = 0; i < utxos.length; i++) {
+  for (let i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
     // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 

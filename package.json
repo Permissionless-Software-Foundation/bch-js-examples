@@ -24,9 +24,10 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@psf/bch-js": "^5.3.2",
-    "bitcoinfiles-node": "^0.5.4",
-    "ecashaddrjs": "^1.0.7"
+    "@psf/bch-js": "6.1.0",
+    "bitcoinfiles-node": "0.5.4",
+    "ecashaddrjs": "1.0.7",
+    "minimal-slp-wallet": "4.4.4"
   },
   "husky": {
     "hooks": {
@@ -34,7 +35,7 @@
     }
   },
   "devDependencies": {
-    "husky": "^4.2.5",
-    "standard": "^14.3.3"
+    "husky": "7.0.4",
+    "standard": "16.0.4"
   }
 }

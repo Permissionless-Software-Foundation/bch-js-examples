@@ -4,7 +4,7 @@
 */
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
 
@@ -17,8 +17,9 @@ const appUtils = new AppUtils()
 const fs = require('fs')
 
 // Open Alice's wallet generated with create-wallets.
+let aliceWallet
 try {
-  var aliceWallet = require('../create-wallets/alice-wallet.json')
+  aliceWallet = require('../create-wallets/alice-wallet.json')
 } catch (err) {
   console.log(
     'Could not open alice-wallet.json. Generate wallets with create-wallets first.'
@@ -27,8 +28,9 @@ try {
 }
 
 // Open Bob's wallet generated with create-wallets.
+let bobWallet
 try {
-  var bobWallet = require('../create-wallets/bob-wallet.json')
+  bobWallet = require('../create-wallets/bob-wallet.json')
 } catch (err) {
   console.log(
     'Could not open bob-wallet.json. Generate wallets with create-wallets first.'
@@ -37,8 +39,9 @@ try {
 }
 
 // Open Sam's wallet generated with create-wallets.
+let samWallet
 try {
-  var samWallet = require('../create-wallets/sam-wallet.json')
+  samWallet = require('../create-wallets/sam-wallet.json')
 } catch (err) {
   console.log(
     'Could not open sam-wallet.json. Generate wallets with create-wallets first.'

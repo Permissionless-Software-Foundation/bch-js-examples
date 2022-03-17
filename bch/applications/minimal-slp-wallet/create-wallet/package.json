@@ -1,0 +1,12 @@
+{
+  "name": "create-wallet",
+  "version": "1.0.0",
+  "description": "Create a new wallet using minimal-slp-wallet",
+  "main": "create-wallet.js",
+  "scripts": {
+    "test": "echo no tests yet",
+    "start": "node create-wallet.js"
+  },
+  "author": "Chris Troutner <chris.troutner@gmail.com>",
+  "license": "MIT"
+}

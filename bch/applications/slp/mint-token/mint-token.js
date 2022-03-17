@@ -9,7 +9,7 @@ const TOKENQTY = 100 // The quantity of new tokens to mint.
 let TO_SLPADDR = '' // The address to send the new tokens.
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -64,6 +64,7 @@ async function mintToken () {
     const bchUtxos = utxos.filter((utxo, index) => {
       const tokenUtxo = tokenUtxos[index]
       if (!tokenUtxo.isValid) return true
+      return false
     })
     // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
 
@@ -79,6 +80,8 @@ async function mintToken () {
         utxo.tokenId === TOKENID && // UTXO matches the token ID.
         utxo.utxoType === 'minting-baton' // UTXO is not a minting baton.
       ) { return true }
+
+      return false
     })
     // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
 
@@ -205,7 +208,7 @@ function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
-  for (var i = 0; i < utxos.length; i++) {
+  for (let i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
 
     if (thisUtxo.value > largestAmount) {

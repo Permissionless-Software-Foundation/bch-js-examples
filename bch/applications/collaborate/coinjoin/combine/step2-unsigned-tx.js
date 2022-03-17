@@ -6,7 +6,7 @@ const endAddr = 'bitcoincash:qrjkthjjsku2qv7ycakyhv828pruv2gfuyk23480vr'
 const paymentAmount = 1000
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -17,8 +17,9 @@ const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
 const fs = require('fs')
 
 // Open the combined inputs information generated with step1-combine-inputs.js
+let combinedInputs
 try {
-  var combinedInputs = require('./combined_inputs.json')
+  combinedInputs = require('./combined_inputs.json')
 } catch (err) {
   console.log(
     'Could not open combined_inputs.json. Generate inputs information with step1-combine-inputs.js first.'

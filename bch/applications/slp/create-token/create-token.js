@@ -4,7 +4,7 @@
 */
 
 // REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v4/'
+const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
 
 // bch-js-examples require code from the main bch-js repo
 const BCHJS = require('@psf/bch-js')
@@ -140,7 +140,7 @@ async function findBiggestUtxo (utxos) {
   let largestAmount = 0
   let largestIndex = 0
 
-  for (var i = 0; i < utxos.length; i++) {
+  for (let i = 0; i < utxos.length; i++) {
     const thisUtxo = utxos[i]
     // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
 
