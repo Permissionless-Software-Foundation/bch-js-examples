@@ -1,16 +1,21 @@
 /*
-  Consolidate all UTXOs of size 546 sats or smaller into
-  a single UTXO.
+  Scan the addresses controlled by an HD wallet and sweep all the funds into
+  the first address controlled by the wallet.
+
+  This app is controlled by the constants at the top. Modify these for your own
+  needs.
+
+  Scope: Some apps make use of the HD wallet by storing BCH on other addresses
+  controlled by the HD wallet. This example is handy for sweeping the funds
+  back into the root address (HD index 0). This is typically needed when cleaning
+  up tests and prototypes during development.
 */
 
-// REST API servers.
-const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
+// Modify these constants for your own needs.
+const NUM_ADDR_TO_SCAN = 20
 
-// bch-js-examples require code from the main bch-js repo
-const BCHJS = require('@psf/bch-js')
-
-// Instantiate bch-js.
-const bchjs = new BCHJS({ restURL: BCHN_MAINNET })
+// Public npm libraries
+const BchWallet = require('minimal-slp-wallet/index')
 
 // Open the wallet generated with create-wallet.
 let walletInfo
@@ -23,115 +28,53 @@ try {
   process.exit(0)
 }
 
-const SEND_ADDR = walletInfo.cashAddress
-const SEND_MNEMONIC = walletInfo.mnemonic
-
-async function consolidateDust () {
+async function sweepWallet () {
   try {
-    // instance of transaction builder
-    const transactionBuilder = new bchjs.TransactionBuilder()
+    // Open the wallet with minimal-slp-wallet
+    const mnemonic = walletInfo.mnemonic
+    const wallet = new BchWallet(mnemonic, {
+      // Use the web 3 interface
+      interface: 'consumer-api'
+    })
+    await wallet.walletInfoPromise
 
-    const dust = 546
-    let sendAmount = 0
-    const inputs = []
+    const bchjs = wallet.bchjs
 
-    const data = await bchjs.Electrumx.utxo(SEND_ADDR)
-    const utxos = data.utxos
+    // Generate an array WIF private keys from the HD wallet.
+    const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
+    const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
+    const wifs = [] // Holds private keys
+    let rootAddr = '' // Holds the index=0 BCH address
+    for (let i = 0; i < NUM_ADDR_TO_SCAN; i++) {
+      const childNode = masterHDNode.derivePath(`m/44'/245'/0'/0/${i}`)
 
-    // Loop through each UTXO assigned to this address.
-    for (let i = 0; i < utxos.length; i++) {
-      const thisUtxo = utxos[i]
-
-      // If the UTXO is dust...
-      if (thisUtxo.value <= dust) {
-        inputs.push(thisUtxo)
-
-        sendAmount += thisUtxo.value
-
-        // ..Add the utxo as an input to the transaction.
-        transactionBuilder.addInput(thisUtxo.tx_hash, thisUtxo.tx_pos)
+      if (i === 0) {
+        rootAddr = bchjs.HDNode.toCashAddress(childNode)
+      } else {
+        const wif = bchjs.HDNode.toWIF(childNode)
+        wifs.push(wif)
       }
     }
+    console.log('root address: ', rootAddr)
+    console.log('private keys: ', wifs)
+    console.log('Sweeping funds from each private key into the root address...')
 
-    if (inputs.length === 0) {
-      console.log('No dust found in the wallet address.')
-      return
+    // Sweep the funds from each WIF into the root address.
+    for (let i = 0; i < wifs.length; i++) {
+      const thisWif = wifs[i]
+
+      // Instantiate a new wallet using the WIF
+      const tempWallet = new BchWallet(thisWif, { interface: 'consumer-api' })
+      await tempWallet.walletInfoPromise
+
+      // Skip if there is no BCH in this address.
+      if (tempWallet.utxos.utxoStore.bchUtxos.length === 0) continue
+
+      const txid = await tempWallet.sendAll(rootAddr)
+      console.log(`Swept funds from ${tempWallet.walletInfo.cashAddress} using WIF ${thisWif} to root address ${rootAddr}. TXID: ${txid}`)
     }
-
-    // get byte count to calculate fee. paying 1.2 sat/byte
-    const byteCount = bchjs.BitcoinCash.getByteCount(
-      { P2PKH: inputs.length },
-      { P2PKH: 1 }
-    )
-    console.log(`byteCount: ${byteCount}`)
-
-    const satoshisPerByte = 1.0
-    const txFee = Math.ceil(satoshisPerByte * byteCount)
-    console.log(`txFee: ${txFee}`)
-
-    // Exit if the transaction costs too much to send.
-    if (sendAmount - txFee < 0) {
-      console.log(
-        "Transaction fee costs more combined dust. Can't send transaction."
-      )
-      return
-    }
-
-    // add output w/ address and amount to send
-    transactionBuilder.addOutput(SEND_ADDR, sendAmount - txFee)
-
-    // Generate a change address from a Mnemonic of a private key.
-    const change = await changeAddrFromMnemonic(SEND_MNEMONIC)
-
-    // Generate a keypair from the change address.
-    const keyPair = bchjs.HDNode.toKeyPair(change)
-
-    // sign w/ HDNode
-    let redeemScript
-    inputs.forEach((input, index) => {
-      transactionBuilder.sign(
-        index,
-        keyPair,
-        redeemScript,
-        transactionBuilder.hashTypes.SIGHASH_ALL,
-        input.value
-      )
-    })
-
-    // build tx
-    const tx = transactionBuilder.build()
-    // output rawhex
-    const hex = tx.toHex()
-    // console.log(`TX hex: ${hex}`)
-    console.log(' ')
-
-    // Broadcast transation to the network
-    const broadcast = await bchjs.RawTransactions.sendRawTransaction([hex])
-
-    // import from util.js file
-    const util = require('../util.js')
-    console.log(`Transaction ID: ${broadcast}`)
-    console.log('Check the status of your transaction on this block explorer:')
-    util.transactionStatus(broadcast, 'mainnet')
   } catch (err) {
-    console.log('error: ', err)
+    console.error('Error in sweepWallet(): ', err)
   }
 }
-consolidateDust()
-
-// Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic (mnemonic) {
-  // root seed buffer
-  const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic)
-
-  // master HDNode
-  const masterHDNode = bchjs.HDNode.fromSeed(rootSeed)
-
-  // HDNode of BIP44 account
-  const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/145'/0'")
-
-  // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, '0/0')
-
-  return change
-}
+sweepWallet()

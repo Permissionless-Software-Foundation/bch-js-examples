@@ -5,7 +5,7 @@
   "main": "sweep-wallet.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node consolidate-dust.js"
+    "start": "node sweep-wallet.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "license": "MIT"
