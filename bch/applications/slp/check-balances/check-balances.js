@@ -54,7 +54,8 @@ async function getBalance () {
 
     // get token balances
     try {
-      const tokens = await bchjs.SLP.Utils.balancesForAddress(slpAddress)
+      // const tokens = await bchjs.SLP.Utils.balancesForAddress(slpAddress)
+      const tokens = await bchjs.PsfSlpIndexer.balance(cashAddress)
 
       console.log(JSON.stringify(tokens, null, 2))
     } catch (error) {
