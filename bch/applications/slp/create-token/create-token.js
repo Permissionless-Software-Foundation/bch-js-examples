@@ -52,7 +52,7 @@ async function createToken () {
 
     // Get the biggest UTXO to pay for the transaction.
     const utxo = await findBiggestUtxo(utxos)
-    console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
     // instance of transaction builder
     const transactionBuilder = new bchjs.TransactionBuilder()
@@ -128,7 +128,7 @@ async function createToken () {
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://explore.cash/mainnet/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in createToken: ', err)
   }

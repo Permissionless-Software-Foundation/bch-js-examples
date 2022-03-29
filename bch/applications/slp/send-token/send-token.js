@@ -3,9 +3,9 @@
 */
 
 // CUSTOMIZE THESE VALUES FOR YOUR USE
-const TOKENQTY = 1
+const TOKENQTY = 10
 const TOKENID =
-  '8de4984472af772f144a74de473d6c21505a6d89686b57445c3e4fc7db3773b6'
+  'f28ac3a87c3dc89f6d1c5256ca169de4112ef40aed2139d82384e861d5fe779b'
 let TO_SLPADDR = ''
 
 // REST API servers.
@@ -50,47 +50,35 @@ async function sendToken () {
     const slpAddress = bchjs.HDNode.toSLPAddress(change)
 
     // Get UTXOs held by this address.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
-    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+    const utxos = await bchjs.Utxo.get(cashAddress)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
+    const bchUtxos = utxos.bchUtxos
+    const slpUtxos = utxos.slpUtxos.type1.tokens
 
-    // Identify the SLP token UTXOs.
-    let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
-
-    // Filter out the non-SLP token UTXOs.
-    const bchUtxos = utxos.filter((utxo, index) => {
-      const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo.isValid) return true
-
-      return false
-    })
-    console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`)
+    if (slpUtxos.length === 0) throw new Error('No token UTXOs to spend! Exiting.')
 
     if (bchUtxos.length === 0) {
       throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
     }
 
     // Filter out the token UTXOs that match the user-provided token ID.
-    tokenUtxos = tokenUtxos.filter((utxo, index) => {
+    const tokenUtxos = slpUtxos.filter((utxo, index) => {
       if (
         utxo && // UTXO is associated with a token.
-        utxo.tokenId === TOKENID && // UTXO matches the token ID.
-        utxo.utxoType === 'token' // UTXO is not a minting baton.
+        utxo.tokenId === TOKENID
       ) { return true }
 
       return false
     })
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
+    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
 
     if (tokenUtxos.length === 0) {
       throw new Error('No token UTXOs for the specified token could be found.')
     }
 
     // Choose a UTXO to pay for the transaction.
-    const bchUtxo = findBiggestUtxo(bchUtxos)
+    const bchUtxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
     // console.log(`bchUtxo: ${JSON.stringify(bchUtxo, null, 2)}`);
 
     // Generate the OP_RETURN code.
@@ -198,27 +186,10 @@ async function sendToken () {
     console.log(`Transaction ID: ${txidStr}`)
 
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://explore.cash/mainnet/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in sendToken: ', err)
     console.log(`Error message: ${err.message}`)
   }
 }
 sendToken()
-
-// Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo (utxos) {
-  let largestAmount = 0
-  let largestIndex = 0
-
-  for (let i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i]
-
-    if (thisUtxo.value > largestAmount) {
-      largestAmount = thisUtxo.value
-      largestIndex = i
-    }
-  }
-
-  return utxos[largestIndex]
-}
