@@ -4,7 +4,7 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  '8de4984472af772f144a74de473d6c21505a6d89686b57445c3e4fc7db3773b6'
+  '98773910969bba301095e88bf997178a3aa753fa0147449d39da299c4f188bc4'
 const TOKENQTY = 100 // The quantity of new tokens to mint.
 let TO_SLPADDR = '' // The address to send the new tokens.
 
@@ -49,24 +49,13 @@ async function mintToken () {
     const cashAddress = bchjs.HDNode.toCashAddress(change)
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
-    // Get UTXOs held by this address.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    // Get the UTXOs held by that address.
+    const utxos = await bchjs.Utxo.get(cashAddress)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
-
-    // Identify the SLP token UTXOs.
-    let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
-
-    // Filter out the non-SLP token UTXOs.
-    const bchUtxos = utxos.filter((utxo, index) => {
-      const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo.isValid) return true
-      return false
-    })
-    // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
+    // Separate UTXO types
+    const bchUtxos = utxos.bchUtxos
+    let batonUtxos = utxos.slpUtxos.type1.mintBatons
 
     if (bchUtxos.length === 0) {
       throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
@@ -74,28 +63,25 @@ async function mintToken () {
 
     // Filter out the token UTXOs that match the user-provided token ID
     // and contain the minting baton.
-    tokenUtxos = tokenUtxos.filter((utxo, index) => {
+    batonUtxos = batonUtxos.filter((utxo, index) => {
       if (
-        utxo && // UTXO is associated with a token.
-        utxo.tokenId === TOKENID && // UTXO matches the token ID.
-        utxo.utxoType === 'minting-baton' // UTXO is not a minting baton.
+        utxo.tokenId === TOKENID
       ) { return true }
 
       return false
     })
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
+    console.log(`batonUtxos: ${JSON.stringify(batonUtxos, null, 2)}`);
 
-    if (tokenUtxos.length === 0) {
-      throw new Error('No token UTXOs for the specified token could be found.')
+    if (batonUtxos.length === 0) {
+      throw new Error('No mint baton UTXOs for the specified token could be found.')
     }
 
     // Choose a UTXO to pay for the transaction.
-    const bchUtxo = findBiggestUtxo(bchUtxos)
-    // console.log(`bchUtxo: ${JSON.stringify(bchUtxo, null, 2)}`);
+    const bchUtxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
 
     // Generate the SLP OP_RETURN.
     const slpData = bchjs.SLP.TokenType1.generateMintOpReturn(
-      tokenUtxos,
+      batonUtxos,
       TOKENQTY
     )
 
@@ -108,10 +94,10 @@ async function mintToken () {
     const originalAmount = bchUtxo.value
     transactionBuilder.addInput(bchUtxo.tx_hash, bchUtxo.tx_pos)
 
-    // add each token UTXO as an input.
-    for (let i = 0; i < tokenUtxos.length; i++) {
-      transactionBuilder.addInput(tokenUtxos[i].tx_hash, tokenUtxos[i].tx_pos)
-    }
+    // There should only be one mint baton UTXO.
+    // Add it as an input to the transaction.
+    transactionBuilder.addInput(batonUtxos[0].tx_hash, batonUtxos[0].tx_pos)
+
 
     // get byte count to calculate fee. paying 1 sat
     // Note: This may not be totally accurate. Just guessing on the byteCount size.
@@ -168,8 +154,8 @@ async function mintToken () {
     )
 
     // Sign each token UTXO being consumed.
-    for (let i = 0; i < tokenUtxos.length; i++) {
-      const thisUtxo = tokenUtxos[i]
+    for (let i = 0; i < batonUtxos.length; i++) {
+      const thisUtxo = batonUtxos[i]
 
       transactionBuilder.sign(
         1 + i,
