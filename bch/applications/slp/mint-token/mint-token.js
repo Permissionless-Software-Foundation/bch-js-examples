@@ -79,6 +79,8 @@ async function mintToken () {
     // Choose a UTXO to pay for the transaction.
     const bchUtxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
 
+    console.log(`batonUtxos: ${JSON.stringify(batonUtxos, null, 2)}`)
+
     // Generate the SLP OP_RETURN.
     const slpData = bchjs.SLP.TokenType1.generateMintOpReturn(
       batonUtxos,

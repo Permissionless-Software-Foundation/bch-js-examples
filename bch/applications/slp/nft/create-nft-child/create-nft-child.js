@@ -8,7 +8,7 @@
 
 // EDIT THESE VALUES FOR YOUR USE.
 const TOKENID =
-  '8cd26481aaed66198e22e05450839fda763daadbb9938b0c71521ef43c642299'
+  '90fb0179ffa3426d5b402a0a19e74576863851ad32a861c5dcb99c7f9eeeed96'
 // const TO_SLPADDR = '' // The address to send the new tokens.
 
 // REST API servers.
@@ -50,51 +50,38 @@ async function createNFTChild () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
-    console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+    const utxos = await bchjs.Utxo.get(cashAddress)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
+
+    // Separate UTXO types
+    const bchUtxos = utxos.bchUtxos
+    let groupUtxos = utxos.slpUtxos.group.tokens
 
     if (utxos.length === 0) {
       throw new Error('No UTXOs to pay for transaction! Exiting.')
     }
 
-    // Identify the SLP token UTXOs.
-    let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`)
-
-    // Filter out the non-SLP token UTXOs.
-    const bchUtxos = utxos.filter((utxo, index) => {
-      const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo.isValid) return true
-      return false
-    })
-    // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
-
-    if (bchUtxos.length === 0) {
-      throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
-    }
-
     // Filter out the token UTXOs that match the user-provided token ID
     // and contain the minting baton.
-    tokenUtxos = tokenUtxos.filter((utxo, index) => {
+    groupUtxos = groupUtxos.filter((utxo, index) => {
       if (
         utxo && // UTXO is associated with a token.
         utxo.tokenId === TOKENID && // UTXO matches the token ID.
-        utxo.utxoType === 'token' // UTXO is not a minting baton.
+        utxo.type === 'token' // UTXO is not a minting baton.
       ) {
         return true
       }
 
       return false
     })
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
+    // console.log(`groupUtxos: ${JSON.stringify(groupUtxos, null, 2)}`);
 
-    if (tokenUtxos.length === 0) {
-      throw new Error('No token UTXOs for the specified token could be found.')
+    if (groupUtxos.length === 0) {
+      throw new Error('No token UTXOs for the specified Group token could be found.')
     }
 
     // Get the biggest UTXO to pay for the transaction.
-    const utxo = findBiggestUtxo(utxos)
+    const utxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
     // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
 
     // instance of transaction builder
@@ -106,7 +93,7 @@ async function createNFTChild () {
 
     // add the NFT Group UTXO as an input. This NFT Group token must be burned
     // to create a Child NFT, as per the spec.
-    transactionBuilder.addInput(tokenUtxos[0].tx_hash, tokenUtxos[0].tx_pos)
+    transactionBuilder.addInput(groupUtxos[0].tx_hash, groupUtxos[0].tx_pos)
 
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
@@ -136,6 +123,7 @@ async function createNFTChild () {
     // Send dust transaction representing the tokens.
     transactionBuilder.addOutput(
       bchjs.Address.toLegacyAddress(cashAddress),
+      // bchjs.Address.toLegacyAddress('bitcoincash:qqlrzp23w08434twmvr4fxw672whkjy0py26r63g3d'),
       546
     )
 
@@ -182,7 +170,7 @@ async function createNFTChild () {
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://slp-explorer.vercel.app/token/${txidStr}`)
   } catch (err) {
     console.error('Error in createNFTChild: ', err)
   }
