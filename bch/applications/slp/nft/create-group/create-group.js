@@ -1,15 +1,7 @@
 /*
-  Create a new NFT Child SLP token. Requires:
-  - a wallet created with the create-wallet example.
-  - wallet to have a small BCH balance.
-  - At least one NFT Group token needs to have been created with the
-    create-nft-group example.
+  Create a new SLP token. Requires a wallet created with the create-wallet
+  example. Also requires that wallet to have a small BCH balance.
 */
-
-// EDIT THESE VALUES FOR YOUR USE.
-const TOKENID =
-  '90fb0179ffa3426d5b402a0a19e74576863851ad32a861c5dcb99c7f9eeeed96'
-// const TO_SLPADDR = '' // The address to send the new tokens.
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
@@ -31,7 +23,7 @@ try {
   process.exit(0)
 }
 
-async function createNFTChild () {
+async function createNFT () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -45,39 +37,17 @@ async function createNFTChild () {
 
     const change = bchjs.HDNode.derivePath(account, '0/0')
 
-    // ge-childt the cash address
+    // get the cash address
     const cashAddress = bchjs.HDNode.toCashAddress(change)
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const utxos = await bchjs.Utxo.get(cashAddress)
+    const data = await bchjs.Electrumx.utxo(cashAddress)
+    const utxos = data.utxos
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
-
-    // Separate UTXO types
-    const bchUtxos = utxos.bchUtxos
-    let groupUtxos = utxos.slpUtxos.group.tokens
 
     if (utxos.length === 0) {
       throw new Error('No UTXOs to pay for transaction! Exiting.')
-    }
-
-    // Filter out the token UTXOs that match the user-provided token ID
-    // and contain the minting baton.
-    groupUtxos = groupUtxos.filter((utxo, index) => {
-      if (
-        utxo && // UTXO is associated with a token.
-        utxo.tokenId === TOKENID && // UTXO matches the token ID.
-        utxo.type === 'token' // UTXO is not a minting baton.
-      ) {
-        return true
-      }
-
-      return false
-    })
-    // console.log(`groupUtxos: ${JSON.stringify(groupUtxos, null, 2)}`);
-
-    if (groupUtxos.length === 0) {
-      throw new Error('No token UTXOs for the specified Group token could be found.')
     }
 
     // Get the biggest UTXO to pay for the transaction.
@@ -91,10 +61,6 @@ async function createNFTChild () {
     const vout = utxo.tx_pos
     const txid = utxo.tx_hash
 
-    // add the NFT Group UTXO as an input. This NFT Group token must be burned
-    // to create a Child NFT, as per the spec.
-    transactionBuilder.addInput(groupUtxos[0].tx_hash, groupUtxos[0].tx_pos)
-
     // add input with txid and index of vout
     transactionBuilder.addInput(txid, vout)
 
@@ -103,17 +69,19 @@ async function createNFTChild () {
 
     // amount to send back to the sending address.
     // Subtract two dust transactions for minting baton and tokens.
-    const remainder = originalAmount - txFee
+    const remainder = originalAmount - 546 * 2 - txFee
 
     // Generate SLP config object
     const configObj = {
-      name: 'NFT Child',
-      ticker: 'NFT004',
-      documentUrl: 'https://FullStack.cash'
+      name: 'NFT Test Token',
+      ticker: 'NFTTT',
+      documentUrl: 'https://FullStack.cash',
+      mintBatonVout: 2,
+      initialQty: 1
     }
 
     // Generate the OP_RETURN entry for an SLP GENESIS transaction.
-    const script = bchjs.SLP.NFT1.generateNFTChildGenesisOpReturn(configObj)
+    const script = bchjs.SLP.NFT1.newNFTGroupOpReturn(configObj)
     // const data = bchjs.Script.encode(script)
     // const data = compile(script)
 
@@ -123,15 +91,14 @@ async function createNFTChild () {
     // Send dust transaction representing the tokens.
     transactionBuilder.addOutput(
       bchjs.Address.toLegacyAddress(cashAddress),
-      // bchjs.Address.toLegacyAddress('bitcoincash:qqlrzp23w08434twmvr4fxw672whkjy0py26r63g3d'),
       546
     )
 
     // Send dust transaction representing minting baton.
-    // transactionBuilder.addOutput(
-    //   bchjs.Address.toLegacyAddress(cashAddress),
-    //   546
-    // );
+    transactionBuilder.addOutput(
+      bchjs.Address.toLegacyAddress(cashAddress),
+      546
+    )
 
     // add output to send BCH remainder of UTXO.
     transactionBuilder.addOutput(cashAddress, remainder)
@@ -139,21 +106,10 @@ async function createNFTChild () {
     // Generate a keypair from the change address.
     const keyPair = bchjs.HDNode.toKeyPair(change)
 
+    // Sign the transaction with the HD node.
     let redeemScript
-
-    // Sign the Token UTXO for the NFT Group token that will be burned in this
-    // transaction.
     transactionBuilder.sign(
       0,
-      keyPair,
-      redeemScript,
-      transactionBuilder.hashTypes.SIGHASH_ALL,
-      546
-    )
-
-    // Sign the input for the UTXO paying for the TX.
-    transactionBuilder.sign(
-      1,
       keyPair,
       redeemScript,
       transactionBuilder.hashTypes.SIGHASH_ALL,
@@ -170,12 +126,12 @@ async function createNFTChild () {
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://slp-explorer.vercel.app/token/${txidStr}`)
+    console.log(`https://slp-explorer.salemkode.com/tx/${txidStr}`)
   } catch (err) {
-    console.error('Error in createNFTChild: ', err)
+    console.error('Error in createToken: ', err)
   }
 }
-createNFTChild()
+createNFT()
 
 // Returns the utxo with the biggest balance from an array of utxos.
 function findBiggestUtxo (utxos) {

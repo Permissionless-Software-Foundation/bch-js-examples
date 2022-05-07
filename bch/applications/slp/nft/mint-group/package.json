@@ -1,11 +1,11 @@
 {
-  "name": "mint-nft-group",
+  "name": "mint-group",
   "version": "1.0.0",
-  "description": "Mint new NFT Group Tokens",
-  "main": "mint-nft-group.js",
+  "description": "Mint new Group Tokens",
+  "main": "mint-group.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node mint-nft-group.js"
+    "start": "node mint-group.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "contributors": [

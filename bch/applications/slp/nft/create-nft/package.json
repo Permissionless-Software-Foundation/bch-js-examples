@@ -1,11 +1,11 @@
 {
-  "name": "create-nft-child",
+  "name": "create-nft",
   "version": "1.0.0",
   "description": "Create an NFT Token",
-  "main": "create-nft-child.js",
+  "main": "create-nft.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node create-nft-child.js"
+    "start": "node create-nft.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "contributors": [
