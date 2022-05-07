@@ -1,11 +1,11 @@
 {
-  "name": "create-nft-group",
+  "name": "create-group",
   "version": "1.0.0",
-  "description": "Create a new NFT Group Token",
-  "main": "create-nft-group.js",
+  "description": "Create a new Group Token",
+  "main": "create-group.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node create-nft-group.js"
+    "start": "node create-group.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "contributors": [

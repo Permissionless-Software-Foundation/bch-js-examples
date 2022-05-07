@@ -1,7 +1,12 @@
 /*
-  Create a new SLP token. Requires a wallet created with the create-wallet
-  example. Also requires that wallet to have a small BCH balance.
+  Mint a NFT Group tokens.
 */
+
+// EDIT THESE VALUES FOR YOUR USE.
+const TOKENID =
+  '961c6a9f40da97c032b7249493a0bf70944696bbacfd94e831f58f0737e2e9be'
+const TOKENQTY = 1 // The quantity of new tokens to mint.
+// const TO_SLPADDR = '' // The address to send the new tokens.
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
@@ -23,7 +28,7 @@ try {
   process.exit(0)
 }
 
-async function createNFT () {
+async function mintNFTGroup () {
   try {
     const mnemonic = walletInfo.mnemonic
 
@@ -42,17 +47,38 @@ async function createNFT () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
+    const utxos = await bchjs.Utxo.get(cashAddress)
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) {
+    // Separate UTXO types
+    const bchUtxos = utxos.bchUtxos
+    let groupBatons = utxos.slpUtxos.group.mintBatons
+
+    if (bchUtxos.length === 0) {
       throw new Error('No UTXOs to pay for transaction! Exiting.')
     }
 
-    // Get the biggest UTXO to pay for the transaction.
-    const utxo = findBiggestUtxo(utxos)
-    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`)
+    // Filter out the token UTXOs that match the user-provided token ID
+    // and contain the minting baton.
+    groupBatons = groupBatons.filter((utxo, index) => {
+      if (
+        utxo && // UTXO is associated with a token.
+        utxo.tokenId === TOKENID && // UTXO matches the token ID.
+        utxo.type === 'baton' && // UTXO is not a minting baton.
+        utxo.tokenType === 129 // UTXO is for NFT Group
+      ) { return true }
+
+      return false
+    })
+    console.log(`groupBatons: ${JSON.stringify(groupBatons, null, 2)}`)
+
+    if (groupBatons.length === 0) {
+      throw new Error('No token UTXOs for the specified token could be found.')
+    }
+
+    // Choose a UTXO to pay for the transaction.
+    const utxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
+    // console.log(`bchUtxo: ${JSON.stringify(bchUtxo, null, 2)}`);
 
     // instance of transaction builder
     const transactionBuilder = new bchjs.TransactionBuilder()
@@ -61,34 +87,26 @@ async function createNFT () {
     const vout = utxo.tx_pos
     const txid = utxo.tx_hash
 
-    // add input with txid and index of vout
+    // add input to pay for the transaction.
     transactionBuilder.addInput(txid, vout)
+
+    // add the mint baton as an input.
+    transactionBuilder.addInput(groupBatons[0].tx_hash, groupBatons[0].tx_pos)
 
     // Set the transaction fee. Manually set for ease of example.
     const txFee = 550
 
     // amount to send back to the sending address.
     // Subtract two dust transactions for minting baton and tokens.
-    const remainder = originalAmount - 546 * 2 - txFee
+    const remainder = originalAmount - 546 - txFee
 
-    // Generate SLP config object
-    const configObj = {
-      name: 'NFT Test Token',
-      ticker: 'NFTTT',
-      documentUrl: 'https://FullStack.cash',
-      mintBatonVout: 2,
-      initialQty: 1
-    }
-
-    // Generate the OP_RETURN entry for an SLP GENESIS transaction.
-    const script = bchjs.SLP.NFT1.newNFTGroupOpReturn(configObj)
-    // const data = bchjs.Script.encode(script)
-    // const data = compile(script)
+    // Generate the SLP OP_RETURN.
+    const script = bchjs.SLP.NFT1.mintNFTGroupOpReturn(groupBatons, TOKENQTY)
 
     // OP_RETURN needs to be the first output in the transaction.
     transactionBuilder.addOutput(script, 0)
 
-    // Send dust transaction representing the tokens.
+    // Send dust transaction representing the new tokens.
     transactionBuilder.addOutput(
       bchjs.Address.toLegacyAddress(cashAddress),
       546
@@ -106,7 +124,7 @@ async function createNFT () {
     // Generate a keypair from the change address.
     const keyPair = bchjs.HDNode.toKeyPair(change)
 
-    // Sign the transaction with the HD node.
+    // Sign the transaction for the UTXO input that pays for the transaction..
     let redeemScript
     transactionBuilder.sign(
       0,
@@ -114,6 +132,15 @@ async function createNFT () {
       redeemScript,
       transactionBuilder.hashTypes.SIGHASH_ALL,
       originalAmount
+    )
+
+    // Sign the Token UTXO minting baton input
+    transactionBuilder.sign(
+      1,
+      keyPair,
+      redeemScript,
+      transactionBuilder.hashTypes.SIGHASH_ALL,
+      546
     )
 
     // build tx
@@ -126,26 +153,9 @@ async function createNFT () {
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex])
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://slp-explorer.salemkode.com/tx/${txidStr}`)
   } catch (err) {
-    console.error('Error in createToken: ', err)
+    console.error('Error in mintNFTGroup: ', err)
   }
 }
-createNFT()
-
-// Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo (utxos) {
-  let largestAmount = 0
-  let largestIndex = 0
-
-  for (let i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i]
-
-    if (thisUtxo.value > largestAmount) {
-      largestAmount = thisUtxo.value
-      largestIndex = i
-    }
-  }
-
-  return utxos[largestIndex]
-}
+mintNFTGroup()

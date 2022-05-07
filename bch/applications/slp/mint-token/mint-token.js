@@ -79,6 +79,8 @@ async function mintToken () {
     // Choose a UTXO to pay for the transaction.
     const bchUtxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
 
+    console.log(`batonUtxos: ${JSON.stringify(batonUtxos, null, 2)}`)
+
     // Generate the SLP OP_RETURN.
     const slpData = bchjs.SLP.TokenType1.generateMintOpReturn(
       batonUtxos,
@@ -180,7 +182,7 @@ async function mintToken () {
     console.log(`Transaction ID: ${txidStr}`)
 
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://slp-explorer.salemkode.com/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in mintToken: ', err)
     console.log(`Error message: ${err.message}`)
@@ -188,20 +190,3 @@ async function mintToken () {
   }
 }
 mintToken()
-
-// Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo (utxos) {
-  let largestAmount = 0
-  let largestIndex = 0
-
-  for (let i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i]
-
-    if (thisUtxo.value > largestAmount) {
-      largestAmount = thisUtxo.value
-      largestIndex = i
-    }
-  }
-
-  return utxos[largestIndex]
-}

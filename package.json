@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/Permissionless-Software-Foundation/bch-js-examples#readme",
   "dependencies": {
-    "@psf/bch-js": "6.2.9",
+    "@psf/bch-js": "6.2.14",
     "bitcoinfiles-node": "0.5.4",
     "ecashaddrjs": "1.0.7",
     "minimal-slp-wallet": "4.4.5"

@@ -1,11 +1,11 @@
 {
-  "name": "send-child",
+  "name": "send-nft",
   "version": "1.0.0",
   "description": "Send SLP NFT (child) tokens to an address",
-  "main": "send-child.js",
+  "main": "send-nft.js",
   "scripts": {
     "test": "echo no tests yet",
-    "start": "node send-child.js"
+    "start": "node send-nft.js"
   },
   "author": "Chris Troutner <chris.troutner@gmail.com>",
   "contributors": [

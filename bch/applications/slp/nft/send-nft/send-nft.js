@@ -3,10 +3,9 @@
 */
 
 // CUSTOMIZE THESE VALUES FOR YOUR USE
-const TOKENQTY = 1
 const TOKENID =
-  '2df556ef00cf41de47ac389bc2295a9c932b70af8f47e837480c8f89fb780853'
-let TO_SLPADDR = 'simpleledger:qphnz7yl9xasyzd0aldxq3q875shts0dmgep39tq3e'
+  'fb4b972328199e4538b93760ce4598b087ccd5c71e459c6384dc2ebc20b743a2'
+let TO_SLPADDR = 'simpleledger:qrxnq2ta5fe3whyfsekfz648c48tzd8urspw8f3h07'
 
 // REST API servers.
 const BCHN_MAINNET = 'https://bchn.fullstack.cash/v5/'
@@ -50,53 +49,41 @@ async function sendChildToken () {
     const cashAddress = bchjs.HDNode.toCashAddress(change)
     const slpAddress = bchjs.HDNode.toSLPAddress(change)
 
-    // Get UTXOs held by this address.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
+    // Get a UTXO to pay for the transaction.
+    const utxos = await bchjs.Utxo.get(cashAddress)
+    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) throw new Error('No UTXOs to spend! Exiting.')
-
-    // Identify the SLP token UTXOs.
-    let tokenUtxos = await bchjs.SLP.Utils.tokenUtxoDetails(utxos)
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
-
-    // Filter out the non-SLP token UTXOs.
-    const bchUtxos = utxos.filter((utxo, index) => {
-      const tokenUtxo = tokenUtxos[index]
-      if (!tokenUtxo.isValid) return true
-      return false
-    })
-    // console.log(`bchUTXOs: ${JSON.stringify(bchUtxos, null, 2)}`);
+    // Separate UTXO types
+    const bchUtxos = utxos.bchUtxos
+    let nftTokens = utxos.slpUtxos.nft.tokens
 
     if (bchUtxos.length === 0) {
-      throw new Error('Wallet does not have a BCH UTXO to pay miner fees.')
+      throw new Error('No UTXOs to pay for transaction! Exiting.')
     }
 
-    // Filter out the token UTXOs that match the user-provided token ID.
-    tokenUtxos = tokenUtxos.filter((utxo, index) => {
+    // Filter out the token UTXOs that match the user-provided token ID
+    // and contain the minting baton.
+    nftTokens = nftTokens.filter((utxo, index) => {
       if (
         utxo && // UTXO is associated with a token.
-        utxo.tokenId === TOKENID && // UTXO matches the token ID.
-        utxo.utxoType === 'token' && // UTXO is not a minting baton.
-        utxo.tokenType === 65 // UTXO is for an NFT
+        utxo.tokenId === TOKENID
       ) { return true }
 
       return false
     })
-    // console.log(`tokenUtxos: ${JSON.stringify(tokenUtxos, null, 2)}`);
+    console.log(`nft token UTXOs: ${JSON.stringify(nftTokens, null, 2)}`)
 
-    if (tokenUtxos.length === 0) {
+    if (nftTokens.length === 0) {
       throw new Error('No token UTXOs for the specified token could be found.')
     }
 
     // Choose a UTXO to pay for the transaction.
-    const bchUtxo = findBiggestUtxo(bchUtxos)
+    const utxo = bchjs.Utxo.findBiggestUtxo(bchUtxos)
     // console.log(`bchUtxo: ${JSON.stringify(bchUtxo, null, 2)}`);
 
     const slpSendObj = bchjs.SLP.NFT1.generateNFTChildSendOpReturn(
-      tokenUtxos,
-      TOKENQTY
+      nftTokens,
+      1
     )
     const slpData = slpSendObj.script
     // console.log(`slpOutputs: ${slpSendObj.outputs}`);
@@ -107,12 +94,12 @@ async function sendChildToken () {
     const transactionBuilder = new bchjs.TransactionBuilder()
 
     // Add the BCH UTXO as input to pay for the transaction.
-    const originalAmount = bchUtxo.value
-    transactionBuilder.addInput(bchUtxo.tx_hash, bchUtxo.tx_pos)
+    const originalAmount = utxo.value
+    transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos)
 
     // add each token UTXO as an input.
-    for (let i = 0; i < tokenUtxos.length; i++) {
-      transactionBuilder.addInput(tokenUtxos[i].tx_hash, tokenUtxos[i].tx_pos)
+    for (let i = 0; i < nftTokens.length; i++) {
+      transactionBuilder.addInput(nftTokens[i].tx_hash, nftTokens[i].tx_pos)
     }
 
     // get byte count to calculate fee. paying 1 sat
@@ -172,8 +159,8 @@ async function sendChildToken () {
     )
 
     // Sign each token UTXO being consumed.
-    for (let i = 0; i < tokenUtxos.length; i++) {
-      const thisUtxo = tokenUtxos[i]
+    for (let i = 0; i < nftTokens.length; i++) {
+      const thisUtxo = nftTokens[i]
 
       transactionBuilder.sign(
         1 + i,
@@ -198,27 +185,10 @@ async function sendChildToken () {
     console.log(`Transaction ID: ${txidStr}`)
 
     console.log('Check the status of your transaction on this block explorer:')
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txidStr}`)
+    console.log(`https://slp-explorer.salemkode.com/tx/${txidStr}`)
   } catch (err) {
     console.error('Error in sendToken: ', err)
     console.log(`Error message: ${err.message}`)
   }
 }
 sendChildToken()
-
-// Returns the utxo with the biggest balance from an array of utxos.
-function findBiggestUtxo (utxos) {
-  let largestAmount = 0
-  let largestIndex = 0
-
-  for (let i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i]
-
-    if (thisUtxo.value > largestAmount) {
-      largestAmount = thisUtxo.value
-      largestIndex = i
-    }
-  }
-
-  return utxos[largestIndex]
-}
