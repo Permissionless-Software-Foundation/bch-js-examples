@@ -42,11 +42,13 @@ async function createNFT () {
     // const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddress)
 
     // Get a UTXO to pay for the transaction.
-    const data = await bchjs.Electrumx.utxo(cashAddress)
-    const utxos = data.utxos
+    const utxos = await bchjs.Utxo.get(cashAddress)
     // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`)
 
-    if (utxos.length === 0) {
+    // Separate UTXO types
+    const bchUtxos = utxos.bchUtxos
+
+    if (bchUtxos.length === 0) {
       throw new Error('No UTXOs to pay for transaction! Exiting.')
     }
 
@@ -73,8 +75,8 @@ async function createNFT () {
 
     // Generate SLP config object
     const configObj = {
-      name: 'NFT Test Token',
-      ticker: 'NFTTT',
+      name: 'NFT Group Test Token',
+      ticker: 'NGT',
       documentUrl: 'https://FullStack.cash',
       mintBatonVout: 2,
       initialQty: 1
