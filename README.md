@@ -1,3 +1,9 @@
+## This repository has been deprecated
+
+These code examples have been moved to the [psf-js-examples](https://github.com/Permissionless-Software-Foundation/psf-js-examples) code repository. They are maintained there. This bch-js-examples repository has been frozen and is no longer maintained.
+
+-----
+
 This repository contains a series of small example apps that illustrate how to
 code up common use cases for a Bitcoin Cash application using
 the [bch-js](https://www.npmjs.com/package/@chris.troutner/bch-js) JavaScript
